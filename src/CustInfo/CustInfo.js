@@ -2,6 +2,16 @@ import React, { Component } from 'react';
 import './custInfo.css';
 
 class CustInfo extends Component {
+  state = {
+    customer: {}
+  }
+
+  componentWillReceiveProps(update) {
+    this.setState({
+      customer: update.customer
+    })
+  }
+
   onFormSubmit = (evt) => {
     evt.preventDefault();
     console.log("kallað í onFormSubmit");

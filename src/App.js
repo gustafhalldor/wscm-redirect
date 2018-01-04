@@ -3,7 +3,7 @@ import Header from './Header/Header.js';
 import CustInfo from './CustInfo/CustInfo.js';
 import BasketContents from './BasketContents/BasketContents.js';
 import './App.css';
-import mockContents from './BasketContents/mockContents.json';
+//import mockContents from './BasketContents/mockContents.json';
 //import fetch from 'node-fetch';
 
 class App extends Component {
@@ -13,18 +13,6 @@ class App extends Component {
   };
 
   componentDidMount = () => {
-    // let myHeaders = new fetch.Headers();
-    // myHeaders.set("x-api-key", "4F/UEh52hA86NWTQyM6+ogYGEsOClgD19jfrwl4Ol2E=");
-    //
-    // let url = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
-    // let myInit = {
-    //   'method': 'GET',
-    //   'headers': myHeaders
-    // }
-    //
-    // let request = new fetch.Request(url, myInit)
-
-    // const url = encodeURIComponent(this.props.match.params.redirectkey)
     console.log(this.props.match.params.redirectkey);
     const appObject = this;
     fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
@@ -40,7 +28,7 @@ class App extends Component {
       });
   }
 
-  render(match) {
+  render() {
     return (
       <div className="Container">
         <Header />
