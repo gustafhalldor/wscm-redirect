@@ -33,7 +33,6 @@ class App extends Component {
       <div className="Container">
         <Header />
         <main className="flex-container">
-         {/* Líklega þarf ég eitt foreldri hér sem svo renderar CustInfo og BasketContents, því það tvennt hangir saman og notast við upplýsingar úr sama fetchi. */}
           <CustInfo customer={this.state.custInfo}/>
           <BasketContents basket={this.state.basketContents}/>
         </main>
