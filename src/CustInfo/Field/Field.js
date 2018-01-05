@@ -37,6 +37,8 @@ class Field extends Component {
           value={this.state.value}
           onChange={this.onChange}
         />
+        {this.props.required && <span>*</span>}
+        <br />
         <span style={{ color: 'red' }}>{ this.state.error }</span>
       </div>
     );

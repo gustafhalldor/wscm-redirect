@@ -12,6 +12,7 @@ class App extends Component {
     basketContents: []
   };
 
+  // Getting transaction information from WSCM api.
   componentDidMount = () => {
     console.log(this.props.match.params.redirectkey);
     const appObject = this;
@@ -28,12 +29,18 @@ class App extends Component {
       });
   }
 
+  // TODO
+  // Aggregating finalized information on recipient and contents of order
+  handleCustomerInfoSubmit = () => {
+    console.log("er að höndla cust info submit í app");
+  }
+
   render() {
     return (
       <div className="Container">
         <Header />
         <main className="flex-container">
-          <CustInfo customer={this.state.custInfo}/>
+          <CustInfo customer={this.state.custInfo} onSubmit={this.handleCustomerInfoSubmit}/>
           <BasketContents basket={this.state.basketContents}/>
         </main>
       </div>
