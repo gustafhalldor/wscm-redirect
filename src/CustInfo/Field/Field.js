@@ -32,12 +32,14 @@ class Field extends Component {
   render() {
     return (
       <div>
+        <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span>*</span>}</label>
+        <br/>
         <input
+          id={this.props.name}
           placeholder={this.props.placeholder}
           value={this.state.value}
           onChange={this.onChange}
         />
-        {this.props.required && <span>*</span>}
         <br />
         <span style={{ color: 'red' }}>{ this.state.error }</span>
       </div>

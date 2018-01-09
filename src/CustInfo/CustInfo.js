@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Field from './Field/Field.js';
 import Validator from 'validator';
 import './custInfo.css';
+import {Link} from 'react-router-dom';
 
 class CustInfo extends Component {
   state = {
@@ -44,7 +45,13 @@ class CustInfo extends Component {
     evt.preventDefault();
     console.log("kallað í onFormSubmit");
     console.log(this.state.customer);
-    this.props.onSubmit();
+    console.log(evt.target);
+    const basket = this.props.basket;
+    let weight = 0;
+    for (var i = 0; i < basket.length; i++) {
+      weight += basket[i].weight;
+    }
+    this.props.onSubmit(weight);
   };
 
   validate = () => {
@@ -55,19 +62,27 @@ console.log("í form validate");
 console.log(customer);
 console.log(errMessages);
     if (!customer.fullName) return true;
-    if (!customer.email) return true;
-    if (errMessages.length) return true;
+    if (!customer.address) return true;
+    if (!customer.postcode) return true;
+    if (errMessages.length) {
+      for (var i = 0; i < errMessages.length; i++) {
+        if(errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
+        return true;
+      }
+    }
 
     return false;
   };
 
   render() {
+    const link = `/${this.props.url}/delivery_options`
     return (
       <div className="leftSide col-md-6">
         <h1>Upplýsingar um viðtakanda</h1>
         <form className="form" onSubmit={this.onFormSubmit}>
           <Field
-          placeholder="Nafn"
+          placeholder="Jón Jónsson"
+          label='Fullt nafn'
           name="fullName"
           value={this.state.customer.fullName}
           onChange={this.onInputChange}
@@ -76,32 +91,34 @@ console.log(errMessages);
           />
           <br />
           <Field
-          placeholder="Heimilisfang"
+          placeholder="Dúfnahólar 10"
+          label="Heimilisfang"
           name="address"
           value={this.state.customer.address}
           onChange={this.onInputChange}
           required={true}
+          validate={(val) => (val ? false : 'Vantar heimilisfang')}
           />
           <br />
           <Field
-          placeholder="Póstnúmer"
+          placeholder="111"
+          label="Póstnúmer"
           name="postcode"
           value={this.state.customer.postcode}
           onChange={this.onInputChange}
           required={true}
-          validate={(val) => ((Validator.isNumeric(val) && val.length < 4 ) ? false : 'Póstnúmer eru 3 tölustafir')}
+          validate={(val) => ((Validator.isNumeric(val) && val.length === 3 ) ? false : 'Póstnúmer eru 3 tölustafir')}
           />
           <br />
-          {/*<Field
-          placeholder="Land"
-          name="country"
-          value={this.state.customer.country}
-          onChange={this.onInputChange}
-          required={true}
-          />
-          <br />*/}
+          <div>
+            <label htmlFor="country">Land</label>
+            <br />
+            <input id="country" value="Ísland" readOnly/>
+          </div>
+          <br />
           <Field
-          placeholder="Email"
+          placeholder="jon@jonsson.is"
+          label="Tölvupóstfang"
           name="email"
           value={this.state.customer.email}
           onChange={this.onInputChange}
@@ -109,7 +126,8 @@ console.log(errMessages);
           />
           <br />
           <Field
-          placeholder="Símanúmer"
+          placeholder="5571234"
+          label="Sími"
           name="phone"
           value={this.state.customer.phone}
           onChange={this.onInputChange}
@@ -117,7 +135,9 @@ console.log(errMessages);
           />
           <span>* required</span>
           <br />
+        {/*<Link to={link}>*/}
           <input type='submit' value="Áfram á næsta skref" disabled={this.validate()}/>
+        {/*</Link>*/}
         </form>
       </div>
     );
