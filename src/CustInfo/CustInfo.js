@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Field from './Field/Field.js';
 import Validator from 'validator';
 import './custInfo.css';
-import {Link} from 'react-router-dom';
 
 class CustInfo extends Component {
   state = {
@@ -10,7 +9,7 @@ class CustInfo extends Component {
       fullName: "",
       address: "",
       postcode: "",
-      countryCode: "",
+      countryCode: "IS",
       email: "",
       phone: ""
     },
@@ -22,7 +21,7 @@ class CustInfo extends Component {
     update.customer.fullName === null ? fullName = "" : fullName = update.customer.fullName;
     update.customer.address === null ? address = "" : address = update.customer.address;
     update.customer.postcode === null ? postcode = "" : postcode = update.customer.postcode;
-    update.customer.countryCode === null ? countryCode = "" : countryCode = update.customer.countryCode;
+    update.customer.countryCode === null ? countryCode = "IS" : countryCode = update.customer.countryCode;
     update.customer.email === null ? email = "" : email = update.customer.email;
     update.customer.phone === null ? phone = "" : phone = update.customer.phone;
 
@@ -43,15 +42,36 @@ class CustInfo extends Component {
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
-    console.log("kallað í onFormSubmit");
-    console.log(this.state.customer);
-    console.log(evt.target);
-    const basket = this.props.basket;
-    let weight = 0;
-    for (var i = 0; i < basket.length; i++) {
-      weight += basket[i].weight;
-    }
-    this.props.onSubmit(weight);
+
+    let url = `http://localhost:8989/wscm/landing/${this.props.redirectkey}/updateRecipient`;
+
+    let myHeaders = new Headers();
+    myHeaders.set("Content-Type", "application/json");
+
+    const myInit = {
+                    'method': 'POST',
+                    'body': JSON.stringify(this.state.customer),
+                    'headers': myHeaders
+                  };
+
+    const request = new Request(url, myInit);
+
+    fetch(request)
+    .then(response => {
+      console.log(response);
+      return response.status;
+    })
+    .then(response => {
+      // If recipient details were updated successfully, then we continue and move on to the next step
+      // TODO do some more stuff here, maybe add another param ('successful') to the onSubmit function, which App.js then handles.
+      if (response === 200) {
+        this.props.onSubmit();
+      }
+    })
+    .catch(error => {
+      console.log("fetch unsuccessful, error: ");
+      console.log(error);
+    })
   };
 
   validate = () => {
@@ -75,7 +95,6 @@ console.log(errMessages);
   };
 
   render() {
-    const link = `/${this.props.url}/delivery_options`
     return (
       <div className="leftSide col-md-6">
         <h1>Upplýsingar um viðtakanda</h1>
@@ -135,9 +154,7 @@ console.log(errMessages);
           />
           <span>* required</span>
           <br />
-        {/*<Link to={link}>*/}
           <input type='submit' value="Áfram á næsta skref" disabled={this.validate()}/>
-        {/*</Link>*/}
         </form>
       </div>
     );

@@ -9,14 +9,14 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 ReactDOM.render(
   <Router>
-    <div>
+    <main>
       <Route path="/" component={Header}/> {/* TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
       <Route path="/:redirectkey" exact component={App}/>
-      <Route path="/:redirectkey/:weight" component={DeliveryOptions}/>
+      <Route path="/:redirectkey/:weight/:height?/:length?/:width?" component={DeliveryOptions}/>
       {/*<Route path="*" render = {() => (
         <h2>Ekkert að sjá hér :-)</h2>
       )} /> */}
-    </div>
+    </main>
   </Router>,
   document.getElementById('root'));
 registerServiceWorker();

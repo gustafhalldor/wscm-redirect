@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  padding: 1em 0 0 0;
+}
+
+.flex-container-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.justify-center{
+  justify-content: center;
+}
+
+.flex-container-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.label80percent {
+  width: 80%;
+}
+
+input[type=radio]{
+
+  visibility: hidden;
+}

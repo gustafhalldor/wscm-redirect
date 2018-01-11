@@ -17,7 +17,8 @@ class App extends Component {
     fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
       .then(response => {
         return response.json();
-      }).then(function(response) {
+      })
+      .then(function(response) {
         console.log("response er:");
         console.log(response);
         if (response.recipient && response.products) {
@@ -26,16 +27,22 @@ class App extends Component {
             basketContents: response.products
           })
         }
-      }).catch(error => {
-        console.log(error);
+      })
+      .catch(error => {
+        console.log('Tókst ekki að ná í transaction details', error);
       })
   }
 
   // TODO
   // Aggregating finalized information on recipient and contents of order
-  handleCustomerInfoSubmit = (route) => {
+  handleCustomerInfoSubmit = () => {
     console.log("er að höndla cust info submit í App component");
-    const url = `${this.props.location.pathname}/${route}`;
+    let weight = 0;
+    for (var i = 0; i < this.state.basketContents.length; i++) {
+      weight += this.state.basketContents[i].weight;
+    }
+    // TODO add the dimension params
+    const url = `${this.props.location.pathname}/${weight}`;
     this.props.history.push(url);
   }
 
@@ -43,7 +50,7 @@ class App extends Component {
     return (
       <div className="Container">
         <main className="flex-container">
-          <CustInfo customer={this.state.custInfo} basket={this.state.basketContents} url= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
+          <CustInfo customer={this.state.custInfo} basket={this.state.basketContents} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
           <BasketContents basket={this.state.basketContents}/>
         </main>
       </div>
