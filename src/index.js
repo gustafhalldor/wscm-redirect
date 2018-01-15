@@ -12,7 +12,7 @@ ReactDOM.render(
     <main>
       <Route path="/" component={Header}/> {/* TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
       <Route path="/:redirectkey" exact component={App}/>
-      <Route path="/:redirectkey/:weight/:height?/:length?/:width?" component={DeliveryOptions}/>
+      <Route path="/:redirectkey/:postcode/:weight/:height?/:length?/:width?" component={DeliveryOptions}/>
       {/*<Route path="*" render = {() => (
         <h2>Ekkert að sjá hér :-)</h2>
       )} /> */}

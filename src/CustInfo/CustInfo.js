@@ -65,7 +65,7 @@ class CustInfo extends Component {
       // If recipient details were updated successfully, then we continue and move on to the next step
       // TODO do some more stuff here, maybe add another param ('successful') to the onSubmit function, which App.js then handles.
       if (response === 200) {
-        this.props.onSubmit();
+        this.props.onSubmit(this.state.customer.postcode);
       }
     })
     .catch(error => {
@@ -96,7 +96,7 @@ console.log(errMessages);
 
   render() {
     return (
-      <div className="leftSide col-md-6">
+      <div className="leftSide col-md-8">
         <h1>Upplýsingar um viðtakanda</h1>
         <form className="form" onSubmit={this.onFormSubmit}>
           <Field

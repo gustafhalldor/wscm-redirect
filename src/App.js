@@ -8,7 +8,9 @@ import './App.css';
 class App extends Component {
   state = {
     custInfo: {},
-    basketContents: []
+    basketContents: [],
+    totalPrice: 0,
+    totalWeight: 0
   };
 
   // Getting transaction information from WSCM api.
@@ -22,9 +24,16 @@ class App extends Component {
         console.log("response er:");
         console.log(response);
         if (response.recipient && response.products) {
+          let totalWeight = 0, totalPrice = 0;
+          for (var i = 0; i < response.products.length; i++) {
+            totalWeight += response.products[i].weight;
+            totalPrice += response.products[i].price;
+          }
           appObject.setState({
             custInfo: response.recipient,
-            basketContents: response.products
+            basketContents: response.products,
+            totalPrice,
+            totalWeight
           })
         }
       })
@@ -35,14 +44,14 @@ class App extends Component {
 
   // TODO
   // Aggregating finalized information on recipient and contents of order
-  handleCustomerInfoSubmit = () => {
+  handleCustomerInfoSubmit = (postcode) => {
     console.log("er að höndla cust info submit í App component");
     let weight = 0;
     for (var i = 0; i < this.state.basketContents.length; i++) {
       weight += this.state.basketContents[i].weight;
     }
     // TODO add the dimension params
-    const url = `${this.props.location.pathname}/${weight}`;
+    const url = `${this.props.location.pathname}/${postcode}/${weight}`;
     this.props.history.push(url);
   }
 
@@ -51,7 +60,7 @@ class App extends Component {
       <div className="Container">
         <main className="flex-container">
           <CustInfo customer={this.state.custInfo} basket={this.state.basketContents} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
-          <BasketContents basket={this.state.basketContents}/>
+          <BasketContents basket={this.state.basketContents} totalPrice={this.state.totalPrice} totalWeight={this.state.totalWeight}/>
         </main>
       </div>
     );
