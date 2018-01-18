@@ -49,7 +49,7 @@ class CustInfo extends Component {
     myHeaders.set("Content-Type", "application/json");
 
     const myInit = {
-                    'method': 'POST',
+                    'method': 'PUT',
                     'body': JSON.stringify(this.state.customer),
                     'headers': myHeaders
                   };
@@ -98,7 +98,7 @@ console.log(errMessages);
     return (
       <div className="leftSide col-md-8">
         <h1>Upplýsingar um viðtakanda</h1>
-        <form className="form" onSubmit={this.onFormSubmit}>
+        <form className="customerForm" onSubmit={this.onFormSubmit}>
           <Field
           placeholder="Jón Jónsson"
           label='Fullt nafn'

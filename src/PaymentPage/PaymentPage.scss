@@ -2,10 +2,12 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  align-items: center; }
+  align-items: center;
+}
 
 .creditCardForm {
-  margin-top: 1em; }
+  margin-top: 1em;
+}
 
 .ccInputField {
   margin-bottom: 0.5em;
@@ -14,18 +16,22 @@
   font-size: 20px;
   outline: none;
   padding: 10px;
-  transition: all 0.4s; }
+  transition: all 0.4s;
+}
 
 .flex2 {
   flex-grow: 2;
   flex-shrink: 1;
-  flex-basis: 0%; }
+  flex-basis: 0%;
+}
 
 .flex1 {
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 0%; }
+  flex-basis: 0%;
+}
 
 .costReview {
   font-size: 1.5em;
-  margin-bottom: 1em; }
+  margin-bottom: 1em;
+}

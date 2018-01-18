@@ -57,8 +57,8 @@ class App extends Component {
 
   render() {
     return (
-      <div className="Container">
-        <main className="flex-container">
+      <div className="container">
+        <main className="flex-container-row">
           <CustInfo customer={this.state.custInfo} basket={this.state.basketContents} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
           <BasketContents basket={this.state.basketContents} totalPrice={this.state.totalPrice} totalWeight={this.state.totalWeight}/>
         </main>
