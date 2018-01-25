@@ -1,5 +1,11 @@
 .deliveryOptionsContainer {
-  width: 70%;
+  width: 80%;
+  margin: 0 auto;
+  padding: 1em 0 0 0;
+  display: flex;
+  flex-direction: row; }
+
+.deliveryOptionsForm {
   margin: 0 auto;
   padding: 1em 0 0 0;
   display: flex;

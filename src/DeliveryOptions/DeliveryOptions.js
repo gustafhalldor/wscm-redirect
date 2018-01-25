@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './deliveryOptions.css';
+import BasketContents from '../BasketContents/BasketContents.js';
 
 class DeliveryOptions extends Component {
   state = {
@@ -132,11 +133,14 @@ class DeliveryOptions extends Component {
       );
 
       return (
-        <form className="deliveryOptionsContainer"  onSubmit={this.onFormSubmit}>
-          {options}
-        {/*TODO búa til Til baka hnapp*/}
-          <button type="submit" className="deliveryOptionsButton btn">Staðfesta og fara á greiðslusíðu</button>
-        </form>
+        <div className="deliveryOptionsContainer">
+          <form className="deliveryOptionsForm col-md-8"  onSubmit={this.onFormSubmit}>
+            {options}
+          {/*TODO búa til Til baka hnapp*/}
+            <button type="submit" className="deliveryOptionsButton btn">Staðfesta og fara á greiðslusíðu</button>
+          </form>
+          <BasketContents className="col-md-4" basket={this.state.basketContents} totalPrice={this.state.totalPrice} totalWeight={this.state.totalWeight}/>
+        </div>
       )
     }
     return (
