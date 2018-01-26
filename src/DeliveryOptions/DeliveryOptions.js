@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents.js';
+import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addDeliveryOptions } from '../actions/deliveryOptionsActions.js';
 
 class DeliveryOptions extends Component {
   state = {
@@ -9,7 +12,6 @@ class DeliveryOptions extends Component {
       id: "",
       price: ""
     },
-    basketContents: []
   }
 
   componentDidMount = () => {
@@ -42,7 +44,7 @@ class DeliveryOptions extends Component {
       })
       .then(response => {
         console.log(response);
-        appObject.setState({deliveryOptions: response.deliveryServicesAndPrices});
+        appObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
       })
       .catch(error => {
         console.log("Tókst ekki að ná í afhendingarleiðir og verð", error);
@@ -92,7 +94,7 @@ class DeliveryOptions extends Component {
   handleRadioButtons = (evt) => {
     console.log(evt.target.value);
     const selectedOption = evt.target.value;
-    const deliveryOptions = this.state.deliveryOptions;
+    const deliveryOptions = this.props.deliveryOptions;
     for (var i = 0; i < deliveryOptions.length; i++) {
       if (selectedOption === deliveryOptions[i].deliveryServiceId) {
         this.setState({
@@ -106,9 +108,10 @@ class DeliveryOptions extends Component {
   }
 
   render() {
-    if (this.state.deliveryOptions.length) {
+    console.log(this.props);
+    if (this.props.deliveryOptions.length) {
 
-      const options = this.state.deliveryOptions.map((deliveryOption, i) =>
+      const options = this.props.deliveryOptions.map((deliveryOption, i) =>
         <div key={i} className="flex-container-row justify-center">
           <input type="radio" id={i} value={deliveryOption.deliveryServiceId} name="option" onChange={this.handleRadioButtons} className="input-hidden"/>
           <label htmlFor={i} className="wscm-radio-panel panel panel-default label80percent">
@@ -139,7 +142,7 @@ class DeliveryOptions extends Component {
           {/*TODO búa til Til baka hnapp*/}
             <button type="submit" className="deliveryOptionsButton btn">Staðfesta og fara á greiðslusíðu</button>
           </form>
-          <BasketContents className="col-md-4" basket={this.state.basketContents} totalPrice={this.state.totalPrice} totalWeight={this.state.totalWeight}/>
+          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
         </div>
       )
     }
@@ -148,4 +151,20 @@ class DeliveryOptions extends Component {
     )
   }
 }
-export default DeliveryOptions;
+
+function mapStateToProps(state) {
+  return {
+    deliveryOptions: state.deliveryOptions.options,
+    basket: state.transactionDetails.products,
+    totalPrice: state.transactionDetails.productsPrice,
+    totalWeight: state.transactionDetails.productsWeight
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addDeliveryOptions: addDeliveryOptions
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(DeliveryOptions);

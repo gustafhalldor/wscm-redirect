@@ -2,20 +2,20 @@ import React, { Component } from 'react';
 import CustInfo from './CustInfo/CustInfo.js';
 import BasketContents from './BasketContents/BasketContents.js';
 import './App.css';
-//import mockContents from './BasketContents/mockContents.json';
-//import fetch from 'node-fetch';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { addCustomerInfo, addBasketContents, addTotalProducsWeight, addTotalProductsPrice } from './actions/transactionActions.js';
+import store from './store.js';
 
 class App extends Component {
-  state = {
-    custInfo: {},
-    basketContents: [],
-    totalPrice: 0,
-    totalWeight: 0
-  };
-
   // Getting transaction information from WSCM api.
   componentDidMount = () => {
     const appObject = this;
+
+    store.dispatch((dispatch) => {
+      dispatch({type: "FOOK U"})
+    })
+
     fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
       .then(response => {
         return response.json();
@@ -29,12 +29,11 @@ class App extends Component {
             totalWeight += response.products[i].weight;
             totalPrice += response.products[i].price;
           }
-          appObject.setState({
-            custInfo: response.recipient,
-            basketContents: response.products,
-            totalPrice,
-            totalWeight
-          })
+          console.log(appObject.props);
+          appObject.props.addBasketContents(response.products);
+          appObject.props.addCustomerInfo(response.recipient);
+          appObject.props.addTotalPrice(totalPrice);
+          appObject.props.addTotalWeight(totalWeight);
         }
       })
       .catch(error => {
@@ -47,8 +46,8 @@ class App extends Component {
   handleCustomerInfoSubmit = (postcode) => {
     console.log("er að höndla cust info submit í App component");
     let weight = 0;
-    for (var i = 0; i < this.state.basketContents.length; i++) {
-      weight += this.state.basketContents[i].weight;
+    for (var i = 0; i < this.props.basket.length; i++) {
+      weight += this.props.basket[i].weight;
     }
     // TODO add the dimension params
     const url = `${this.props.location.pathname}/${postcode}/${weight}`;
@@ -56,15 +55,33 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div className="container">
         <main className="flex-container-row">
-          <CustInfo customer={this.state.custInfo} basket={this.state.basketContents} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
-          <BasketContents basket={this.state.basketContents} totalPrice={this.state.totalPrice} totalWeight={this.state.totalWeight}/>
+          <CustInfo customer={this.props.customer} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
+          <BasketContents basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
         </main>
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    basket: state.transactionDetails.products,
+    customer: state.transactionDetails.customerInfo,
+    totalPrice: state.transactionDetails.productsPrice,
+    totalWeight: state.transactionDetails.productsWeight
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addBasketContents: addBasketContents,             //The prop addBasketContents is equal to the function addBasketContents
+    addCustomerInfo: addCustomerInfo,
+    addTotalWeight: addTotalProducsWeight,
+    addTotalPrice: addTotalProductsPrice}, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(App);
