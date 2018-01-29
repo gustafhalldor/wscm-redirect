@@ -3,16 +3,9 @@ import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents.js';
 import {connect} from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addDeliveryOptions } from '../actions/deliveryOptionsActions.js';
+import { addDeliveryOptions, updateSelectedOption } from '../actions/deliveryOptionsActions.js';
 
 class DeliveryOptions extends Component {
-  state = {
-    deliveryOptions: [],
-    selectedOption: {
-      id: "",
-      price: ""
-    },
-  }
 
   componentDidMount = () => {
     // TODO fyrst ná í api lykil út frá redirectkey og svo kalla í deliveryServicesAndPrices innan úr promise-inu
@@ -65,10 +58,9 @@ class DeliveryOptions extends Component {
 
     let myHeaders = new Headers();
     myHeaders.set("Content-Type", "application/json");
-
     const myInit = {
                   'method': 'PUT',
-                  'body': JSON.stringify(this.state.selectedOption),
+                  'body': JSON.stringify(this.props.selectedOption),
                   'headers': myHeaders
                 };
 
@@ -97,12 +89,7 @@ class DeliveryOptions extends Component {
     const deliveryOptions = this.props.deliveryOptions;
     for (var i = 0; i < deliveryOptions.length; i++) {
       if (selectedOption === deliveryOptions[i].deliveryServiceId) {
-        this.setState({
-          selectedOption: {
-            id: selectedOption,
-            price: deliveryOptions[i].priceRelated.bruttoPrice
-          }
-        })
+        this.props.updateSelectedOption( { id: selectedOption, price: deliveryOptions[i].priceRelated.bruttoPrice } );
       }
     }
   }
@@ -124,7 +111,11 @@ class DeliveryOptions extends Component {
               </div>
               <div className="descriptionDiv col-md-10">
                 <h4>{deliveryOption.nameLong}</h4>
-                <span>{deliveryOption.description}</span>
+                {
+                  deliveryOption.storeLocations ?
+                  <span>{deliveryOption.storeLocations[0].name} - {deliveryOption.storeLocations[0].address}</span> :
+                  <span>{deliveryOption.description}</span>
+                }
               </div>
               <div className="priceDiv col-md-1">
                 <h4>Verð</h4>
@@ -154,16 +145,18 @@ class DeliveryOptions extends Component {
 
 function mapStateToProps(state) {
   return {
-    deliveryOptions: state.deliveryOptions.options,
     basket: state.transactionDetails.products,
     totalPrice: state.transactionDetails.productsPrice,
-    totalWeight: state.transactionDetails.productsWeight
+    totalWeight: state.transactionDetails.productsWeight,
+    deliveryOptions: state.deliveryOptions.options,
+    selectedOption: state.deliveryOptions.selectedOption
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    addDeliveryOptions: addDeliveryOptions
+    addDeliveryOptions: addDeliveryOptions,
+    updateSelectedOption: updateSelectedOption
   }, dispatch)
 }
 

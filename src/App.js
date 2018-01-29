@@ -5,7 +5,8 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addCustomerInfo, addBasketContents, addTotalProducsWeight, addTotalProductsPrice } from './actions/transactionActions.js';
-import store from './store.js';
+import reduxStore from './store.js';
+let { store } = reduxStore();
 
 class App extends Component {
   // Getting transaction information from WSCM api.

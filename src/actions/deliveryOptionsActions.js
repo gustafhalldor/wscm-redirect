@@ -4,3 +4,10 @@ export function addDeliveryOptions(deliveryOptions) {
     payload: deliveryOptions
   }
 }
+
+export function updateSelectedOption(option) {
+  return {
+    type: 'UPDATE_DELIVERY_OPTION',
+    payload: option
+  }
+}
