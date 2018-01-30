@@ -22,15 +22,12 @@ class App extends Component {
         return response.json();
       })
       .then(function(response) {
-        console.log("response er:");
-        console.log(response);
         if (response.recipient && response.products) {
           let totalWeight = 0, totalPrice = 0;
           for (var i = 0; i < response.products.length; i++) {
             totalWeight += response.products[i].weight;
             totalPrice += response.products[i].price;
           }
-          console.log(appObject.props);
           appObject.props.addBasketContents(response.products);
           appObject.props.addCustomerInfo(response.recipient);
           appObject.props.addTotalPrice(totalPrice);
@@ -45,7 +42,6 @@ class App extends Component {
   // TODO
   // Aggregating finalized information on recipient and contents of order
   handleCustomerInfoSubmit = (postcode) => {
-    console.log("er að höndla cust info submit í App component");
     let weight = 0;
     for (var i = 0; i < this.props.basket.length; i++) {
       weight += this.props.basket[i].weight;
@@ -56,7 +52,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className="container">
         <main className="flex-container-row">

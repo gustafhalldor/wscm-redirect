@@ -56,9 +56,6 @@ class CustInfo extends Component {
     const customer = this.props.customer;
     const inputErrors = this.state.inputErrors;
     const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
-console.log("í form validate");
-console.log(customer);
-console.log(errMessages);
     if (!customer.fullName) return true;
     if (!customer.address) return true;
     if (!customer.postcode) return true;

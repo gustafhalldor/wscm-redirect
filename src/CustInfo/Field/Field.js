@@ -11,7 +11,6 @@ class Field extends Component {
   };
 
   state = {
-    value: this.props.value,
     error: false
   };
 
@@ -30,6 +29,7 @@ class Field extends Component {
   };
 
   render() {
+    console.log(this.props.value);
     return (
       <div>
         <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span>*</span>}</label>
@@ -37,7 +37,7 @@ class Field extends Component {
         <input
           id={this.props.name}
           placeholder={this.props.placeholder}
-          value={this.state.value}
+          value={this.props.value}
           onChange={this.onChange}
         />
         <br />

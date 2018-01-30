@@ -7,14 +7,14 @@ export default function deliveryOptionsReducer(state={
 }, action) {
   switch (action.type) {
     case 'ADD_DELIVERY_OPTIONS': {
-      return {
+      state = {
         ...state,
         options: action.payload
       }
     }
     case 'UPDATE_DELIVERY_OPTION': {
       const updatedOption = Object.assign({ id: action.payload.id, price: action.payload.price })
-      return {
+      state = {
         ...state,
         selectedOption: updatedOption
       }
