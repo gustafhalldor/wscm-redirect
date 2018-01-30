@@ -5,12 +5,14 @@ export default function deliveryOptionsReducer(state={
     price: ""
   }
 }, action) {
+  // eslint-disable-next-line
   switch (action.type) {
     case 'ADD_DELIVERY_OPTIONS': {
       state = {
         ...state,
         options: action.payload
       }
+      break;
     }
     case 'UPDATE_DELIVERY_OPTION': {
       const updatedOption = Object.assign({ id: action.payload.id, price: action.payload.price })
@@ -18,6 +20,7 @@ export default function deliveryOptionsReducer(state={
         ...state,
         selectedOption: updatedOption
       }
+      break;
     }
   }
   return state;

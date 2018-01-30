@@ -4,7 +4,7 @@ import BasketContents from './BasketContents/BasketContents.js';
 import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addCustomerInfo, addBasketContents, addTotalProducsWeight, addTotalProductsPrice } from './actions/transactionActions.js';
+import { updateCustomerInfo, addBasketContents, addTotalProducsWeight, addTotalProductsPrice } from './actions/transactionActions.js';
 import reduxStore from './store.js';
 let { store } = reduxStore();
 
@@ -29,7 +29,7 @@ class App extends Component {
             totalPrice += response.products[i].price;
           }
           appObject.props.addBasketContents(response.products);
-          appObject.props.addCustomerInfo(response.recipient);
+          appObject.props.updateCustomerInfo(response.recipient);
           appObject.props.addTotalPrice(totalPrice);
           appObject.props.addTotalWeight(totalWeight);
         }
@@ -42,13 +42,11 @@ class App extends Component {
   // TODO
   // Aggregating finalized information on recipient and contents of order
   handleCustomerInfoSubmit = (postcode) => {
-    let weight = 0;
-    for (var i = 0; i < this.props.basket.length; i++) {
-      weight += this.props.basket[i].weight;
-    }
+    const weight = this.props.totalWeight;
     // TODO add the dimension params
-    const url = `${this.props.location.pathname}/${postcode}/${weight}`;
-    this.props.history.push(url);
+    const nextUrl = `${this.props.location.pathname}/${postcode}/${weight}`;
+
+    this.props.history.push(nextUrl);
   }
 
   render() {
@@ -75,7 +73,7 @@ function mapStateToProps(state) {
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     addBasketContents: addBasketContents,             //The prop addBasketContents is equal to the function addBasketContents
-    addCustomerInfo: addCustomerInfo,
+    updateCustomerInfo: updateCustomerInfo,
     addTotalWeight: addTotalProducsWeight,
     addTotalPrice: addTotalProductsPrice}, dispatch)
 }

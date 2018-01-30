@@ -5,9 +5,9 @@ export function addBasketContents(basketContents) {
   }
 }
 
-export function addCustomerInfo(custInfo) {
+export function updateCustomerInfo(custInfo) {
   return {
-    type: 'ADD_CUSTOMER_INFO',
+    type: 'UPDATE_CUSTOMER_INFO',
     payload: custInfo
   }
 }
