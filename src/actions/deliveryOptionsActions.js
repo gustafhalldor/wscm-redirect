@@ -11,3 +11,17 @@ export function updateSelectedOption(option) {
     payload: option
   }
 }
+
+export function addPostboxes(postboxes) {
+  return {
+    type: 'ADD_POSTBOXES',
+    payload: postboxes
+  }
+}
+
+export function updateSelectedPostbox(postbox) {
+  return {
+    type: 'UPDATE_SELECTED_POSTBOX',
+    payload: postbox
+  }
+}

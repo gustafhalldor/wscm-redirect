@@ -4,7 +4,7 @@ import BasketContents from './BasketContents/BasketContents.js';
 import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { updateCustomerInfo, addBasketContents, addTotalProducsWeight, addTotalProductsPrice } from './actions/transactionActions.js';
+import { addTransactionDetails } from './actions/transactionActions.js';
 import reduxStore from './store.js';
 let { store } = reduxStore();
 
@@ -22,16 +22,22 @@ class App extends Component {
         return response.json();
       })
       .then(function(response) {
+        console.log("Transaction info response:");
+        console.log(response);
         if (response.recipient && response.products) {
           let totalWeight = 0, totalPrice = 0;
           for (var i = 0; i < response.products.length; i++) {
             totalWeight += response.products[i].weight;
             totalPrice += response.products[i].price;
           }
-          appObject.props.addBasketContents(response.products);
-          appObject.props.updateCustomerInfo(response.recipient);
-          appObject.props.addTotalPrice(totalPrice);
-          appObject.props.addTotalWeight(totalWeight);
+          const transactionObject = {
+            apiKey: response.apiKey,
+            products: response.products,
+            productsWeight: totalWeight,
+            productsPrice: totalPrice,
+            customerInfo: response.recipient
+          }
+          appObject.props.addTransactionDetails(transactionObject);
         }
       })
       .catch(error => {
@@ -72,10 +78,8 @@ function mapStateToProps(state) {
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    addBasketContents: addBasketContents,             //The prop addBasketContents is equal to the function addBasketContents
-    updateCustomerInfo: updateCustomerInfo,
-    addTotalWeight: addTotalProducsWeight,
-    addTotalPrice: addTotalProductsPrice}, dispatch)
+    addTransactionDetails: addTransactionDetails,        //The prop addTransactionDetails is equal to the function addTransactionDetails, which is imported at the top
+    }, dispatch)
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);

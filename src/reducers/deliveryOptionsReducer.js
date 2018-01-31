@@ -1,9 +1,11 @@
 export default function deliveryOptionsReducer(state={
   options: [],
+  postboxes: [],
   selectedOption: {
     id: "",
     price: ""
-  }
+  },
+  selectedPostbox: ""
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -19,6 +21,20 @@ export default function deliveryOptionsReducer(state={
       state = {
         ...state,
         selectedOption: updatedOption
+      }
+      break;
+    }
+    case 'ADD_POSTBOXES': {
+      state = {
+        ...state,
+        postboxes: action.payload
+      }
+      break;
+    }
+    case 'UPDATE_SELECTED_POSTBOX': {
+      state = {
+        ...state,
+        selectedPostbox: action.payload
       }
       break;
     }

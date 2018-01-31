@@ -36,7 +36,6 @@ class CustInfo extends Component {
 
     fetch(request)
     .then(response => {
-      console.log(response);
       return response.status;
     })
     .then(response => {

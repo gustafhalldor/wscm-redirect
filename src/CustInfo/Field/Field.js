@@ -21,6 +21,7 @@ class Field extends Component {
   onChange = (evt) => {
     const name = this.props.name;
     const value = evt.target.value;
+    // If the Field has a validate property, we put the value of the input through the validate function in CustInfo
     const error = this.props.validate ? this.props.validate(value) : false;
 
     this.setState({ value, error });
@@ -29,7 +30,6 @@ class Field extends Component {
   };
 
   render() {
-    console.log(this.props.value);
     return (
       <div>
         <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span>*</span>}</label>
