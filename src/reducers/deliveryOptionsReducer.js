@@ -5,7 +5,9 @@ export default function deliveryOptionsReducer(state={
     id: "",
     price: ""
   },
-  selectedPostbox: ""
+  selectedPostbox: "",
+  countries: [],
+  selectedCountry: ""
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -35,6 +37,20 @@ export default function deliveryOptionsReducer(state={
       state = {
         ...state,
         selectedPostbox: action.payload
+      }
+      break;
+    }
+    case 'ADD_COUNTRIES': {
+      state = {
+        ...state,
+        countries: action.payload
+      }
+      break;
+    }
+    case 'UPDATE_SELECTED_COUNTRY': {
+      state = {
+        ...state,
+        selectedCountry: action.payload
       }
       break;
     }

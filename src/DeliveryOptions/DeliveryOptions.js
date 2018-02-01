@@ -10,11 +10,11 @@ class DeliveryOptions extends Component {
 
   componentDidMount = () => {
     const appObject = this;
-
+    const countryCode = this.props.match.params.countryCode;
     const postcode = this.props.match.params.postcode;
     const weight = this.props.match.params.weight;
 
-    let urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?postCode=${postcode}&weight=${weight}`;
+    let urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?countryCode=${countryCode}&postCode=${postcode}&weight=${weight}`;
 
     let myHeaders = new Headers();
     myHeaders.set('x-api-key', this.props.apiKey);

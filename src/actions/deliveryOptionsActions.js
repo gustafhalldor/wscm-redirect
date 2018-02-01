@@ -25,3 +25,17 @@ export function updateSelectedPostbox(postbox) {
     payload: postbox
   }
 }
+
+export function addCountries(countries) {
+  return {
+    type: 'ADD_COUNTRIES',
+    payload: countries
+  }
+}
+
+export function updateSelectedCountry(country) {
+  return {
+    type: 'UPDATE_SELECTED_COUNTRY',
+    payload: country
+  }
+}

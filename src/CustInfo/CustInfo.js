@@ -42,7 +42,7 @@ class CustInfo extends Component {
       // If recipient details were updated successfully, then we continue and move on to the next step
       // TODO do some more stuff here, maybe add another param ('successful') to the onSubmit function, which App.js then handles.
       if (response === 200) {
-        this.props.onSubmit(this.props.customer.postcode);
+        this.props.onSubmit();
       }
     })
     .catch(error => {
@@ -69,6 +69,13 @@ class CustInfo extends Component {
   };
 
   render() {
+    // Populate the country selection element.
+    let countries = this.props.countries.map((country, i) => {
+      return (
+        <option key={i} value={country.countryCode}>{country.nameShort}</option>
+      )
+    })
+
     return (
       <div className="leftSide col-md-8">
         <h1>Upplýsingar um viðtakanda</h1>
@@ -106,7 +113,11 @@ class CustInfo extends Component {
           <div>
             <label htmlFor="country">Land</label>
             <br />
-            <input id="country" value="Ísland" readOnly/>
+            <select name="countySelect" id="country" onChange={this.props.onCountryChange}>
+              <option value="">.....</option>
+              <option value="IS">Ísland</option>
+              {countries}
+            </select>
           </div>
           <br />
           <Field

@@ -34,7 +34,10 @@ class DeliveryOption extends Component {
                 this.props.deliveryOption.deliveryServiceId === 'DPO' &&
                 <div>
                   <span>Veldu póstbox: </span>
-                  <select name="selectPostbox" id="selectPostbox" onChange={this.props.updateSelectedPostbox}>{postboxes}</select>
+                  <select name="selectPostbox" id="selectPostbox" onChange={this.props.updateSelectedPostbox}>
+                    <option value="">.....</option>
+                    {postboxes}
+                  </select>
                 </div>
               }
             </div>

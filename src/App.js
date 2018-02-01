@@ -5,17 +5,12 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addTransactionDetails } from './actions/transactionActions.js';
-import reduxStore from './store.js';
-let { store } = reduxStore();
+import { addCountries, updateSelectedCountry } from './actions/deliveryOptionsActions.js';
 
 class App extends Component {
   // Getting transaction information from WSCM api.
   componentDidMount = () => {
     const appObject = this;
-
-    store.dispatch((dispatch) => {
-      dispatch({type: "FOOK U"})
-    })
 
     fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
       .then(response => {
@@ -39,28 +34,66 @@ class App extends Component {
           }
           appObject.props.addTransactionDetails(transactionObject);
         }
+
+        // Get all countries to populate the countries list, but ONLY if it hasn't already been loaded into state.
+        if (!appObject.props.countries.length) {
+          const url = 'http://test-ws.epost.is:8989/wscm/countries';
+          let myHeaders = new Headers();
+          myHeaders.set('x-api-key', response.apiKey);
+          const myInit = {
+                        'method': 'GET',
+                        'headers': myHeaders
+                      };
+          const request = new Request(url, myInit);
+          fetch(request)
+          .then(response => {
+            return response.json();
+          })
+          .then(response => {
+            console.log(response);
+            appObject.props.addCountries(response.countries);
+          })
+          .catch(error => {
+            console.log("Ekki tókst að ná í landalista.", error);
+          })
+        }
       })
       .catch(error => {
-        console.log('Tókst ekki að ná í transaction details', error);
+        console.log('Tókst ekki að ná í transaction details.', error);
       })
   }
 
-  // TODO
-  // Aggregating finalized information on recipient and contents of order
-  handleCustomerInfoSubmit = (postcode) => {
+  handleCustomerInfoSubmit = () => {
+    const countryCode = this.props.selectedCountry;
     const weight = this.props.totalWeight;
+    const postcode = this.props.customer.postcode;
+
     // TODO add the dimension params
-    const nextUrl = `${this.props.location.pathname}/${postcode}/${weight}`;
+    const nextUrl = `${this.props.location.pathname}/${countryCode}/${postcode}/${weight}`;
 
     this.props.history.push(nextUrl);
+  }
+
+  handleCountryChange = (evt) => {
+    this.props.updateSelectedCountry(evt.target.value);
   }
 
   render() {
     return (
       <div className="container">
         <main className="flex-container-row">
-          <CustInfo customer={this.props.customer} redirectkey= {this.props.match.params.redirectkey} onSubmit={this.handleCustomerInfoSubmit}/>
-          <BasketContents basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
+          <CustInfo
+            customer={this.props.customer}
+            redirectkey={this.props.match.params.redirectkey}
+            countries={this.props.countries}
+            onCountryChange={this.handleCountryChange}
+            onSubmit={this.handleCustomerInfoSubmit}
+          />
+          <BasketContents
+            basket={this.props.basket}
+            totalPrice={this.props.totalPrice}
+            totalWeight={this.props.totalWeight}
+          />
         </main>
       </div>
     );
@@ -72,13 +105,17 @@ function mapStateToProps(state) {
     basket: state.transactionDetails.products,
     customer: state.transactionDetails.customerInfo,
     totalPrice: state.transactionDetails.productsPrice,
-    totalWeight: state.transactionDetails.productsWeight
+    totalWeight: state.transactionDetails.productsWeight,
+    countries: state.deliveryOptions.countries,
+    selectedCountry: state.deliveryOptions.selectedCountry
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     addTransactionDetails: addTransactionDetails,        //The prop addTransactionDetails is equal to the function addTransactionDetails, which is imported at the top
+    addCountries: addCountries,
+    updateSelectedCountry: updateSelectedCountry
     }, dispatch)
 }
 
