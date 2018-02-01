@@ -2,72 +2,22 @@ import React, { Component } from 'react';
 import './PaymentPage.css';
 import Cards from 'react-credit-cards';
 import { ToastContainer, toast } from 'react-toastify';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions.js';
 
 class PaymentPage extends Component {
-
-  state = {
-    basketContents: [],
-    basketPrice: 0,
-    deliveryPrice: 0,
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    focused: ""
-  }
-
-  componentDidMount = () => {
-    const appObject = this;
-    fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
-      .then(response => {
-        return response.json();
-      })
-      .then(function(response) {
-        console.log("response er:");
-        console.log(response);
-        if (response.recipient && response.products) {
-          let basketPrice = 0;
-          for (var i = 0; i < response.products.length; i++) {
-            basketPrice += response.products[i].price;
-          }
-          appObject.setState({
-            basketContents: response.products,
-            basketPrice,
-            deliveryPrice: response.price
-          })
-        }
-      })
-      .catch(error => {
-        console.log('Tókst ekki að ná í transaction details', error);
-      })
-  }
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
   }
 
   handleInputFocus = ({ target }) => {
-    this.setState({
-      focused: target.name
-    });
+    this.props.updateFocusedField(target.name);
   };
 
   handleInputChange = ({ target }) => {
-    if (target.name === 'number') {
-      this.setState({
-        number: target.value.replace(/ /g, '')
-      });
-    }
-    else if (target.name === 'expiry') {
-      this.setState({
-        expiry: target.value.replace(/ |\//g, '')
-      });
-    }
-    else {
-      this.setState({
-        [target.name]: target.value
-      });
-    }
+    this.props.updateCcDetails(target);
   };
 
   handleConfirmClick = () => {
@@ -77,7 +27,7 @@ class PaymentPage extends Component {
   }
 
   render() {
-    const { number, name, expiry, cvc, focused } = this.state;
+    const { number, name, expiry, cvc, focused } = this.props.ccDetails;
     return (
       <div className="container">
         <div className="paymentPageLeftSide">
@@ -85,9 +35,9 @@ class PaymentPage extends Component {
             <h3>Samantekt</h3>
           </div>
           <div className="flex-container-column costReview">
-            <span>Vörur: {this.state.basketPrice} kr.</span>
-            <span>Sendingarmáti: {this.state.deliveryPrice} kr.</span>
-            <span>Samtals: {this.state.basketPrice + this.state.deliveryPrice} kr.</span>
+            <span>Vörur: {this.props.basketPrice} kr.</span>
+            <span>Sendingarmáti: {this.props.selectedOption.price} kr.</span>
+            <span>Samtals: {this.props.basketPrice + this.props.selectedOption.price} kr.</span>
           </div>
           <h3>Greiðsluupplýsingar</h3>
           <div>
@@ -150,4 +100,19 @@ class PaymentPage extends Component {
   }
 }
 
-export default PaymentPage;
+function mapStateToProps(state) {
+  return {
+    selectedOption: state.deliveryOptions.selectedOption,
+    basketPrice: state.transactionDetails.productsPrice,
+    ccDetails: state.creditCard
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+    updateCcDetails: updateCcDetails,
+    updateFocusedField: updateFocusedField
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(PaymentPage);

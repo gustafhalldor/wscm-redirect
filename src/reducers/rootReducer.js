@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import transactionReducer from './transactionReducer.js';
 import deliveryOptionsReducer from './deliveryOptionsReducer.js';
+import creditCardReducer from './creditCardReducer.js';
 
 export default combineReducers({
   transactionDetails: transactionReducer,
-  deliveryOptions: deliveryOptionsReducer
+  deliveryOptions: deliveryOptionsReducer,
+  creditCard: creditCardReducer
 })
