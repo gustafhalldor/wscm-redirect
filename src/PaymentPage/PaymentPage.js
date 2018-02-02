@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import './PaymentPage.css';
 import Cards from 'react-credit-cards';
+import Payment from 'payment';
 import { ToastContainer, toast } from 'react-toastify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions.js';
 
 class PaymentPage extends Component {
+
+  componentDidMount() {
+      Payment.formatCardNumber(document.querySelector('[name="number"]'));
+      Payment.formatCardExpiry(document.querySelector('[name="expiry"]'));
+      Payment.formatCardCVC(document.querySelector('[name="cvc"]'));
+    }
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
