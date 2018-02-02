@@ -4,3 +4,10 @@ export function addTransactionDetails(object) {
     payload: object
   }
 }
+
+export function updateCustomerInfo(object) {
+  return {
+    type: 'UPDATE_CUSTOMER_INFO',
+    payload: object
+  }
+}

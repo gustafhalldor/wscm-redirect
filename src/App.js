@@ -32,7 +32,11 @@ class App extends Component {
             productsPrice: totalPrice,
             customerInfo: response.recipient
           }
-          appObject.props.addTransactionDetails(transactionObject);
+          // Only try to update with info from DB if there is nothing in any of the required fields. Otherwise use application state.
+          // TODO decide if this is a good idea or not, or find another solution :)
+          if (appObject.props.customer.fullName === '' || appObject.props.customer.address === '' || appObject.props.customer.postcode === '') {
+            appObject.props.addTransactionDetails(transactionObject);
+          }
         }
 
         // Get all countries to populate the countries list, but ONLY if it hasn't already been loaded into state.

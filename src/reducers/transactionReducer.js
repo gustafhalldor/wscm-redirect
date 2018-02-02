@@ -25,6 +25,15 @@ export default function transactionReducer(state={
       }
       break;
     }
+    case 'UPDATE_CUSTOMER_INFO': {
+      state = {
+        ...state,
+        customerInfo: {
+          ...state.customerInfo,
+          [action.payload.name]: action.payload.value
+        }
+      }
+    }
   }
   return state;
 }

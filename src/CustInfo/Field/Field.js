@@ -11,6 +11,7 @@ class Field extends Component {
   };
 
   state = {
+    value: this.props.value,
     error: false
   };
 

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Field from './Field/Field.js';
 import Validator from 'validator';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { addValidationError } from '../actions/validationActions.js';
+import { updateCustomerInfo } from '../actions/transactionActions.js';
 import './custInfo.css';
 
 class CustInfo extends Component {
@@ -10,12 +14,17 @@ class CustInfo extends Component {
 
   onInputChange = ({ name, value, error }) => {
     const customer = this.props.customer;
-    const inputErrors = this.state.inputErrors;
+    const inputErrors = this.props.inputErrors;
 
     customer[name] = value;
     inputErrors[name] = error;
 
-    this.setState({ customer, inputErrors });
+    // error is either false OR the error message itself.
+    if (error) {
+      this.props.addValidationError({ name, error });
+    }
+
+    this.props.updateCustomerInfo({ name, value });
   }
 
   onFormSubmit = (evt) => {
@@ -54,10 +63,10 @@ class CustInfo extends Component {
   validate = () => {
     const customer = this.props.customer;
     const inputErrors = this.state.inputErrors;
-    const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
     if (!customer.fullName) return true;
     if (!customer.address) return true;
     if (!customer.postcode) return true;
+    const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
     if (errMessages.length) {
       for (var i = 0; i < errMessages.length; i++) {
         if(errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
@@ -146,4 +155,17 @@ class CustInfo extends Component {
   }
 }
 
-export default CustInfo;
+function mapStateToProps(state) {
+  return {
+    inputErrors: state.customerInfoValidation.inputErrors
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addValidationError: addValidationError,
+    updateCustomerInfo: updateCustomerInfo
+    }, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(CustInfo);
