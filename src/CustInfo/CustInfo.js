@@ -130,8 +130,8 @@ class CustInfo extends Component {
           />
           <br />
           <Field
-          placeholder="5571234"
-          label="Sími"
+          placeholder="8671234"
+          label="Farsími"
           name="phone"
           value={this.props.customer.phone}
           onChange={this.onInputChange}
