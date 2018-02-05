@@ -8,23 +8,10 @@ import { updateCustomerInfo } from '../actions/transactionActions.js';
 import './custInfo.css';
 
 class CustInfo extends Component {
-  state = {
-    inputErrors: {}
-  }
 
-  onInputChange = ({ name, value, error }) => {
-    const customer = this.props.customer;
-    const inputErrors = this.props.inputErrors;
-
-    customer[name] = value;
-    inputErrors[name] = error;
-
-    // error is either false OR the error message itself.
-    if (error) {
-      this.props.addValidationError({ name, error });
-    }
-
-    this.props.updateCustomerInfo({ name, value });
+  onInputChange = ({ fieldName, value, error }) => {
+    this.props.addValidationError({ fieldName, error });  // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
+    this.props.updateCustomerInfo({ fieldName, value });
   }
 
   onFormSubmit = (evt) => {
@@ -62,15 +49,16 @@ class CustInfo extends Component {
 
   validate = () => {
     const customer = this.props.customer;
-    const inputErrors = this.state.inputErrors;
     if (!customer.fullName) return true;
     if (!customer.address) return true;
     if (!customer.postcode) return true;
     if (this.props.selectedCountry === "") return true;
+
+    const inputErrors = this.props.inputErrors;
     const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
     if (errMessages.length) {
       for (var i = 0; i < errMessages.length; i++) {
-        if(errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
+        if(errMessages[i] === false || errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
         return true;
       }
     }
@@ -96,6 +84,7 @@ class CustInfo extends Component {
           name="fullName"
           value={this.props.customer.fullName}
           onChange={this.onInputChange}
+          errorState={this.props.inputErrors.fullName}
           required={true}
           validate={(val) => (val ? false : 'Vantar nafn')}
           />
@@ -106,6 +95,7 @@ class CustInfo extends Component {
           name="address"
           value={this.props.customer.address}
           onChange={this.onInputChange}
+          errorState={this.props.inputErrors.address}
           required={true}
           validate={(val) => (val ? false : 'Vantar heimilisfang')}
           />
@@ -116,6 +106,7 @@ class CustInfo extends Component {
           name="postcode"
           value={this.props.customer.postcode}
           onChange={this.onInputChange}
+          errorState={this.props.inputErrors.postcode}
           required={true}
           validate={(val) => ((Validator.isNumeric(val) && val.length === 3 ) ? false : 'Póstnúmer eru 3 tölustafir')}
           />
@@ -124,7 +115,7 @@ class CustInfo extends Component {
             <label htmlFor="country">Land</label>
             <br />
             <select name="countySelect" id="country" onChange={this.props.onCountryChange} value={this.props.selectedCountry}>
-              <option value="">.....</option>
+              <option value="">Veldu land</option>
               <option value="IS">Ísland</option>
               {countries}
             </select>
@@ -136,6 +127,7 @@ class CustInfo extends Component {
           name="email"
           value={this.props.customer.email}
           onChange={this.onInputChange}
+          errorState={this.props.inputErrors.email}
           validate={(val) => (Validator.isEmail(val) ? false : 'Invalid Email')}
           />
           <br />
@@ -145,6 +137,7 @@ class CustInfo extends Component {
           name="phone"
           value={this.props.customer.phone}
           onChange={this.onInputChange}
+          errorState={this.props.inputErrors.phone}
           validate={(val) => ((Validator.isNumeric(val) && val.length < 8) ? false : 'Símanúmer eru 7 tölustafir')}
           />
           <span>* required</span>

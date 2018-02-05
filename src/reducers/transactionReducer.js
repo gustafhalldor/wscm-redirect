@@ -30,7 +30,7 @@ export default function transactionReducer(state={
         ...state,
         customerInfo: {
           ...state.customerInfo,
-          [action.payload.name]: action.payload.value
+          [action.payload.fieldName]: action.payload.value
         }
       }
     }

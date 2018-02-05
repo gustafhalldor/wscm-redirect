@@ -1,33 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class Field extends Component {
-  static propTypes = {
-    placeholder: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    // validate: PropTypes.func,
-    onChange: PropTypes.func.isRequired
-  };
-
-  state = {
-    value: this.props.value,
-    error: false
-  };
-
-  componentWillReceiveProps(update) {
-    this.setState({ value: update.value });
-  }
 
   onChange = (evt) => {
-    const name = this.props.name;
+    const fieldName = this.props.name;
     const value = evt.target.value;
-    // If the Field has a validate property, we put the value of the input through the validate function in CustInfo
+    // If the Field has a validate property, we put the value of the input through the Validator module
     const error = this.props.validate ? this.props.validate(value) : false;
 
-    this.setState({ value, error });
-
-    this.props.onChange({ name, value, error });
+    this.props.onChange({ fieldName, value, error });
   };
 
   render() {
@@ -42,7 +23,7 @@ class Field extends Component {
           onChange={this.onChange}
         />
         <br />
-        <span style={{ color: 'red' }}>{ this.state.error }</span>
+        <span style={{ color: 'red' }}>{ this.props.errorState }</span>
       </div>
     );
   }
