@@ -129,7 +129,11 @@ class DeliveryOptions extends Component {
       )
     }
     return (
-      <div className="container"></div>
+      <div className="container">
+        <h2>
+          Engar afhendingarleiðir fundust :(
+        </h2>
+      </div>
     )
   }
 }

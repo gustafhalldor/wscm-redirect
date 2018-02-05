@@ -66,6 +66,7 @@ class CustInfo extends Component {
     if (!customer.fullName) return true;
     if (!customer.address) return true;
     if (!customer.postcode) return true;
+    if (this.props.selectedCountry === "") return true;
     const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
     if (errMessages.length) {
       for (var i = 0; i < errMessages.length; i++) {
@@ -122,7 +123,7 @@ class CustInfo extends Component {
           <div>
             <label htmlFor="country">Land</label>
             <br />
-            <select name="countySelect" id="country" onChange={this.props.onCountryChange}>
+            <select name="countySelect" id="country" onChange={this.props.onCountryChange} value={this.props.selectedCountry}>
               <option value="">.....</option>
               <option value="IS">Ísland</option>
               {countries}
@@ -157,7 +158,8 @@ class CustInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    inputErrors: state.customerInfoValidation.inputErrors
+    inputErrors: state.customerInfoValidation.inputErrors,
+    selectedCountry : state.deliveryOptions.selectedCountry
   }
 }
 
