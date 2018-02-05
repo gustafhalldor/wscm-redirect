@@ -3,7 +3,7 @@ import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents.js';
 import {connect} from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addDeliveryOptions, updateSelectedOption, addPostboxes, updateSelectedPostbox } from '../actions/deliveryOptionsActions.js';
+import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox } from '../actions/deliveryOptionsActions.js';
 import DeliveryOption from './DeliveryOption/DeliveryOption.js';
 
 class DeliveryOptions extends Component {
@@ -60,6 +60,17 @@ class DeliveryOptions extends Component {
   onFormSubmit = (evt) => {
     evt.preventDefault();
 
+    // If the selected delivery option is 'Pakki Póstbox' but there is no postbox selected.
+    if (this.props.selectedOption.id === 'DPO' && this.props.selectedPostbox === '') {
+      this.props.addDeliveryOptionsError('Veldu póstbox.')
+      return;
+    }
+    // If there is no delivery option selected.
+    if (this.props.selectedOption.id === '') {
+      this.props.addDeliveryOptionsError('Þú verður að velja afhendingarmáta.')
+      return;
+    }
+
     let url = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}/updateShippingOption`;
 
     let myHeaders = new Headers();
@@ -85,8 +96,6 @@ class DeliveryOptions extends Component {
         this.props.history.push(location);
       }
     })
-
-
   }
 
   handleRadioButtons = (evt) => {
@@ -95,12 +104,17 @@ class DeliveryOptions extends Component {
     for (var i = 0; i < deliveryOptions.length; i++) {
       if (selectedOption === deliveryOptions[i].deliveryServiceId) {
         this.props.updateSelectedOption( { id: selectedOption, price: deliveryOptions[i].priceRelated.bruttoPrice } );
+        this.props.addDeliveryOptionsError( '' );
       }
     }
   }
 
   handleUpdateOfSelectedPostbox = (evt) => {
     this.props.updateSelectedPostbox(evt.target.value);
+  }
+
+  onBackButtonClick = () => {
+    this.props.history.push(`/${this.props.match.params.redirectkey}`);
   }
 
   render() {
@@ -122,7 +136,15 @@ class DeliveryOptions extends Component {
           <form className="deliveryOptionsForm col-md-8"  onSubmit={this.onFormSubmit}>
             {options}
           {/*TODO búa til Til baka hnapp*/}
-            <button type="submit" className="deliveryOptionsButton btn">Staðfesta og fara á greiðslusíðu</button>
+          {
+            this.props.deliveryOptionsError !== '' ?
+            <span className="deliveryOptionsErrorMessage">{this.props.deliveryOptionsError}</span> :
+            <span></span>
+          }
+            <div className="flex-container-row deliveryOptionsButtons">
+              <button className="btn deliveryOptionsBackButton" onClick={this.onBackButtonClick}>Til baka</button>
+              <button type="submit" className="btn deliveryOptionsSubmitButton">Staðfesta og fara á greiðslusíðu</button>
+            </div>
           </form>
           <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
         </div>
@@ -146,7 +168,9 @@ function mapStateToProps(state) {
     totalWeight: state.transactionDetails.productsWeight,
     deliveryOptions: state.deliveryOptions.options,
     selectedOption: state.deliveryOptions.selectedOption,
-    postboxes: state.deliveryOptions.postboxes
+    postboxes: state.deliveryOptions.postboxes,
+    selectedPostbox: state.deliveryOptions.selectedPostbox,
+    deliveryOptionsError: state.deliveryOptions.deliveryOptionsError
   }
 }
 
@@ -155,7 +179,8 @@ function matchDispatchToProps(dispatch) {
     addDeliveryOptions: addDeliveryOptions,
     updateSelectedOption: updateSelectedOption,
     addPostboxes: addPostboxes,
-    updateSelectedPostbox: updateSelectedPostbox
+    updateSelectedPostbox: updateSelectedPostbox,
+    addDeliveryOptionsError: addDeliveryOptionsError
   }, dispatch)
 }
 

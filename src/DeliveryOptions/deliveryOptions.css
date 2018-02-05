@@ -14,6 +14,10 @@
 .justify-center {
   justify-content: center; }
 
+.deliveryOptionsErrorMessage {
+  align-self: center;
+  color: red; }
+
 .label80percent {
   width: 80%; }
 
@@ -81,6 +85,7 @@ input[type="radio"]:checked + .panel {
 .wscm-radio-panel select {
   margin-top: 10px; }
 
-.deliveryOptionsButton {
+.deliveryOptionsButtons {
+  flex-wrap: wrap;
   white-space: normal;
-  align-self: center; }
+  justify-content: space-evenly; }

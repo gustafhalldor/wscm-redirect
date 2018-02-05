@@ -17,6 +17,11 @@
   justify-content: center;
 }
 
+.deliveryOptionsErrorMessage {
+  align-self: center;
+  color: red;
+}
+
 .label80percent {
   width: 80%;
 }
@@ -94,7 +99,8 @@ input[type="radio"]:checked + .panel{
     margin-top: 10px;
   }
 
-  .deliveryOptionsButton {
-    white-space: normal;
-    align-self: center;
-  }
+.deliveryOptionsButtons {
+  flex-wrap: wrap;
+  white-space: normal;
+  justify-content: space-evenly;
+}

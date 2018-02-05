@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addValidationError } from '../actions/validationActions.js';
 import { updateCustomerInfo } from '../actions/transactionActions.js';
+import { updateSelectedCountry } from '../actions/deliveryOptionsActions.js';
 import './custInfo.css';
 
 class CustInfo extends Component {
@@ -12,6 +13,16 @@ class CustInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {
     this.props.addValidationError({ fieldName, error });  // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
     this.props.updateCustomerInfo({ fieldName, value });
+  }
+
+  onCountryChange = (evt) => {
+    const fieldName = evt.target.name;
+    const value = evt.target.value;
+    const error = value ? false : 'Veldu land';
+
+
+    this.onInputChange({ fieldName, value, error });
+    this.props.updateSelectedCountry(evt.target.value);
   }
 
   onFormSubmit = (evt) => {
@@ -114,11 +125,13 @@ class CustInfo extends Component {
           <div>
             <label htmlFor="country">Land</label>
             <br />
-            <select name="countySelect" id="country" onChange={this.props.onCountryChange} value={this.props.selectedCountry}>
+            <select name="countryCode" id="country" onChange={this.onCountryChange} value={this.props.selectedCountry}>
               <option value="">Veldu land</option>
               <option value="IS">Ísland</option>
               {countries}
             </select>
+            <br />
+            <span style={{ color: 'red' }}>{ this.props.inputErrors.countryCode }</span>
           </div>
           <br />
           <Field
@@ -159,7 +172,8 @@ function mapStateToProps(state) {
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     addValidationError: addValidationError,
-    updateCustomerInfo: updateCustomerInfo
+    updateCustomerInfo: updateCustomerInfo,
+    updateSelectedCountry: updateSelectedCountry
     }, dispatch)
 }
 

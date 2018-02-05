@@ -39,3 +39,10 @@ export function updateSelectedCountry(country) {
     payload: country
   }
 }
+
+export function addDeliveryOptionsError(error) {
+  return {
+    type: 'ADD_DELIVERY_OPTIONS_ERROR',
+    payload: error
+  }
+}

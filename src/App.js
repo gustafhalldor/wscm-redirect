@@ -5,7 +5,7 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addTransactionDetails } from './actions/transactionActions.js';
-import { addCountries, updateSelectedCountry } from './actions/deliveryOptionsActions.js';
+import { addCountries } from './actions/deliveryOptionsActions.js';
 
 class App extends Component {
   // Getting transaction information from WSCM api.
@@ -78,10 +78,6 @@ class App extends Component {
     this.props.history.push(nextUrl);
   }
 
-  handleCountryChange = (evt) => {
-    this.props.updateSelectedCountry(evt.target.value);
-  }
-
   render() {
     return (
       <div className="container">
@@ -90,7 +86,6 @@ class App extends Component {
             customer={this.props.customer}
             redirectkey={this.props.match.params.redirectkey}
             countries={this.props.countries}
-            onCountryChange={this.handleCountryChange}
             onSubmit={this.handleCustomerInfoSubmit}
           />
           <BasketContents
@@ -118,8 +113,7 @@ function mapStateToProps(state) {
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     addTransactionDetails: addTransactionDetails,        //The prop addTransactionDetails is equal to the function addTransactionDetails, which is imported at the top
-    addCountries: addCountries,
-    updateSelectedCountry: updateSelectedCountry
+    addCountries: addCountries
     }, dispatch)
 }
 
