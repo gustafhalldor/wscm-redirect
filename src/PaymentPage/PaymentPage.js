@@ -28,24 +28,58 @@ class PaymentPage extends Component {
   };
 
   handleConfirmClick = () => {
-    // TODO ná í upplýsingar um sendandann út frá API lyklinum
-    // TODO búa svo til sendinguna eftir að greiðslan fer í gegn
+    // TODO Processa kredit kort og svo þegar það hefur tekist þá búa til sendingu, eins og hér fyrir neðan.
+    // let url = `http://localhost:8989/shipments/create`;
+    //
+    // let myHeaders = new Headers();
+    // myHeaders.set('x-api-key', this.props.apiKey);
+    // myHeaders.set('Content-Type', 'application/json');
+    //
+    // let myInit = {
+    //   'method': 'POST',
+    //   'body': JSON.stringify(''),
+    //   'headers': myHeaders
+    // }
+    //
+    // const request = new Request(url, myInit);
+    //
+    // fetch(request)
+    // .then(response => {
+    //   return response.status;
+    // })
+    // .then(response => {
+    //   console.log(response);
+    //   if (response === 200) {
+    //     console.log("Tókst að búa til sendingu!!");
+    //   }
+    // })
+    // .catch(error => {
+    //   console.log("Tókst ekki að búa til sendingu.", error);
+    // })
     toast("Greiðsla tókst og sending hefur verið búin til !", {type: "success"});
   }
 
   render() {
     const { number, name, expiry, cvc, focused } = this.props.ccDetails;
     return (
-      <div className="container">
+      <div className="paymentPageContainer">
         <div className="paymentPageLeftSide">
-          <div>
-            <h3>Samantekt</h3>
-          </div>
           <div className="flex-container-column costReview">
+            <h3>Kostnaður:</h3>
             <span>Vörur: {this.props.basketPrice} kr.</span>
             <span>Sendingarmáti: {this.props.selectedOption.price} kr.</span>
             <span>Samtals: {this.props.basketPrice + this.props.selectedOption.price} kr.</span>
           </div>
+          <div className="flex-container-column recipientReview">
+            <h3>Berist til:</h3>
+            <span>{this.props.customer.fullName}</span>
+            <span>{this.props.customer.address}</span>
+            <span>{this.props.customer.postcode}</span>
+            <span>{this.props.customer.countryCode}</span>
+          </div>
+        </div>
+
+        <div className="paymentPageRightSide">
           <h3>Greiðsluupplýsingar</h3>
           <div>
           <Cards
@@ -96,11 +130,8 @@ class PaymentPage extends Component {
               </div>
             </form>
           </div>
-          <button className="primary" onClick={this.handleConfirmClick}>Borga</button>
+          <button className="primary" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
           <ToastContainer />
-        </div>
-        <div className="paymentPageRightSide col-md-4">
-
         </div>
       </div>
     )
@@ -111,7 +142,9 @@ function mapStateToProps(state) {
   return {
     selectedOption: state.deliveryOptions.selectedOption,
     basketPrice: state.transactionDetails.productsPrice,
-    ccDetails: state.creditCard
+    ccDetails: state.creditCard,
+    apiKey: state.transactionDetails.apiKey,
+    customer: state.transactionDetails.customerInfo
   }
 }
 

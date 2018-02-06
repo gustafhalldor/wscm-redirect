@@ -1,4 +1,18 @@
+.paymentPageContainer {
+  width: 70%;
+  margin: 0 auto;
+  padding: 1em 0 0 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around; }
+
 .paymentPageLeftSide {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap; }
+
+.paymentPageRightSide {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -27,5 +41,9 @@
   flex-basis: 0%; }
 
 .costReview {
+  font-size: 1.5em;
+  margin-bottom: 1em; }
+
+.recipientReview {
   font-size: 1.5em;
   margin-bottom: 1em; }
