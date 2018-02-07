@@ -29,15 +29,27 @@ class PaymentPage extends Component {
 
   handleConfirmClick = () => {
     // TODO Processa kredit kort og svo þegar það hefur tekist þá búa til sendingu, eins og hér fyrir neðan.
-    // let url = `http://localhost:8989/shipments/create`;
+    // let url = `http://localhost:8989/wscm/shipments/create`;
     //
     // let myHeaders = new Headers();
     // myHeaders.set('x-api-key', this.props.apiKey);
     // myHeaders.set('Content-Type', 'application/json');
     //
+    // const shipment = {
+    //   recipient: {
+    //     name: this.props.customer.fullName,
+    //     addressLine1: this.props.customer.address,
+    //     postcode: this.props.customer.postcode,
+    //     countryCode: this.props.customer.countryCode
+    //   },
+    //   options: {
+    //     deliveryServiceId: this.props.selectedOption.id
+    //   }
+    // };
+    //
     // let myInit = {
     //   'method': 'POST',
-    //   'body': JSON.stringify(''),
+    //   'body': JSON.stringify(shipment),
     //   'headers': myHeaders
     // }
     //
@@ -48,15 +60,13 @@ class PaymentPage extends Component {
     //   return response.status;
     // })
     // .then(response => {
-    //   console.log(response);
-    //   if (response === 200) {
-    //     console.log("Tókst að búa til sendingu!!");
+    //   if (response === 201) {
+    //     toast("Sending hefur verið búin til !", {type: "success"});
     //   }
     // })
     // .catch(error => {
     //   console.log("Tókst ekki að búa til sendingu.", error);
     // })
-    toast("Greiðsla tókst og sending hefur verið búin til !", {type: "success"});
   }
 
   render() {

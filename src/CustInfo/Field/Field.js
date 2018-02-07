@@ -14,7 +14,7 @@ class Field extends Component {
   render() {
     return (
       <div>
-        <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span>*</span>}</label>
+        <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span className="redAsterix"> *</span>}</label>
         <br/>
         <input
           id={this.props.name}

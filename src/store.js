@@ -10,6 +10,7 @@ const middleware = applyMiddleware(thunk, createLogger());
 const persistConfig = {
   key: 'root',
   storage: storage,
+  blacklist: ['creditCard'] // creditCard info will not be persisted
 }
 
 const persistedReducer = persistReducer(persistConfig, allReducers)

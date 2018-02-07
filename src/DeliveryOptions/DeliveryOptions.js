@@ -120,22 +120,24 @@ class DeliveryOptions extends Component {
   render() {
     if (this.props.deliveryOptions.length) {
       const options = this.props.deliveryOptions.map((deliveryOption, i) => {
+        let isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? "checked" : "";
         if (deliveryOption.deliveryServiceId === 'DPO') {
           return <DeliveryOption key={i} id={i}
                     deliveryOption={deliveryOption}
                     postboxes={this.props.postboxes}
                     onChange={this.handleRadioButtons}
                     updateSelectedPostbox={this.handleUpdateOfSelectedPostbox}
+                    selectedPostbox={this.props.selectedPostbox}
+                    isChecked={isChecked}
                   />
         }
-        return <DeliveryOption key={i} id={i} deliveryOption={deliveryOption} onChange={this.handleRadioButtons}/>
+        return <DeliveryOption key={i} id={i} deliveryOption={deliveryOption} onChange={this.handleRadioButtons} isChecked={isChecked}/>
       });
 
       return (
         <div className="deliveryOptionsContainer">
           <form className="deliveryOptionsForm col-md-8"  onSubmit={this.onFormSubmit}>
             {options}
-          {/*TODO búa til Til baka hnapp*/}
           {
             this.props.deliveryOptionsError !== '' ?
             <span className="deliveryOptionsErrorMessage">{this.props.deliveryOptionsError}</span> :

@@ -124,6 +124,7 @@ class CustInfo extends Component {
           <br />
           <div>
             <label htmlFor="country">Land</label>
+            <span className="redAsterix"> *</span>
             <br />
             <select name="countryCode" id="country" onChange={this.onCountryChange} value={this.props.selectedCountry}>
               <option value="">Veldu land</option>
@@ -153,7 +154,7 @@ class CustInfo extends Component {
           errorState={this.props.inputErrors.phone}
           validate={(val) => ((Validator.isNumeric(val) && val.length < 8) ? false : 'Símanúmer eru 7 tölustafir')}
           />
-          <span>* required</span>
+          <span className="redAsterix">*</span><span>Nauðsynlegt að fylla út</span>
           <br />
           <input type='submit' value="Áfram á næsta skref" disabled={this.validate()}/>
         </form>

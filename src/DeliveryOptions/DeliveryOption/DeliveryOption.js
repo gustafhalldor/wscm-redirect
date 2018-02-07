@@ -14,7 +14,7 @@ class DeliveryOption extends Component {
 
     return (
       <div className="flex-container-row justify-center">
-        <input type="radio" id={this.props.id} value={this.props.deliveryOption.deliveryServiceId} name="option" onChange={this.props.onChange} className="input-hidden"/>
+        <input type="radio" id={this.props.id} value={this.props.deliveryOption.deliveryServiceId} name="option" onChange={this.props.onChange} className="input-hidden" checked={this.props.isChecked}/>
         <label htmlFor={this.props.id} className="wscm-radio-panel panel panel-default label80percent">
           <div className="panel-body">
             <div className="radioDiv flex-container-column col-md-1">
@@ -34,7 +34,7 @@ class DeliveryOption extends Component {
                 this.props.deliveryOption.deliveryServiceId === 'DPO' &&
                 <div>
                   <span>Veldu póstbox: </span>
-                  <select name="selectPostbox" id="selectPostbox" onChange={this.props.updateSelectedPostbox}>
+                  <select name="selectPostbox" id="selectPostbox" onChange={this.props.updateSelectedPostbox} value={this.props.selectedPostbox}>
                     <option value="">.....</option>
                     {postboxes}
                   </select>
