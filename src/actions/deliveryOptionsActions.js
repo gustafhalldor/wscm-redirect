@@ -46,3 +46,10 @@ export function addDeliveryOptionsError(error) {
     payload: error
   }
 }
+
+export function changeFetchingDeliveryOptionsStatus(status) {
+  return {
+    type: 'CHANGE_FETCHING_DELIVERY_OPTIONS_STATUS',
+    payload: status
+  }
+}

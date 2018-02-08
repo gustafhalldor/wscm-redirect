@@ -3,7 +3,7 @@ import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents.js';
 import {connect} from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox } from '../actions/deliveryOptionsActions.js';
+import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions.js';
 import DeliveryOption from './DeliveryOption/DeliveryOption.js';
 
 class DeliveryOptions extends Component {
@@ -24,6 +24,8 @@ class DeliveryOptions extends Component {
                   'headers': myHeaders
                 };
     const request = new Request(urlForDeliveryServicesAndPrices, myInit);
+
+    this.props.changeFetchingDeliveryOptionsStatus(true);
 
     fetch(request)
     .then(response => {
@@ -50,6 +52,7 @@ class DeliveryOptions extends Component {
         }
       }
       appObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
+      this.props.changeFetchingDeliveryOptionsStatus(false);
     })
     .catch(error => {
       console.log("Tókst ekki að ná í afhendingarleiðir og verð", error);
@@ -118,6 +121,23 @@ class DeliveryOptions extends Component {
   }
 
   render() {
+    if (this.props.fetchingDeliveryOptions) {
+      return (
+        <div className="deliveryOptionsContainer">
+          <div className="deliveryOptionsLeftSide col-md-8">
+            <div>
+              <h2>
+                Er að sækja afhendingarleiðir...
+              </h2>
+            </div>
+            <div>
+              <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
+            </div>
+          </div>
+          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
+        </div>
+      )
+    }
     if (this.props.deliveryOptions.length) {
       const options = this.props.deliveryOptions.map((deliveryOption, i) => {
         let isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? "checked" : "";
@@ -153,10 +173,18 @@ class DeliveryOptions extends Component {
       )
     }
     return (
-      <div className="container">
-        <h2>
-          Engar afhendingarleiðir fundust :(
-        </h2>
+      <div className="deliveryOptionsContainer">
+        <div className="deliveryOptionsLeftSide col-md-8">
+          <div>
+            <h2>
+              Engar afhendingarleiðir fundust...
+            </h2>
+          </div>
+          <div>
+            <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
+          </div>
+        </div>
+        <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
       </div>
     )
   }
@@ -172,7 +200,8 @@ function mapStateToProps(state) {
     selectedOption: state.deliveryOptions.selectedOption,
     postboxes: state.deliveryOptions.postboxes,
     selectedPostbox: state.deliveryOptions.selectedPostbox,
-    deliveryOptionsError: state.deliveryOptions.deliveryOptionsError
+    deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
+    fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions
   }
 }
 
@@ -182,7 +211,8 @@ function matchDispatchToProps(dispatch) {
     updateSelectedOption: updateSelectedOption,
     addPostboxes: addPostboxes,
     updateSelectedPostbox: updateSelectedPostbox,
-    addDeliveryOptionsError: addDeliveryOptionsError
+    addDeliveryOptionsError: addDeliveryOptionsError,
+    changeFetchingDeliveryOptionsStatus: changeFetchingDeliveryOptionsStatus
   }, dispatch)
 }
 

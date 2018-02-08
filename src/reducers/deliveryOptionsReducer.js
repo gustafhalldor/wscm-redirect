@@ -8,7 +8,8 @@ export default function deliveryOptionsReducer(state={
   selectedPostbox: "",
   countries: [],
   selectedCountry: "",
-  deliveryOptionsError: ""
+  deliveryOptionsError: "",
+  fetchingDeliveryOptions: false
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -61,6 +62,12 @@ export default function deliveryOptionsReducer(state={
         deliveryOptionsError: action.payload
       }
       break;
+    }
+    case 'CHANGE_FETCHING_DELIVERY_OPTIONS_STATUS': {
+      state = {
+        ...state,
+        fetchingDeliveryOptions: action.payload
+      }
     }
   }
   return state;

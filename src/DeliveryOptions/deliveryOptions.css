@@ -11,6 +11,12 @@
   display: flex;
   flex-direction: column; }
 
+.deliveryOptionsLeftSide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; }
+
 .justify-center {
   justify-content: center; }
 
