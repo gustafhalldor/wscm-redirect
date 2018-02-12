@@ -18,3 +18,10 @@ export function changeNoDataStatus(status) {
     payload: status
   }
 }
+
+export function changeCreatedStatus(status) {
+  return {
+    type: 'CHANGE_CREATED_STATUS',
+    payload: status
+  }
+}

@@ -11,7 +11,8 @@ export default function transactionReducer(state={
     email: "",
     phone: ""
   },
-  noData: false
+  noData: false,
+  created: false
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -44,7 +45,6 @@ export default function transactionReducer(state={
       break;
     }
     case 'RESET_STATE': {
-      console.log("Resetting state in transactionReducer");
       state = {
         apiKey: "",
         products: [],
@@ -60,6 +60,13 @@ export default function transactionReducer(state={
         },
         noData: false
       };
+      break;
+    }
+    case 'CHANGE_CREATED_STATUS': {
+      state = {
+        ...state,
+        created: action.payload
+      }
     }
   }
   return state;

@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions.js';
+import { changeCreatedStatus } from '../actions/transactionActions.js';
 
 class PaymentPage extends Component {
 
@@ -28,45 +29,76 @@ class PaymentPage extends Component {
   };
 
   handleConfirmClick = () => {
-    // TODO Processa kredit kort og svo þegar það hefur tekist þá búa til sendingu, eins og hér fyrir neðan.
-    // let url = `http://localhost:8989/wscm/shipments/create`;
-    //
-    // let myHeaders = new Headers();
-    // myHeaders.set('x-api-key', this.props.apiKey);
-    // myHeaders.set('Content-Type', 'application/json');
-    //
-    // const shipment = {
-    //   recipient: {
-    //     name: this.props.customer.fullName,
-    //     addressLine1: this.props.customer.address,
-    //     postcode: this.props.customer.postcode,
-    //     countryCode: this.props.customer.countryCode
-    //   },
-    //   options: {
-    //     deliveryServiceId: this.props.selectedOption.id
-    //   }
-    // };
-    //
-    // let myInit = {
-    //   'method': 'POST',
-    //   'body': JSON.stringify(shipment),
-    //   'headers': myHeaders
-    // }
-    //
-    // const request = new Request(url, myInit);
-    //
-    // fetch(request)
-    // .then(response => {
-    //   return response.status;
-    // })
-    // .then(response => {
-    //   if (response === 201) {
-    //     toast("Sending hefur verið búin til !", {type: "success"});
-    //   }
-    // })
-    // .catch(error => {
-    //   console.log("Tókst ekki að búa til sendingu.", error);
-    // })
+
+    if (this.props.created) {
+      toast("Sending hefur nú þegar verið búin til !", {type: "warning"});
+      return;
+    }
+
+    // TODO Processa kredit kort og svo þegar það hefur tekist ÞÁ búa til sendingu, eins og hér fyrir neðan.
+    let url = `http://localhost:8989/wscm/shipments/create`;
+
+    let myHeaders = new Headers();
+    myHeaders.set('x-api-key', this.props.apiKey);
+    myHeaders.set('Content-Type', 'application/json');
+
+    const shipment = {
+      recipient: {
+        name: this.props.customer.fullName,
+        addressLine1: this.props.customer.address,
+        postcode: this.props.customer.postcode,
+        countryCode: this.props.customer.countryCode
+      },
+      options: {
+        deliveryServiceId: this.props.selectedOption.id
+      }
+    };
+
+    let myInit = {
+      'method': 'POST',
+      'body': JSON.stringify(shipment),
+      'headers': myHeaders
+    }
+
+    const request = new Request(url, myInit);
+
+    fetch(request)
+    .then(response => {
+      return response.status;
+    })
+    .then(response => {
+      if (response === 201) {
+        toast("Sending hefur verið búin til !", {type: "success"});
+
+        this.props.changeCreatedStatus(true);
+
+        // Flag shipment as 'CREATED'
+        let url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
+        let myHeaders2 = new Headers();
+        myHeaders2.set('Content-Type', 'application/json');
+        const status = true;
+
+        let myInit2 = {
+          'method': 'PUT',
+          'body': JSON.stringify(status),
+          'headers': myHeaders2
+        }
+
+        const request2 = new Request(url2, myInit2);
+
+        fetch(request2)
+        .then(response => {
+          console.log(response.status);
+          return response.status;
+        })
+        .then(response => {
+
+        })
+      }
+    })
+    .catch(error => {
+      console.log("Tókst ekki að búa til sendingu.", error);
+    })
   }
 
   render() {
@@ -154,14 +186,16 @@ function mapStateToProps(state) {
     basketPrice: state.transactionDetails.productsPrice,
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
-    customer: state.transactionDetails.customerInfo
+    customer: state.transactionDetails.customerInfo,
+    created: state.transactionDetails.created
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     updateCcDetails: updateCcDetails,
-    updateFocusedField: updateFocusedField
+    updateFocusedField: updateFocusedField,
+    changeCreatedStatus: changeCreatedStatus
   }, dispatch)
 }
 

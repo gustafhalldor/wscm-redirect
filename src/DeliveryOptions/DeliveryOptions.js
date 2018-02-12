@@ -9,6 +9,9 @@ import DeliveryOption from './DeliveryOption/DeliveryOption.js';
 class DeliveryOptions extends Component {
 
   componentDidMount = () => {
+    if (this.props.created) {
+      return;
+    }
     const appObject = this;
     const countryCode = this.props.match.params.countryCode;
     const postcode = this.props.match.params.postcode;
@@ -121,6 +124,16 @@ class DeliveryOptions extends Component {
   }
 
   render() {
+    if (this.props.created) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Sending hefur nú þegar verið búin til.</h2>
+          </main>
+        </div>
+      )
+    }
+
     if (this.props.fetchingDeliveryOptions) {
       return (
         <div className="deliveryOptionsContainer">
@@ -201,7 +214,8 @@ function mapStateToProps(state) {
     postboxes: state.deliveryOptions.postboxes,
     selectedPostbox: state.deliveryOptions.selectedPostbox,
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
-    fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions
+    fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
+    created: state.transactionDetails.created
   }
 }
 
