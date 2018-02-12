@@ -64,6 +64,7 @@ class CustInfo extends Component {
     if (!customer.address) return true;
     if (!customer.postcode) return true;
     if (this.props.selectedCountry === "") return true;
+    if (!this.props.products.length) return true;
 
     const inputErrors = this.props.inputErrors;
     const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
@@ -79,11 +80,14 @@ class CustInfo extends Component {
 
   render() {
     // Populate the country selection element.
-    let countries = this.props.countries.map((country, i) => {
-      return (
-        <option key={i} value={country.countryCode}>{country.nameShort}</option>
-      )
-    })
+    let countries = [];
+    if (this.props.countries) {
+      countries = this.props.countries.map((country, i) => {
+        return (
+          <option key={i} value={country.countryCode}>{country.nameShort}</option>
+        )
+      })
+    }
 
     return (
       <div className="leftSide col-md-8">
@@ -166,7 +170,8 @@ class CustInfo extends Component {
 function mapStateToProps(state) {
   return {
     inputErrors: state.customerInfoValidation.inputErrors,
-    selectedCountry : state.deliveryOptions.selectedCountry
+    selectedCountry : state.deliveryOptions.selectedCountry,
+    products: state.transactionDetails.products
   }
 }
 

@@ -11,3 +11,10 @@ export function updateCustomerInfo(object) {
     payload: object
   }
 }
+
+export function changeNoDataStatus(status) {
+  return {
+    type: 'CHANGE_NODATA_STATUS',
+    payload: status
+  }
+}

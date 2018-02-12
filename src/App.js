@@ -5,6 +5,7 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addTransactionDetails } from './actions/transactionActions.js';
+import { changeNoDataStatus } from './actions/transactionActions.js';
 import { addCountries } from './actions/deliveryOptionsActions.js';
 
 class App extends Component {
@@ -14,7 +15,16 @@ class App extends Component {
 
     fetch(`http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`)
       .then(response => {
-        return response.json();
+        // if status is 404 then there is nothing behind the redirect key and we shouldn't display anything
+        if (response.status === 404) {
+          localStorage.removeItem("persist:root");
+          this.props.dispatch({type: 'RESET_STATE'});
+          this.props.changeNoDataStatus(true);
+        }
+        else {
+          this.props.changeNoDataStatus(false);
+          return response.json();
+        }
       })
       .then(function(response) {
         console.log("Transaction info response:");
@@ -40,7 +50,8 @@ class App extends Component {
         }
 
         // Get all countries to populate the countries list, but ONLY if it hasn't already been loaded into state.
-        if (!appObject.props.countries.length) {
+        // TODO this doesn't work in firefox for some reason... wtf. Have to check this out later or just leave it be.
+        //if (!appObject.props.countries.length && response.apiKey !== '') {
           const url = 'http://test-ws.epost.is:8989/wscm/countries';
           let myHeaders = new Headers();
           myHeaders.set('x-api-key', response.apiKey);
@@ -60,7 +71,7 @@ class App extends Component {
           .catch(error => {
             console.log("Ekki tókst að ná í landalista.", error);
           })
-        }
+        //} // end If
       })
       .catch(error => {
         console.log('Tókst ekki að ná í transaction details.', error);
@@ -79,6 +90,15 @@ class App extends Component {
   }
 
   render() {
+    if (this.props.noDataStatus) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Engin gögn fundust til að birta</h2>
+          </main>
+        </div>
+      )
+    }
     return (
       <div className="container">
         <main className="flex-container-row">
@@ -106,14 +126,17 @@ function mapStateToProps(state) {
     totalPrice: state.transactionDetails.productsPrice,
     totalWeight: state.transactionDetails.productsWeight,
     countries: state.deliveryOptions.countries,
-    selectedCountry: state.deliveryOptions.selectedCountry
+    selectedCountry: state.deliveryOptions.selectedCountry,
+    noDataStatus: state.transactionDetails.noData
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
+    dispatch,
     addTransactionDetails: addTransactionDetails,        //The prop addTransactionDetails is equal to the function addTransactionDetails, which is imported at the top
-    addCountries: addCountries
+    addCountries: addCountries,
+    changeNoDataStatus: changeNoDataStatus
     }, dispatch)
 }
 

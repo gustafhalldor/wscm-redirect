@@ -10,7 +10,8 @@ export default function transactionReducer(state={
     countryCode: "",
     email: "",
     phone: ""
-  }
+  },
+  noData: false
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -33,6 +34,32 @@ export default function transactionReducer(state={
           [action.payload.fieldName]: action.payload.value
         }
       }
+      break;
+    }
+    case 'CHANGE_NODATA_STATUS': {
+      state = {
+        ...state,
+        noData: action.payload
+      }
+      break;
+    }
+    case 'RESET_STATE': {
+      console.log("Resetting state in transactionReducer");
+      state = {
+        apiKey: "",
+        products: [],
+        productsWeight: 0,
+        productsPrice: 0,
+        customerInfo: {
+          fullName: "",
+          address: "",
+          postcode: "",
+          countryCode: "",
+          email: "",
+          phone: ""
+        },
+        noData: false
+      };
     }
   }
   return state;
