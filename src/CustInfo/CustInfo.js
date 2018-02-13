@@ -63,7 +63,7 @@ class CustInfo extends Component {
     if (!customer.fullName) return true;
     if (!customer.address) return true;
     if (!customer.postcode) return true;
-    if (this.props.selectedCountry === "") return true;
+    if (this.props.selectedCountry === "" || this.props.selectedCountry === null) return true;
     if (!this.props.products.length) return true;
 
     const inputErrors = this.props.inputErrors;
@@ -170,7 +170,7 @@ class CustInfo extends Component {
 function mapStateToProps(state) {
   return {
     inputErrors: state.customerInfoValidation.inputErrors,
-    selectedCountry : state.deliveryOptions.selectedCountry,
+    //selectedCountry : state.deliveryOptions.selectedCountry,
     products: state.transactionDetails.products
   }
 }

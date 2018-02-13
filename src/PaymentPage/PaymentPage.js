@@ -47,7 +47,7 @@ class PaymentPage extends Component {
         name: this.props.customer.fullName,
         addressLine1: this.props.customer.address,
         postcode: this.props.customer.postcode,
-        countryCode: this.props.customer.countryCode
+        countryCode: this.props.selectedCountry
       },
       options: {
         deliveryServiceId: this.props.selectedOption.id
@@ -117,7 +117,7 @@ class PaymentPage extends Component {
             <span>{this.props.customer.fullName}</span>
             <span>{this.props.customer.address}</span>
             <span>{this.props.customer.postcode}</span>
-            <span>{this.props.customer.countryCode}</span>
+            <span>{this.props.selectedCountry}</span>
           </div>
         </div>
 
@@ -187,7 +187,8 @@ function mapStateToProps(state) {
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
     customer: state.transactionDetails.customerInfo,
-    created: state.transactionDetails.created
+    created: state.transactionDetails.created,
+    selectedCountry: state.deliveryOptions.selectedCountry
   }
 }
 

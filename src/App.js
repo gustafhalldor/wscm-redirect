@@ -38,7 +38,6 @@ class App extends Component {
         else {
           appObject.props.changeCreatedStatus(false);
 
-
           if (response.recipient && response.products) {
             let totalWeight = 0, totalPrice = 0;
             for (var i = 0; i < response.products.length; i++) {
@@ -127,6 +126,7 @@ class App extends Component {
             customer={this.props.customer}
             redirectkey={this.props.match.params.redirectkey}
             countries={this.props.countries}
+            selectedCountry={this.props.selectedCountry}
             onSubmit={this.handleCustomerInfoSubmit}
           />
           <BasketContents
