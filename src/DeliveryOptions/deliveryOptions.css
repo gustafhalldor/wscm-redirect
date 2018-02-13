@@ -3,7 +3,8 @@
   margin: 0 auto;
   padding: 1em 0 0 0;
   display: flex;
-  flex-direction: row; }
+  flex-direction: row;
+  flex-wrap: wrap; }
 
 .deliveryOptionsForm {
   margin: 0 auto;
