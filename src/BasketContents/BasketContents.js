@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './basketContents.css';
 
-class BasketContents extends Component {
-  render() {
+const BasketContents = (props) => {
+
     return (
       <div className="rightSide col-md-4">
         <h1>Innihald körfu</h1>
@@ -16,7 +16,7 @@ class BasketContents extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.basket.map((item, i) => {
+            {props.basket.map((item, i) => {
               return  <tr key={i}>
                         <td>{item.description}</td>
                         <td>{item.weight} kg</td>
@@ -27,14 +27,13 @@ class BasketContents extends Component {
           <tfoot>
             <tr>
               <td>Samtals:</td>
-              <td>{this.props.totalWeight} kg</td>
-              <td>{this.props.totalPrice} kr.</td>
+              <td>{props.totalWeight} kg</td>
+              <td>{props.totalPrice} kr.</td>
             </tr>
           </tfoot>
         </table>
       </div>
     );
-  }
 }
 
 export default BasketContents;
