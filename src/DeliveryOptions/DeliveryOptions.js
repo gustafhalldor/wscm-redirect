@@ -12,7 +12,7 @@ class DeliveryOptions extends Component {
     if (this.props.created) {
       return;
     }
-    const appObject = this;
+    const deliveryOptionsObject = this;
     const countryCode = this.props.match.params.countryCode;
     const postcode = this.props.match.params.postcode;
     const weight = this.props.match.params.weight;
@@ -46,7 +46,7 @@ class DeliveryOptions extends Component {
               return response.json();
             })
             .then(response => {
-              appObject.props.addPostboxes(response.postboxes);
+              deliveryOptionsObject.props.addPostboxes(response.postboxes);
             })
             .catch(error => {
               console.log("Ekki gekk að ná í póstbox", error);
@@ -54,7 +54,7 @@ class DeliveryOptions extends Component {
           }
         }
       }
-      appObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
+      deliveryOptionsObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
       this.props.changeFetchingDeliveryOptionsStatus(false);
     })
     .catch(error => {

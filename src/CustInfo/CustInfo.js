@@ -20,7 +20,6 @@ class CustInfo extends Component {
     const value = evt.target.value;
     const error = value ? false : 'Veldu land';
 
-
     this.onInputChange({ fieldName, value, error });
     this.props.updateSelectedCountry(evt.target.value);
   }

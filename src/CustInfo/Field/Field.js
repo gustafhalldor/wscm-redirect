@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Field extends Component {
+const Field = (props) => {
 
-  onChange = (evt) => {
-    const fieldName = this.props.name;
+  const onChange = (evt) => {
+    const fieldName = props.name;
     const value = evt.target.value;
     // If the Field has a validate property, we put the value of the input through the Validator module
-    const error = this.props.validate ? this.props.validate(value) : false;
+    const error = props.validate ? props.validate(value) : false;
 
-    this.props.onChange({ fieldName, value, error });
+    props.onChange({ fieldName, value, error });
   };
 
-  render() {
     return (
       <div>
-        <label htmlFor={this.props.name}>{this.props.label}{this.props.required && <span className="redAsterix"> *</span>}</label>
+        <label htmlFor={props.name}>{props.label}{props.required && <span className="redAsterix"> *</span>}</label>
         <br/>
         <input
-          id={this.props.name}
-          placeholder={this.props.placeholder}
-          value={this.props.value}
-          onChange={this.onChange}
+          id={props.name}
+          placeholder={props.placeholder}
+          value={props.value}
+          onChange={onChange}
         />
         <br />
-        <span style={{ color: 'red' }}>{ this.props.errorState }</span>
+        <span style={{ color: 'red' }}>{ props.errorState }</span>
       </div>
     );
-  }
 }
 
 export default Field;
