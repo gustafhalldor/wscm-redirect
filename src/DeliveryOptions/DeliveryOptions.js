@@ -13,9 +13,9 @@ class DeliveryOptions extends Component {
       return;
     }
     const deliveryOptionsObject = this;
-    const countryCode = this.props.match.params.countryCode;
-    const postcode = this.props.match.params.postcode;
-    const weight = this.props.match.params.weight;
+    const countryCode = this.props.selectedCountry;
+    const postcode = this.props.customer.postcode;
+    const weight = this.props.totalWeight;
 
     let urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?countryCode=${countryCode}&postCode=${postcode}&weight=${weight}`;
 
@@ -207,6 +207,7 @@ function mapStateToProps(state) {
   return {
     apiKey: state.transactionDetails.apiKey,
     basket: state.transactionDetails.products,
+    customer: state.transactionDetails.customerInfo,
     totalPrice: state.transactionDetails.productsPrice,
     totalWeight: state.transactionDetails.productsWeight,
     deliveryOptions: state.deliveryOptions.options,
@@ -215,6 +216,7 @@ function mapStateToProps(state) {
     selectedPostbox: state.deliveryOptions.selectedPostbox,
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
     fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
+    selectedCountry: state.deliveryOptions.selectedCountry,
     created: state.transactionDetails.created
   }
 }

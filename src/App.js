@@ -93,7 +93,7 @@ class App extends Component {
     const postcode = this.props.customer.postcode;
 
     // TODO add the dimension params
-    const nextUrl = `${this.props.location.pathname}/${countryCode}/${postcode}/${weight}`;
+    const nextUrl = `${this.props.location.pathname}/deliveryOptions`;
 
     this.props.history.push(nextUrl);
   }

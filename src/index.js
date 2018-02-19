@@ -21,7 +21,8 @@ ReactDOM.render(
           <Route path="/" component={Header}/> {/* TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
           <Switch>
             <Route path="/:redirectkey" exact component={App}/>
-            <Route path="/:redirectkey/:countryCode/:postcode/:weight/:height?/:length?/:width?" component={DeliveryOptions}/>
+            {/*<Route path="/:redirectkey/:countryCode/:postcode/:weight/:height?/:length?/:width?" component={DeliveryOptions}/>*/}
+            <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions}/>
             <Route path="/:redirectkey/payment" exact component={PaymentPage}/>
             {/*<Route path="*" render = {() => (
               <h2>Ekkert að sjá hér :-)</h2>

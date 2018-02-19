@@ -69,7 +69,7 @@ class CustInfo extends Component {
     const errMessages = Object.keys(inputErrors).filter((k) => inputErrors[k]);
     if (errMessages.length) {
       for (var i = 0; i < errMessages.length; i++) {
-        if(errMessages[i] === false || errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
+        if(errMessages[i] === 'email' || errMessages[i] === 'phone') continue;
         return true;
       }
     }
