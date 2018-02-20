@@ -15,8 +15,7 @@ class CustInfo extends Component {
   }
 
   onCountryChange = (evt) => {
-    const fieldName = evt.target.name;
-    const value = evt.target.value;
+    const [fieldName, value] = [evt.target.name, evt.target.value];
     const error = value ? false : 'Veldu land';
 
     this.onInputChange({ fieldName, value, error });

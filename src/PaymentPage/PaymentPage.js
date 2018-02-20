@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import './PaymentPage.css';
 import Cards from 'react-credit-cards';
 import Payment from 'payment';
 import { ToastContainer, toast } from 'react-toastify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions.js';
-import { changeCreatedStatus } from '../actions/transactionActions.js';
+import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions';
+import { changeCreatedStatus } from '../actions/transactionActions';
+import './PaymentPage.css';
 
 class PaymentPage extends Component {
-
   componentDidMount() {
-      Payment.formatCardNumber(document.querySelector('[name="number"]'));
-      Payment.formatCardExpiry(document.querySelector('[name="expiry"]'));
-      Payment.formatCardCVC(document.querySelector('[name="cvc"]'));
-    }
+    Payment.formatCardNumber(document.querySelector('[name="number"]'));
+    Payment.formatCardExpiry(document.querySelector('[name="expiry"]'));
+    Payment.formatCardCVC(document.querySelector('[name="cvc"]'));
+  }
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
@@ -29,16 +28,15 @@ class PaymentPage extends Component {
   };
 
   handleConfirmClick = () => {
-
     if (this.props.created) {
-      toast("Sending hefur nú þegar verið búin til !", {type: "warning"});
+      toast('Sending hefur nú þegar verið búin til !', { type: 'warning' });
       return;
     }
 
     // TODO Processa kredit kort og svo þegar það hefur tekist ÞÁ búa til sendingu, eins og hér fyrir neðan.
     let url = `http://localhost:8989/wscm/shipments/create`;
 
-    let myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.set('x-api-key', this.props.apiKey);
     myHeaders.set('Content-Type', 'application/json');
 
@@ -47,58 +45,55 @@ class PaymentPage extends Component {
         name: this.props.customer.fullName,
         addressLine1: this.props.customer.address,
         postcode: this.props.customer.postcode,
-        countryCode: this.props.selectedCountry
+        countryCode: this.props.selectedCountry,
       },
       options: {
-        deliveryServiceId: this.props.selectedOption.id
-      }
+        deliveryServiceId: this.props.selectedOption.id,
+      },
     };
 
-    let myInit = {
-      'method': 'POST',
-      'body': JSON.stringify(shipment),
-      'headers': myHeaders
-    }
+    const myInit = {
+      method: 'POST',
+      body: JSON.stringify(shipment),
+      headers: myHeaders,
+    };
 
     const request = new Request(url, myInit);
 
     fetch(request)
-    .then(response => {
-      return response.status;
-    })
-    .then(response => {
-      if (response === 201) {
-        toast("Sending hefur verið búin til !", {type: "success"});
+      .then((response) => {
+        return response.status;
+      })
+      .then((response) => {
+        if (response === 201) {
+          toast('Sending hefur verið búin til !', { type: 'success' });
 
-        this.props.changeCreatedStatus(true);
+          this.props.changeCreatedStatus(true);
 
-        // Flag shipment as 'CREATED'
-        let url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
-        let myHeaders2 = new Headers();
-        myHeaders2.set('Content-Type', 'application/json');
-        const status = true;
+          // Flag shipment as 'CREATED'
+          const url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
+          const myHeaders2 = new Headers();
+          myHeaders2.set('Content-Type', 'application/json');
+          const status = true;
 
-        let myInit2 = {
-          'method': 'PUT',
-          'body': JSON.stringify(status),
-          'headers': myHeaders2
+          const myInit2 = {
+            method: 'PUT',
+            body: JSON.stringify(status),
+            headers: myHeaders2,
+          };
+
+          const request2 = new Request(url2, myInit2);
+
+          fetch(request2)
+            .then((response2) => {
+              console.log(response2.status);
+              return response2.status;
+            });
         }
-
-        const request2 = new Request(url2, myInit2);
-
-        fetch(request2)
-        .then(response => {
-          console.log(response.status);
-          return response.status;
-        })
-        .then(response => {
-
-        })
-      }
-    })
-    .catch(error => {
-      console.log("Tókst ekki að búa til sendingu.", error);
-    })
+      })
+      .catch((error) => {
+        console.log('Tókst ekki að búa til sendingu.', error);
+      });
   }
 
   render() {
@@ -124,27 +119,29 @@ class PaymentPage extends Component {
         <div className="paymentPageRightSide">
           <h3>Greiðsluupplýsingar</h3>
           <div>
-          <Cards
-            number={number}
-            name={name}
-            expiry={expiry}
-            cvc={cvc}
-            focused={focused}
-          />
+            <Cards
+              number={number}
+              name={name}
+              expiry={expiry}
+              cvc={cvc}
+              focused={focused}
+            />
           </div>
           <div className="creditCardForm ">
             <form onSubmit={this.onFormSubmit}>
               <div>
-                <input className="ccInputField"
+                <input
+                  className="ccInputField"
                   type="tel"
                   name="number"
                   placeholder="Card Number"
                   onKeyUp={this.handleInputChange}
                   onFocus={this.handleInputFocus}
-                  />
+                />
               </div>
               <div>
-                <input className="ccInputField"
+                <input
+                  className="ccInputField"
                   type="text"
                   name="name"
                   placeholder="Name"
@@ -153,7 +150,8 @@ class PaymentPage extends Component {
                 />
               </div>
               <div>
-                <input className="ccInputField"
+                <input
+                  className="ccInputField"
                   type="tel"
                   name="expiry"
                   placeholder="Valid Thru"
@@ -162,7 +160,8 @@ class PaymentPage extends Component {
                 />
               </div>
               <div>
-                <input className="ccInputField"
+                <input
+                  className="ccInputField"
                   type="tel"
                   name="cvc"
                   placeholder="CVC"
@@ -176,7 +175,7 @@ class PaymentPage extends Component {
           <ToastContainer />
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -188,16 +187,16 @@ function mapStateToProps(state) {
     apiKey: state.transactionDetails.apiKey,
     customer: state.transactionDetails.customerInfo,
     created: state.transactionDetails.created,
-    selectedCountry: state.deliveryOptions.selectedCountry
-  }
+    selectedCountry: state.deliveryOptions.selectedCountry,
+  };
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    updateCcDetails: updateCcDetails,
-    updateFocusedField: updateFocusedField,
-    changeCreatedStatus: changeCreatedStatus
-  }, dispatch)
+    updateCcDetails,
+    updateFocusedField,
+    changeCreatedStatus,
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(PaymentPage);

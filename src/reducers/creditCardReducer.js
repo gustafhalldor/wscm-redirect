@@ -1,9 +1,9 @@
-export default function creditCardReducer(state= {
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    focused: ""
+export default function creditCardReducer(state = {
+  number: '',
+  name: '',
+  expiry: '',
+  cvc: '',
+  focused: '',
 }, action) {
   // eslint-disable-next-line
   switch (action.type) {
@@ -11,19 +11,17 @@ export default function creditCardReducer(state= {
       if (action.payload.name === 'number') {
         state = {
           ...state,
-          number: action.payload.value.replace(/ /g, '')
+          number: action.payload.value.replace(/ /g, ''),
         };
-      }
-      else if (action.payload.name === 'expiry') {
+      } else if (action.payload.name === 'expiry') {
         state = {
           ...state,
-          expiry: action.payload.value.replace(/ |\//g, '')
+          expiry: action.payload.value.replace(/ |\//g, ''),
         };
-      }
-      else {
+      } else {
         state = {
           ...state,
-          [action.payload.name]: action.payload.value
+          [action.payload.name]: action.payload.value,
         };
       }
       break;
@@ -31,8 +29,8 @@ export default function creditCardReducer(state= {
     case 'UPDATE_FOCUSED_FIELD': {
       state = {
         ...state,
-          focused: action.payload
-      }
+        focused: action.payload,
+      };
     }
   }
   return state;

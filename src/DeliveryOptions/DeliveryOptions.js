@@ -1,66 +1,65 @@
 import React, { Component } from 'react';
-import './deliveryOptions.css';
-import BasketContents from '../BasketContents/BasketContents.js';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions.js';
-import DeliveryOption from './DeliveryOption/DeliveryOption.js';
+import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions';
+import './deliveryOptions.css';
+import BasketContents from '../BasketContents/BasketContents';
+import DeliveryOption from './DeliveryOption/DeliveryOption';
 
 class DeliveryOptions extends Component {
-
   componentDidMount = () => {
     if (this.props.created) {
       return;
     }
     const deliveryOptionsObject = this;
-    const countryCode = this.props.selectedCountry;
-    const postcode = this.props.customer.postcode;
-    const weight = this.props.totalWeight;
+    // const countryCode = this.props.selectedCountry;
+    // const postcode = this.props.customer.postcode;
+    // const weight = this.props.totalWeight;
+    const [countryCode, postcode, weight] = [this.props.selectedCountry, this.props.customer.postcode, this.props.totalWeight];
 
-    let urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?countryCode=${countryCode}&postCode=${postcode}&weight=${weight}`;
+    const urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?countryCode=${countryCode}&postCode=${postcode}&weight=${weight}`;
 
-    let myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.set('x-api-key', this.props.apiKey);
 
     const myInit = {
-                  'method': 'GET',
-                  'headers': myHeaders
-                };
+      method: 'GET',
+      headers: myHeaders,
+    };
     const request = new Request(urlForDeliveryServicesAndPrices, myInit);
 
     this.props.changeFetchingDeliveryOptionsStatus(true);
 
     fetch(request)
-    .then(response => {
-      return response.json();
-    })
-    .then(response => {
-      if (response.deliveryServicesAndPrices.length) {
-        for (var i = 0; i < response.deliveryServicesAndPrices.length; i++) {
-          // fetch postboxes and populate the deliveryOptions.postboxes state property
-          if (response.deliveryServicesAndPrices[i].deliveryServiceId === 'DPO') {
-            const url = 'http://localhost:8989/wscm/postboxes';
-            const request2 = new Request(url, myInit);
-            fetch(request2)
-            .then(response => {
-              return response.json();
-            })
-            .then(response => {
-              deliveryOptionsObject.props.addPostboxes(response.postboxes);
-            })
-            .catch(error => {
-              console.log("Ekki gekk að ná í póstbox", error);
-            })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        if (response.deliveryServicesAndPrices.length) {
+          for (let i = 0; i < response.deliveryServicesAndPrices.length; i++) {
+            // fetch postboxes and populate the deliveryOptions.postboxes state property
+            if (response.deliveryServicesAndPrices[i].deliveryServiceId === 'DPO') {
+              const url = 'http://localhost:8989/wscm/postboxes';
+              const request2 = new Request(url, myInit);
+              fetch(request2)
+                .then((response2) => {
+                  return response2.json();
+                })
+                .then((response3) => {
+                  deliveryOptionsObject.props.addPostboxes(response3.postboxes);
+                })
+                .catch((error) => {
+                  console.log('Ekki gekk að ná í póstbox', error);
+                });
+            }
           }
         }
-      }
-      deliveryOptionsObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
-      this.props.changeFetchingDeliveryOptionsStatus(false);
-    })
-    .catch(error => {
-      console.log("Tókst ekki að ná í afhendingarleiðir og verð", error);
-    });
-
+        deliveryOptionsObject.props.addDeliveryOptions(response.deliveryServicesAndPrices);
+        this.props.changeFetchingDeliveryOptionsStatus(false);
+      })
+      .catch((error) => {
+        console.log('Tókst ekki að ná í afhendingarleiðir og verð', error);
+      });
   }
 
   onFormSubmit = (evt) => {
@@ -68,61 +67,60 @@ class DeliveryOptions extends Component {
 
     // If the selected delivery option is 'Pakki Póstbox' but there is no postbox selected.
     if (this.props.selectedOption.id === 'DPO' && this.props.selectedPostbox === '') {
-      this.props.addDeliveryOptionsError('Veldu póstbox.')
+      this.props.addDeliveryOptionsError('Veldu póstbox.');
       return;
     }
     // If there is no delivery option selected.
     if (this.props.selectedOption.id === '') {
-      this.props.addDeliveryOptionsError('Þú verður að velja afhendingarmáta.')
+      this.props.addDeliveryOptionsError('Þú verður að velja afhendingarmáta.');
       return;
     }
 
-    let url = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}/updateShippingOption`;
+    const url = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}/updateShippingOption`;
 
-    let myHeaders = new Headers();
-    myHeaders.set("Content-Type", "application/json");
+    const myHeaders = new Headers();
+    myHeaders.set('Content-Type', 'application/json');
     const myInit = {
-                  'method': 'PUT',
-                  'body': JSON.stringify(this.props.selectedOption),
-                  'headers': myHeaders
-                };
+      method: 'PUT',
+      body: JSON.stringify(this.props.selectedOption),
+      headers: myHeaders,
+    };
 
     const request = new Request(url, myInit);
 
     fetch(request)
-    .then(response => {
-      return response.status;
-    })
-    .then(response => {
-      console.log(response);
-      if (response === 200) {
-        const location = {
-          pathname: `/${this.props.match.params.redirectkey}/payment`
+      .then((response) => {
+        return response.status;
+      })
+      .then((response) => {
+        console.log(response);
+        if (response === 200) {
+          const location = {
+            pathname: `/${this.props.match.params.redirectkey}/payment`,
+          };
+          this.props.history.push(location);
         }
-        this.props.history.push(location);
-      }
-    })
-  }
-
-  handleRadioButtons = (evt) => {
-    const selectedOption = evt.target.value;
-    const deliveryOptions = this.props.deliveryOptions;
-    for (var i = 0; i < deliveryOptions.length; i++) {
-      if (selectedOption === deliveryOptions[i].deliveryServiceId) {
-        this.props.updateSelectedOption( { id: selectedOption, price: deliveryOptions[i].priceRelated.bruttoPrice } );
-        this.props.addDeliveryOptionsError( '' );
-      }
-    }
-  }
-
-  handleUpdateOfSelectedPostbox = (evt) => {
-    this.props.updateSelectedPostbox(evt.target.value);
+      });
   }
 
   onBackButtonClick = () => {
     this.props.history.push(`/${this.props.match.params.redirectkey}`);
   }
 
+  handleUpdateOfSelectedPostbox = (evt) => {
+    this.props.updateSelectedPostbox(evt.target.value);
+  }
+
+  handleRadioButtons = (evt) => {
+    const selectedOption = evt.target.value;
+    const deliveryOptions = this.props.deliveryOptions;
+    for (let i = 0; i < deliveryOptions.length; i++) {
+      if (selectedOption === deliveryOptions[i].deliveryServiceId) {
+        this.props.updateSelectedOption({ id: selectedOption, price: deliveryOptions[i].priceRelated.bruttoPrice });
+        this.props.addDeliveryOptionsError('');
+      }
+    }
+  }
   render() {
     if (this.props.created) {
       return (
@@ -131,7 +129,7 @@ class DeliveryOptions extends Component {
             <h2>Sending hefur nú þegar verið búin til.</h2>
           </main>
         </div>
-      )
+      );
     }
 
     if (this.props.fetchingDeliveryOptions) {
@@ -147,43 +145,46 @@ class DeliveryOptions extends Component {
               <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
             </div>
           </div>
-          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
+          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
         </div>
-      )
+      );
     }
     if (this.props.deliveryOptions.length) {
       const options = this.props.deliveryOptions.map((deliveryOption, i) => {
-        let isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? "checked" : "";
+        const isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? 'checked' : '';
         if (deliveryOption.deliveryServiceId === 'DPO') {
-          return <DeliveryOption key={i} id={i}
-                    deliveryOption={deliveryOption}
-                    postboxes={this.props.postboxes}
-                    onChange={this.handleRadioButtons}
-                    updateSelectedPostbox={this.handleUpdateOfSelectedPostbox}
-                    selectedPostbox={this.props.selectedPostbox}
-                    isChecked={isChecked}
-                  />
+          return (
+            <DeliveryOption key={i}
+              id={i}
+              deliveryOption={deliveryOption}
+              postboxes={this.props.postboxes}
+              onChange={this.handleRadioButtons}
+              updateSelectedPostbox={this.handleUpdateOfSelectedPostbox}
+              selectedPostbox={this.props.selectedPostbox}
+              isChecked={isChecked}
+            />
+          );
         }
-        return <DeliveryOption key={i} id={i} deliveryOption={deliveryOption} onChange={this.handleRadioButtons} isChecked={isChecked}/>
+        return <DeliveryOption key={i} id={i} deliveryOption={deliveryOption} onChange={this.handleRadioButtons} isChecked={isChecked} />;
       });
 
       return (
         <div className="deliveryOptionsContainer">
-          <form className="deliveryOptionsForm col-md-8"  onSubmit={this.onFormSubmit}>
+          <form className="deliveryOptionsForm col-md-8" onSubmit={this.onFormSubmit}>
             {options}
-          {
-            this.props.deliveryOptionsError !== '' ?
-            <span className="deliveryOptionsErrorMessage">{this.props.deliveryOptionsError}</span> :
-            <span></span>
-          }
+            {
+              this.props.deliveryOptionsError !== '' ?
+                <span className="deliveryOptionsErrorMessage">{this.props.deliveryOptionsError}</span> :
+                <span></span>
+            }
             <div className="flex-container-row deliveryOptionsButtons">
               <button className="btn deliveryOptionsBackButton" onClick={this.onBackButtonClick}>Til baka</button>
               <button type="submit" className="btn deliveryOptionsSubmitButton">Staðfesta og fara á greiðslusíðu</button>
             </div>
           </form>
-          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
+          <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
         </div>
-      )
+      );
     }
     return (
       <div className="deliveryOptionsContainer">
@@ -197,9 +198,9 @@ class DeliveryOptions extends Component {
             <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
           </div>
         </div>
-        <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight}/>
+        <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
       </div>
-    )
+    );
   }
 }
 
@@ -217,19 +218,19 @@ function mapStateToProps(state) {
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
     fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
     selectedCountry: state.deliveryOptions.selectedCountry,
-    created: state.transactionDetails.created
-  }
+    created: state.transactionDetails.created,
+  };
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    addDeliveryOptions: addDeliveryOptions,
-    updateSelectedOption: updateSelectedOption,
-    addPostboxes: addPostboxes,
-    updateSelectedPostbox: updateSelectedPostbox,
-    addDeliveryOptionsError: addDeliveryOptionsError,
-    changeFetchingDeliveryOptionsStatus: changeFetchingDeliveryOptionsStatus
-  }, dispatch)
+    addDeliveryOptions,
+    updateSelectedOption,
+    addPostboxes,
+    updateSelectedPostbox,
+    addDeliveryOptionsError,
+    changeFetchingDeliveryOptionsStatus,
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(DeliveryOptions);

@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Field = (props) => {
-
   const onChange = (evt) => {
     const fieldName = props.name;
     const value = evt.target.value;
@@ -11,20 +10,20 @@ const Field = (props) => {
     props.onChange({ fieldName, value, error });
   };
 
-    return (
-      <div>
-        <label htmlFor={props.name}>{props.label}{props.required && <span className="redAsterix"> *</span>}</label>
-        <br/>
-        <input
-          id={props.name}
-          placeholder={props.placeholder}
-          value={props.value}
-          onChange={onChange}
-        />
-        <br />
-        <span style={{ color: 'red' }}>{ props.errorState }</span>
-      </div>
-    );
-}
+  return (
+    <div>
+      <label htmlFor={props.name}>{props.label}{props.required && <span className="redAsterix"> *</span>}</label>
+      <br />
+      <input
+        id={props.name}
+        placeholder={props.placeholder}
+        value={props.value}
+        onChange={onChange}
+      />
+      <br />
+      <span style={{ color: 'red' }}>{ props.errorState }</span>
+    </div>
+  );
+};
 
 export default Field;
