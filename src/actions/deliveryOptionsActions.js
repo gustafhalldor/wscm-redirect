@@ -1,55 +1,55 @@
 export function addDeliveryOptions(deliveryOptions) {
   return {
     type: 'ADD_DELIVERY_OPTIONS',
-    payload: deliveryOptions
-  }
+    payload: deliveryOptions,
+  };
 }
 
 export function updateSelectedOption(option) {
   return {
     type: 'UPDATE_DELIVERY_OPTION',
-    payload: option
-  }
+    payload: option,
+  };
 }
 
 export function addPostboxes(postboxes) {
   return {
     type: 'ADD_POSTBOXES',
-    payload: postboxes
-  }
+    payload: postboxes,
+  };
 }
 
 export function updateSelectedPostbox(postbox) {
   return {
     type: 'UPDATE_SELECTED_POSTBOX',
-    payload: postbox
-  }
+    payload: postbox,
+  };
 }
 
 export function addCountries(countries) {
   return {
     type: 'ADD_COUNTRIES',
-    payload: countries
-  }
+    payload: countries,
+  };
 }
 
 export function updateSelectedCountry(country) {
   return {
     type: 'UPDATE_SELECTED_COUNTRY',
-    payload: country
-  }
+    payload: country,
+  };
 }
 
 export function addDeliveryOptionsError(error) {
   return {
     type: 'ADD_DELIVERY_OPTIONS_ERROR',
-    payload: error
-  }
+    payload: error,
+  };
 }
 
 export function changeFetchingDeliveryOptionsStatus(status) {
   return {
     type: 'CHANGE_FETCHING_DELIVERY_OPTIONS_STATUS',
-    payload: status
-  }
+    payload: status,
+  };
 }
