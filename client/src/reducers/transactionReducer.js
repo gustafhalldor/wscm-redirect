@@ -1,5 +1,4 @@
 export default function transactionReducer(state = {
-  apiKey: '',
   products: [],
   productsWeight: 0,
   productsPrice: 0,
@@ -19,7 +18,6 @@ export default function transactionReducer(state = {
     case 'ADD_TRANSACTION_DETAILS': {
       state = {
         ...state,
-        apiKey: action.payload.apiKey,
         products: action.payload.products,
         productsWeight: action.payload.productsWeight,
         productsPrice: action.payload.productsPrice,
@@ -46,7 +44,6 @@ export default function transactionReducer(state = {
     }
     case 'RESET_STATE': {
       state = {
-        apiKey: '',
         products: [],
         productsWeight: 0,
         productsPrice: 0,

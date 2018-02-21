@@ -11,6 +11,7 @@ module.exports = {
     "rules": {
       "linebreak-style": 0,
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-      "arrow-body-style": ["error", "always"]
+      "arrow-body-style": ["error", "always"],
+      "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     }
 };

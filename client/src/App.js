@@ -58,19 +58,15 @@ class App extends Component {
             // Get all countries to populate the countries list, but ONLY if it hasn't already been loaded into state.
             // TODO this doesn't work in firefox for some reason... wtf. Have to check this out later or just leave it be.
             // if (!appObject.props.countries.length && response.apiKey !== '') {
-            const url = 'http://test-ws.epost.is:8989/wscm/countries';
-            const myHeaders = new Headers();
-            myHeaders.set('x-api-key', response.apiKey);
-            const myInit = {
-              method: 'GET',
-              headers: myHeaders,
-            };
-            const request = new Request(url, myInit);
-            fetch(request)
+            fetch(`http://localhost:3001/api/getCountries/${appObject.props.match.params.redirectkey}`)
               .then((response2) => {
                 return response2.json();
               })
               .then((response3) => {
+                console.log(response3);
+                if (response3.status === 400) {
+                  console.log(response3.message);
+                }
                 appObject.props.addCountries(response3.countries);
               })
               .catch((error) => {
