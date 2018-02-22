@@ -17,20 +17,11 @@ class DeliveryOptions extends Component {
     // const weight = this.props.totalWeight;
     const [countryCode, postcode, weight] = [this.props.selectedCountry, this.props.customer.postcode, this.props.totalWeight];
 
-    const urlForDeliveryServicesAndPrices = `http://test-ws.epost.is:8989/wscm/deliveryservicesandprices?countryCode=${countryCode}&postCode=${postcode}&weight=${weight}`;
-
-    const myHeaders = new Headers();
-    myHeaders.set('x-api-key', this.props.apiKey);
-
-    const myInit = {
-      method: 'GET',
-      headers: myHeaders,
-    };
-    const request = new Request(urlForDeliveryServicesAndPrices, myInit);
+    const url = `http://localhost:3001/api/getDeliveryPrices/${this.props.match.params.redirectkey}/${countryCode}/${postcode}/${weight}`;
 
     this.props.changeFetchingDeliveryOptionsStatus(true);
 
-    fetch(request)
+    fetch(url)
       .then((response) => {
         return response.json();
       })
@@ -39,9 +30,7 @@ class DeliveryOptions extends Component {
           for (let i = 0; i < response.deliveryServicesAndPrices.length; i++) {
             // fetch postboxes and populate the deliveryOptions.postboxes state property
             if (response.deliveryServicesAndPrices[i].deliveryServiceId === 'DPO') {
-              const url = 'http://localhost:8989/wscm/postboxes';
-              const request2 = new Request(url, myInit);
-              fetch(request2)
+              fetch(`http://localhost:3001/api/getPostboxes/${this.props.match.params.redirectkey}`)
                 .then((response2) => {
                   return response2.json();
                 })
@@ -93,7 +82,6 @@ class DeliveryOptions extends Component {
         return response.status;
       })
       .then((response) => {
-        console.log(response);
         if (response === 200) {
           const location = {
             pathname: `/${this.props.match.params.redirectkey}/payment`,
@@ -109,6 +97,7 @@ class DeliveryOptions extends Component {
 
   handleUpdateOfSelectedPostbox = (evt) => {
     this.props.updateSelectedPostbox(evt.target.value);
+    this.props.addDeliveryOptionsError('');
   }
 
   handleRadioButtons = (evt) => {
@@ -149,6 +138,7 @@ class DeliveryOptions extends Component {
         </div>
       );
     }
+
     if (this.props.deliveryOptions.length) {
       const options = this.props.deliveryOptions.map((deliveryOption, i) => {
         const isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? 'checked' : '';
@@ -186,6 +176,7 @@ class DeliveryOptions extends Component {
         </div>
       );
     }
+
     return (
       <div className="deliveryOptionsContainer">
         <div className="deliveryOptionsLeftSide col-md-8">

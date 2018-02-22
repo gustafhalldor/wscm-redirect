@@ -14,7 +14,8 @@ class App extends Component {
 
     fetch(`http://localhost:8989/wscm/landing/${appObject.props.match.params.redirectkey}`)
       .then((response) => {
-        // if status is 404 then there is nothing behind the redirect key and we shouldn't display anything
+        // if status is 404 then there is nothing behind the redirect key
+        // and we shouldn't display anything
         if (response.status === 404) {
           localStorage.removeItem('persist:root');
           appObject.props.dispatch({ type: 'RESET_STATE' });
@@ -27,7 +28,7 @@ class App extends Component {
       .then((response) => {
         console.log('Transaction info response:');
         console.log(response);
-        // handle if the shipment has already been created and customer is trying to view the landing page again
+
         if (response.created) {
           localStorage.removeItem('persist:root');
           appObject.props.dispatch({ type: 'RESET_STATE' });
@@ -49,14 +50,15 @@ class App extends Component {
               productsPrice: totalPrice,
               customerInfo: response.recipient,
             };
-            // Only try to update with info from DB if there is nothing in any of the required fields. Otherwise use application state.
+            // Only try to update with info from DB if required fields are empty.
+            // Otherwise use application state.
             // TODO decide if this is a good idea or not, or find another solution :)
             if (appObject.props.customer.fullName === '' || appObject.props.customer.address === '' || appObject.props.customer.postcode === '') {
               appObject.props.addTransactionDetails(transactionObject);
             }
 
-            // Get all countries to populate the countries list, but ONLY if it hasn't already been loaded into state.
-            // TODO this doesn't work in firefox for some reason... wtf. Have to check this out later or just leave it be.
+            // Populate the countries list, but ONLY if it hasn't already been loaded into state.
+            // TODO this doesn't work in firefox for some reason... wtf.
             // if (!appObject.props.countries.length && response.apiKey !== '') {
             fetch(`http://localhost:3001/api/getCountries/${appObject.props.match.params.redirectkey}`)
               .then((response2) => {
@@ -145,7 +147,7 @@ function mapStateToProps(state) {
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     dispatch,
-    addTransactionDetails, // The prop addTransactionDetails is equal to the function addTransactionDetails, which is imported at the top
+    addTransactionDetails,
     addCountries,
     changeNoDataStatus,
     changeCreatedStatus,
