@@ -26,6 +26,11 @@
   color: red;
 }
 
+.deliveryOptionsPriceDiv {
+//  padding-right: 0;
+  // padding-left: 0;
+}
+
 .label80percent {
   width: 80%;
 }
@@ -45,7 +50,7 @@ label {
 }
 
 i.fa {
-  margin: 15px;
+  margin: 0 5px;
 }
 
 input[type="radio"] + .panel i.fa.fa-circle-o{

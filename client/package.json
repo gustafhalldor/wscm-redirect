@@ -6,6 +6,7 @@
     "node-fetch": "^1.7.3",
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.1.2",
+    "payment": "^2.3.0",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-credit-cards": "^0.7.0",

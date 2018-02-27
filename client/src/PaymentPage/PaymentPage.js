@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import Cards from 'react-credit-cards';
 import Payment from 'payment';
 import { ToastContainer, toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import fetch from 'isomorphic-fetch';
 import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions';
 import { changeCreatedStatus } from '../actions/transactionActions';
 import './PaymentPage.css';
@@ -33,11 +35,11 @@ class PaymentPage extends Component {
       return;
     }
 
-    // TODO Processa kredit kort og svo þegar það hefur tekist ÞÁ búa til sendingu, eins og hér fyrir neðan.
-    let url = `http://localhost:8989/wscm/shipments/create`;
+    // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
+    // let url = `http://localhost:8989/wscm/shipments/create`;
+    const url = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
 
     const myHeaders = new Headers();
-    myHeaders.set('x-api-key', this.props.apiKey);
     myHeaders.set('Content-Type', 'application/json');
 
     const shipment = {
@@ -62,10 +64,10 @@ class PaymentPage extends Component {
 
     fetch(request)
       .then((response) => {
-        return response.status;
+        return response.json();
       })
       .then((response) => {
-        if (response === 201) {
+        if (response.status === 201) {
           toast('Sending hefur verið búin til !', { type: 'success' });
 
           this.props.changeCreatedStatus(true);
@@ -89,6 +91,8 @@ class PaymentPage extends Component {
               console.log(response2.status);
               return response2.status;
             });
+        } else {
+          console.log(response.message);
         }
       })
       .catch((error) => {
@@ -178,6 +182,31 @@ class PaymentPage extends Component {
     );
   }
 }
+
+PaymentPage.propTypes = {
+  customer: PropTypes.shape({
+    fullName: PropTypes.string,
+    address: PropTypes.string,
+    postcode: PropTypes.string,
+  }),
+  selectedOption: PropTypes.shape({
+    price: PropTypes.number,
+    id: PropTypes.string,
+  }),
+  ccDetails: PropTypes.shape({
+    number: PropTypes.string,
+    name: PropTypes.string,
+    expiry: PropTypes.string,
+    cvc: PropTypes.string,
+    focused: PropTypes.string,
+  }),
+  basketPrice: PropTypes.number,
+  selectedCountry: PropTypes.string,
+  created: PropTypes.bool,
+  changeCreatedStatus: PropTypes.func,
+  updateFocusedField: PropTypes.func,
+  updateCcDetails: PropTypes.func,
+};
 
 function mapStateToProps(state) {
   return {
