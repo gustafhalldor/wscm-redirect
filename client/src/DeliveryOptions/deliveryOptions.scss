@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .deliveryOptionsForm {
@@ -27,8 +28,8 @@
 }
 
 .deliveryOptionsPriceDiv {
-//  padding-right: 0;
-  // padding-left: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .label80percent {
@@ -87,29 +88,58 @@ input[type="radio"]:checked + .panel{
 }
 
 .wscm-radio-panel img {
-    width: 28px;
-    margin: 15px;
+    width: 1.75em;
+    margin: 1em;
   }
 .wscm-radio-panel h4 {
-    font-size: 16px;
+    font-size: 1.15em;
     font-weight: bold;
-    margin-bottom: 14px;
+    margin-bottom: 0.5em;
   }
-.wscm-radio-panel p {
-    font-size: 15px;
-    margin-bottom: 30px;
-  }
+// .wscm-radio-panel p {
+//     font-size: 1.15em;
+//     margin-bottom: 2em;
+//   }
 .wscm-radio-panel label {
     margin-bottom: 12px;
-    font-size: 15px;
+    font-size: 1.15em;
     letter-spacing: 2px;
   }
 .wscm-radio-panel select {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
 .deliveryOptionsButtons {
   flex-wrap: wrap;
   white-space: normal;
   justify-content: space-evenly;
+}
+
+.postboxDiv {
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.centerWithMargin {
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 767px) {
+    .panel-body {
+        justify-content: center;
+    }
+
+    .radioDiv {
+      margin-bottom: 1em;
+    }
+}
+
+@media only screen and (max-width: 389px) {
+    .deliveryOptionsBackButton {
+        margin-bottom: 1em;
+    }
 }

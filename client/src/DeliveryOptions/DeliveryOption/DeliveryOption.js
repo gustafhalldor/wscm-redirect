@@ -6,12 +6,21 @@ const DeliveryOption = (props) => {
   if (props.deliveryOption.deliveryServiceId === 'DPO') {
     // get postboxes from state and map each one to an <option> element
     postboxes = props.postboxes.map((postbox, i) => {
-      return <option key={i} value={postbox.name}>{postbox.name.substring(8)}</option>;
+      // select dropdown is not behaving well with different viewports. Have to trim
+      // the postbox names so it is presentable.
+      let name = postbox.name;
+      if (window.innerWidth < 480) {
+        name = postbox.name.substring(8);
+        if (window.innerWidth < 370) {
+          name = name.substring(0, 18);
+        }
+      }
+      return <option key={i} value={postbox.name}>{name}</option>;
     });
   }
 
   return (
-    <div>
+    <div className="flex-container-row justify-evenly">
       <input type="radio" id={props.id} value={props.deliveryOption.deliveryServiceId} name="option" onChange={props.onChange} className="input-hidden" checked={props.isChecked} />
       <label htmlFor={props.id} className="wscm-radio-panel panel panel-default label80percent">
         <div className="panel-body flex-container-row align-items-center">
@@ -20,15 +29,11 @@ const DeliveryOption = (props) => {
             <i htmlFor="home" className="fa fa-dot-circle-o fa-3x" />
           </div>
           <div className="flex-container-column col-sm-9">
-            <h4>{props.deliveryOption.nameLong}</h4>
-            {
-              props.deliveryOption.storeLocations ?
-                <span>{props.deliveryOption.storeLocations[0].name} - {props.deliveryOption.storeLocations[0].address}</span> :
-                <span>{props.deliveryOption.description}</span>
-            }
+            <h4 className="centerWithMargin">{props.deliveryOption.nameLong}</h4>
+            <span>{props.deliveryOption.description}</span>
             {
               props.deliveryOption.deliveryServiceId === 'DPO' &&
-              <div>
+              <div className="postboxDiv">
                 <span>Veldu póstbox: </span>
                 <select name="selectPostbox" id="selectPostbox" onChange={props.updateSelectedPostbox} value={props.selectedPostbox}>
                   <option value="">.....</option>
@@ -39,7 +44,7 @@ const DeliveryOption = (props) => {
           </div>
           <div className="deliveryOptionsPriceDiv col-sm-1">
             <h4>Verð</h4>
-            <span>{props.deliveryOption.priceRelated.bruttoPrice}</span>
+            <span className="centerWithMargin">{props.deliveryOption.priceRelated.bruttoPrice}</span>
           </div>
         </div>
       </label>
