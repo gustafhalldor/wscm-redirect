@@ -1,12 +1,24 @@
+
 .paymentPageContainer {
   width: 70%;
   margin: 0 auto;
   padding: 1em 0 0 0;
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.paymentPageContent {
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
 
+}
+
+.paymentPageButtons {
+  justify-content: space-evenly;
+  margin-bottom: 1em;
 }
 
 .paymentPageLeftSide {

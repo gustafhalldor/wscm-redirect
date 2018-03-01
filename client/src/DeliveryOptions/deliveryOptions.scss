@@ -110,9 +110,8 @@ input[type="radio"]:checked + .panel{
   }
 
 .deliveryOptionsButtons {
-  flex-wrap: wrap;
-  white-space: normal;
   justify-content: space-evenly;
+  margin-bottom: 1em;
 }
 
 .postboxDiv {
