@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Cards from 'react-credit-cards';
 import Payment from 'payment';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -27,10 +28,6 @@ class PaymentPage extends Component {
 
   handleInputChange = ({ target }) => {
     this.props.updateCcDetails(target);
-  };
-
-  onBackButtonClick = () => {
-    this.props.history.push(`/${this.props.match.params.redirectkey}/deliveryOptions`);
   };
 
   handleConfirmClick = () => {
@@ -108,6 +105,8 @@ class PaymentPage extends Component {
 
   render() {
     const { number, name, expiry, cvc, focused } = this.props.ccDetails;
+    const deliveryOptionsPageUrl = `/${this.props.match.params.redirectkey}/deliveryOptions`;
+
     return (
       <div className="paymentPageContainer">
         <div className="paymentPageContent">
@@ -218,7 +217,7 @@ class PaymentPage extends Component {
           </div>
         </div>
         <div className="flex-container-row paymentPageButtons">
-          <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
+          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton">Til baka</button></Link>
           <button className="btn primary" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
         </div>
       </div>

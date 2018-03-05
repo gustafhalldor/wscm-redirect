@@ -11,7 +11,7 @@ router.get('/getCountries/:redirectkey', (req, res, next) => {
   axios({
     method: 'get',
     url: `http://localhost:8989/wscm/countries/`,
-    headers: {'x-redirectKey': req.params.redirectkey},
+    headers: {'x-redirect-key': req.params.redirectkey},
   })
     .then(response => {
       res.send(response.data);
@@ -30,7 +30,7 @@ router.get('/getDeliveryPrices/:redirectkey/:countryCode/:postcode/:weight', (re
   axios({
     method: 'get',
     url: `http://localhost:8989/wscm/deliveryservicesandprices?countryCode=${req.params.countryCode}&postCode=${req.params.postcode}&weight=${req.params.weight}`,
-    headers: {'x-redirectKey': req.params.redirectkey},
+    headers: {'x-redirect-key': req.params.redirectkey},
   })
     .then(response => {
       res.send(response.data);
@@ -49,7 +49,7 @@ router.get('/getPostboxes/:redirectkey', (req, res, next) => {
   axios({
     method: 'get',
     url: 'http://localhost:8989/wscm/postboxes',
-    headers: {'x-redirectKey': req.params.redirectkey},
+    headers: {'x-redirect-key': req.params.redirectkey},
   })
     .then(response => {
       res.send(response.data);
@@ -68,7 +68,7 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
   axios({
     method: 'post',
     url: `http://localhost:8989/wscm/shipments/create`,
-    headers: {'x-redirectKey': req.params.redirectkey},
+    headers: {'x-redirect-key': req.params.redirectkey},
     data: req.body,
   })
     .then(response => {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions';
 import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents';
@@ -91,10 +92,6 @@ class DeliveryOptions extends Component {
       });
   }
 
-  onBackButtonClick = () => {
-    this.props.history.push(`/${this.props.match.params.redirectkey}`);
-  }
-
   handleUpdateOfSelectedPostbox = (evt) => {
     this.props.updateSelectedPostbox(evt.target.value);
     this.props.addDeliveryOptionsError('');
@@ -131,7 +128,7 @@ class DeliveryOptions extends Component {
               </h2>
             </div>
             <div>
-              <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
+              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka</button></Link>
             </div>
           </div>
           <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
@@ -168,7 +165,7 @@ class DeliveryOptions extends Component {
                 <span></span>
             }
             <div className="flex-container-row deliveryOptionsButtons">
-              <button className="btn deliveryOptionsBackButton" onClick={this.onBackButtonClick}>Til baka</button>
+              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka</button></Link>
               <button type="submit" className="btn deliveryOptionsSubmitButton">Staðfesta og fara á greiðslusíðu</button>
             </div>
           </form>
@@ -185,8 +182,8 @@ class DeliveryOptions extends Component {
               Engar afhendingarleiðir fundust...
             </h2>
           </div>
-          <div>
-            <button className="btn" onClick={this.onBackButtonClick}>Til baka</button>
+          <div className="flex-container-row deliveryOptionsButtons">
+            <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka</button></Link>
           </div>
         </div>
         <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
