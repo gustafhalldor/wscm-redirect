@@ -88,13 +88,15 @@ input[type="radio"]:checked + .panel{
 }
 
 .wscm-radio-panel img {
-    width: 1.75em;
-    margin: 1em;
+    width: 3em;
+    height: 3em;
+    margin: 0.5em;
   }
 .wscm-radio-panel h4 {
     font-size: 1.15em;
     font-weight: bold;
     margin-bottom: 0.5em;
+    align-self: center;
   }
 // .wscm-radio-panel p {
 //     font-size: 1.15em;
@@ -125,10 +127,6 @@ input[type="radio"]:checked + .panel{
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-}
-
-.centerWithMargin {
-  margin: 0 auto;
 }
 
 @media only screen and (max-width: 767px) {

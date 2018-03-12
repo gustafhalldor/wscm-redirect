@@ -29,7 +29,10 @@ const DeliveryOption = (props) => {
             <i htmlFor="home" className="fa fa-dot-circle-o fa-3x" />
           </div>
           <div className="flex-container-column col-sm-9">
-            <h4 className="centerWithMargin">{props.deliveryOption.nameLong}</h4>
+            <div className="flex-container-row justify-center">
+              <img src={props.deliveryOption.logo} alt="delivery option logo" />
+              <h4>{props.deliveryOption.nameLong}</h4>
+            </div>
             <span>{props.deliveryOption.description}</span>
             {
               props.deliveryOption.deliveryServiceId === 'DPO' &&

@@ -108,6 +108,7 @@ class DeliveryOptions extends Component {
     }
   }
   render() {
+    // If shipment has already been created from this redirect key
     if (this.props.created) {
       return (
         <div className="container">
@@ -118,6 +119,7 @@ class DeliveryOptions extends Component {
       );
     }
 
+    // If we're fetching delivery options we display a message stating so
     if (this.props.fetchingDeliveryOptions) {
       return (
         <div className="deliveryOptionsContainer">
@@ -136,12 +138,15 @@ class DeliveryOptions extends Component {
       );
     }
 
+    // If we have any delivery options to show, we show them!
     if (this.props.deliveryOptions.length) {
+      // map the delivery options to individual DeliveryOption components
       const options = this.props.deliveryOptions.map((deliveryOption, i) => {
         const isChecked = deliveryOption.deliveryServiceId === this.props.selectedOption.id ? 'checked' : '';
         if (deliveryOption.deliveryServiceId === 'DPO') {
           return (
-            <DeliveryOption key={i}
+            <DeliveryOption
+              key={i}
               id={i}
               deliveryOption={deliveryOption}
               postboxes={this.props.postboxes}
@@ -152,9 +157,18 @@ class DeliveryOptions extends Component {
             />
           );
         }
-        return <DeliveryOption key={i} id={i} deliveryOption={deliveryOption} onChange={this.handleRadioButtons} isChecked={isChecked} />;
+        return (
+          <DeliveryOption
+            key={i}
+            id={i}
+            deliveryOption={deliveryOption}
+            onChange={this.handleRadioButtons}
+            isChecked={isChecked}
+          />
+        );
       });
 
+      // Here we actually return all the options
       return (
         <div className="deliveryOptionsContainer">
           <form className="deliveryOptionsForm col-md-8" onSubmit={this.onFormSubmit}>
@@ -174,6 +188,7 @@ class DeliveryOptions extends Component {
       );
     }
 
+    // Return this if no delivery options were found
     return (
       <div className="deliveryOptionsContainer">
         <div className="deliveryOptionsLeftSide col-md-8">

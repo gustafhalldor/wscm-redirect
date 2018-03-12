@@ -130,7 +130,8 @@ class CustInfo extends Component {
             <select name="countryCode" id="country" onChange={this.onCountryChange} value={this.props.selectedCountry}>
               <option value="">Veldu land</option>
               <option value="IS">Ísland</option>
-              {countries}
+            { /*  TODO: uncommenta línuna fyrir neðan ef við bætum við sendingum til útlanda */ }
+            { /*  {countries} */ }
             </select>
             <br />
             <span style={{ color: 'red' }}>{ this.props.inputErrors.countryCode }</span>
