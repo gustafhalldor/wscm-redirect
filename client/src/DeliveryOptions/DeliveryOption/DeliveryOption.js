@@ -29,7 +29,7 @@ const DeliveryOption = (props) => {
             <i htmlFor="home" className="fa fa-dot-circle-o fa-3x" />
           </div>
           <div className="flex-container-column col-sm-9">
-            <div className="flex-container-row justify-center">
+            <div className="flex-container-row deliveryOptionsLogoAndNameDiv">
               <img src={props.deliveryOption.logo} alt="delivery option logo" />
               <h4>{props.deliveryOption.nameLong}</h4>
             </div>

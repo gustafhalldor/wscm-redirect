@@ -32,6 +32,10 @@
   flex-direction: column;
 }
 
+.deliveryOptionsLogoAndNameDiv {
+  justify-content: center;
+}
+
 .label80percent {
   width: 80%;
 }
@@ -142,5 +146,9 @@ input[type="radio"]:checked + .panel{
 @media only screen and (max-width: 389px) {
     .deliveryOptionsBackButton {
         margin-bottom: 1em;
+    }
+
+    .deliveryOptionsLogoAndNameDiv{
+      justify-content: space-between;
     }
 }
