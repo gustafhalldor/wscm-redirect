@@ -1,4 +1,4 @@
-export default function deliveryOptionsReducer(state = {
+const initState = {
   options: [],
   postboxes: [],
   selectedOption: {
@@ -10,7 +10,9 @@ export default function deliveryOptionsReducer(state = {
   selectedCountry: '',
   deliveryOptionsError: '',
   fetchingDeliveryOptions: false,
-}, action) {
+};
+
+export default function deliveryOptionsReducer(state = initState, action) {
   // eslint-disable-next-line
   switch (action.type) {
     case 'ADD_DELIVERY_OPTIONS': {
@@ -67,6 +69,13 @@ export default function deliveryOptionsReducer(state = {
       state = {
         ...state,
         fetchingDeliveryOptions: action.payload,
+      };
+      break;
+    }
+    // called by PaymentPage after a shipment has been successfully created
+    case 'CHANGE_CREATED_STATUS': {
+      state = {
+        ...initState,
       };
     }
   }

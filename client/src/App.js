@@ -58,22 +58,23 @@ class App extends Component {
             }
 
             // Populate the countries list, but ONLY if it hasn't already been loaded into state.
-            // TODO this doesn't work in firefox for some reason... wtf.
+            // TODO the line below doesn't work in firefox for some reason... wtf.
             // if (!appObject.props.countries.length && response.apiKey !== '') {
-            fetch(`http://localhost:3001/api/getCountries/${appObject.props.match.params.redirectkey}`)
-              .then((response2) => {
-                return response2.json();
-              })
-              .then((response3) => {
-                console.log(response3);
-                if (response3.status === 400) {
-                  console.log(response3.message);
-                }
-                appObject.props.addCountries(response3.countries);
-              })
-              .catch((error) => {
-                console.log('Ekki tókst að ná í landalista.', error);
-              });
+            // TODO uncomment fetch below when we include international shipments
+            // fetch(`http://localhost:3001/api/getCountries/${appObject.props.match.params.redirectkey}`)
+            //   .then((response2) => {
+            //     return response2.json();
+            //   })
+            //   .then((response3) => {
+            //     console.log(response3);
+            //     if (response3.status === 400) {
+            //       console.log(response3.message);
+            //     }
+            //     appObject.props.addCountries(response3.countries);
+            //   })
+            //   .catch((error) => {
+            //     console.log('Ekki tókst að ná í landalista.', error);
+            //   });
           // } // end if (!appObject.props.countries.length && response.apiKey !== '')
           } // end if (response.recipient && response.products)
         } // end else

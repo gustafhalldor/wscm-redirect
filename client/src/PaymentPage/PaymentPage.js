@@ -37,7 +37,6 @@ class PaymentPage extends Component {
     }
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
-    // let url = `http://localhost:8989/wscm/shipments/create`;
     const url = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
 
     const myHeaders = new Headers();
@@ -75,7 +74,7 @@ class PaymentPage extends Component {
 
           //TODO: EYÐA út úr localstorage
 
-          // Flag shipment as 'CREATED'
+          // Flag shipment as 'CREATED' on the backend.
           const url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
           const myHeaders2 = new Headers();
           myHeaders2.set('Content-Type', 'application/json');
@@ -139,7 +138,7 @@ class PaymentPage extends Component {
                   <tbody>
                     <tr>
                       <td>Nafn:</td>
-                      <td>{this.props.customer.fullName} langalangalanganafnið</td>
+                      <td>{this.props.customer.fullName}</td>
                     </tr>
                     <tr>
                       <td>Heimilisfang:</td>

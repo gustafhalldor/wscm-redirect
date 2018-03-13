@@ -1,4 +1,4 @@
-export default function transactionReducer(state = {
+const initState = {
   products: [],
   productsWeight: 0,
   productsPrice: 0,
@@ -12,7 +12,9 @@ export default function transactionReducer(state = {
   },
   noData: false,
   created: false,
-}, action) {
+};
+
+export default function transactionReducer(state = initState, action) {
   // eslint-disable-next-line
   switch (action.type) {
     case 'ADD_TRANSACTION_DETAILS': {
@@ -59,9 +61,10 @@ export default function transactionReducer(state = {
       };
       break;
     }
+    // Reset everything to initial state and flagging shipment created status to true
     case 'CHANGE_CREATED_STATUS': {
       state = {
-        ...state,
+        ...initState,
         created: action.payload,
       };
     }
