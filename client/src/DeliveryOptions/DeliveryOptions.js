@@ -16,7 +16,7 @@ class DeliveryOptions extends Component {
     // const countryCode = this.props.selectedCountry;
     // const postcode = this.props.customer.postcode;
     // const weight = this.props.totalWeight;
-    const [countryCode, postcode, weight] = [this.props.selectedCountry, this.props.customer.postcode, this.props.totalWeight];
+    const [countryCode, postcode, weight] = [this.props.customer.countryCode, this.props.customer.postcode, this.props.totalWeight];
 
     const url = `http://localhost:3001/api/getDeliveryPrices/${this.props.match.params.redirectkey}/${countryCode}/${postcode}/${weight}`;
 
@@ -220,8 +220,8 @@ function mapStateToProps(state) {
     selectedPostbox: state.deliveryOptions.selectedPostbox,
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
     fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
-    selectedCountry: state.deliveryOptions.selectedCountry,
-    created: state.transactionDetails.created,
+    selectedCountry: state.transactionDetails.customerInfo.countryCode,
+    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
   };
 }
 

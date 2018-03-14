@@ -11,7 +11,7 @@ const initState = {
     phone: '',
   },
   noData: false,
-  created: false,
+  shipmentCreatedAndPaidForSuccessfully: false,
 };
 
 export default function transactionReducer(state = initState, action) {
@@ -44,6 +44,16 @@ export default function transactionReducer(state = initState, action) {
       };
       break;
     }
+    case 'UPDATE_SELECTED_COUNTRY': {
+      state = {
+        ...state,
+        customerInfo: {
+          ...state.customerInfo,
+          countryCode: action.payload,
+        },
+      };
+      break;
+    }
     case 'RESET_STATE': {
       state = {
         products: [],
@@ -65,7 +75,7 @@ export default function transactionReducer(state = initState, action) {
     case 'CHANGE_CREATED_STATUS': {
       state = {
         ...initState,
-        created: action.payload,
+        shipmentCreatedAndPaidForSuccessfully: action.payload,
       };
     }
   }

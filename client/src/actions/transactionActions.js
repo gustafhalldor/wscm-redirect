@@ -25,3 +25,10 @@ export function changeCreatedStatus(status) {
     payload: status,
   };
 }
+
+export function updateSelectedCountry(country) {
+  return {
+    type: 'UPDATE_SELECTED_COUNTRY',
+    payload: country,
+  };
+}

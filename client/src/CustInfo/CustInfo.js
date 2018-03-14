@@ -3,13 +3,13 @@ import Validator from 'validator';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Field from './Field/Field';
-import addValidationError from '../actions/validationActions';
-import { updateCustomerInfo } from '../actions/transactionActions';
-import { updateSelectedCountry } from '../actions/deliveryOptionsActions';
+import { addValidationError } from '../actions/validationActions';
+import { updateCustomerInfo, updateSelectedCountry } from '../actions/transactionActions';
 import './custInfo.css';
 
 class CustInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {
+    console.log(fieldName, value, error);
     this.props.addValidationError({ fieldName, error }); // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
     this.props.updateCustomerInfo({ fieldName, value });
   }
@@ -76,15 +76,15 @@ class CustInfo extends Component {
   };
 
   render() {
-    // Populate the country selection element.
-    let countries = [];
-    if (this.props.countries) {
-      countries = this.props.countries.map((country, i) => {
-        return (
-          <option key={i} value={country.countryCode}>{country.nameShort}</option>
-        );
-      });
-    }
+    // TODO: Uncomment to populate the country selection element when we allow international shipments.
+    // let countries = [];
+    // if (this.props.countries) {
+    //   countries = this.props.countries.map((country, i) => {
+    //     return (
+    //       <option key={i} value={country.countryCode}>{country.nameShort}</option>
+    //     );
+    //   });
+    // }
 
     return (
       <div className="leftSide col-md-8">
@@ -184,6 +184,7 @@ function mapStateToProps(state) {
   return {
     inputErrors: state.customerInfoValidation.inputErrors,
     products: state.transactionDetails.products,
+    selectedCountry: state.transactionDetails.customerInfo.countryCode,
   };
 }
 

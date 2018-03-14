@@ -5,6 +5,7 @@ import CustInfo from './CustInfo/CustInfo';
 import BasketContents from './BasketContents/BasketContents';
 import { changeNoDataStatus, changeCreatedStatus, addTransactionDetails } from './actions/transactionActions';
 import { addCountries } from './actions/deliveryOptionsActions';
+import { resetValidation } from './actions/validationActions';
 import './App.css';
 
 class App extends Component {
@@ -35,7 +36,7 @@ class App extends Component {
           appObject.props.changeCreatedStatus(true);
         } else {
           appObject.props.changeCreatedStatus(false);
-
+          //appObject.props.resetValidation();
           if (response.recipient && response.products) {
             let totalWeight = 0;
             let totalPrice = 0;
@@ -149,9 +150,9 @@ function mapStateToProps(state) {
     totalPrice: state.transactionDetails.productsPrice,
     totalWeight: state.transactionDetails.productsWeight,
     countries: state.deliveryOptions.countries,
-    selectedCountry: state.deliveryOptions.selectedCountry,
+    selectedCountry: state.transactionDetails.customerInfo.countryCode,
     noDataStatus: state.transactionDetails.noData,
-    created: state.transactionDetails.created,
+    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
   };
 }
 
@@ -162,6 +163,7 @@ function matchDispatchToProps(dispatch) {
     addCountries,
     changeNoDataStatus,
     changeCreatedStatus,
+    resetValidation,
   }, dispatch);
 }
 

@@ -33,13 +33,6 @@ export function addCountries(countries) {
   };
 }
 
-export function updateSelectedCountry(country) {
-  return {
-    type: 'UPDATE_SELECTED_COUNTRY',
-    payload: country,
-  };
-}
-
 export function addDeliveryOptionsError(error) {
   return {
     type: 'ADD_DELIVERY_OPTIONS_ERROR',
