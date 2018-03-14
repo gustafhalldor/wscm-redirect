@@ -144,7 +144,16 @@ class CustInfo extends Component {
             value={this.props.customer.email}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.email}
-            validate={(val) => (Validator.isEmail(val) ? false : 'Invalid Email')}
+            validate={(val) => {
+              if (val.length === 0) {
+                return false;
+              }
+              if (Validator.isEmail(val)) {
+                return false;
+              }
+              return 'Invalid Email';
+            }
+          }
           />
           <br />
           <Field
