@@ -43,12 +43,22 @@ class App extends Component {
               totalWeight += response.products[i].weight;
               totalPrice += response.products[i].price;
             }
+
+            // If no customer info was passed from the store, then it got saved as
+            // 'null' in the DB. So, we have to handle those nulls.
+            const recipient = {};
+            Object.keys(response.recipient).forEach((key) => {
+              if (response.recipient[key] === null) {
+                response.recipient[key] = '';
+              }
+              recipient[key] = response.recipient[key];
+            });
+
             const transactionObject = {
-              apiKey: response.apiKey,
               products: response.products,
               productsWeight: totalWeight,
               productsPrice: totalPrice,
-              customerInfo: response.recipient,
+              customerInfo: recipient,
             };
             // Only try to update with info from DB if required fields are empty.
             // Otherwise use application state.
