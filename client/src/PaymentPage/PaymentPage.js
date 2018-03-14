@@ -13,6 +13,9 @@ import './PaymentPage.css';
 
 class PaymentPage extends Component {
   componentDidMount() {
+    if (this.props.created) {
+      return;
+    }
     Payment.formatCardNumber(document.querySelector('[name="number"]'));
     Payment.formatCardExpiry(document.querySelector('[name="expiry"]'));
     Payment.formatCardCVC(document.querySelector('[name="cvc"]'));
@@ -68,13 +71,11 @@ class PaymentPage extends Component {
       })
       .then((response) => {
         if (response.status === 201) {
-          toast('Sending hefur verið búin til !', { type: 'success' });
+        //  toast('Sending hefur verið búin til !', { type: 'success' });
 
           this.props.changeCreatedStatus(true);
 
-          //TODO: EYÐA út úr localstorage
-
-          // Flag shipment as 'CREATED' on the backend.
+          // START flag shipment as 'CREATED' on the backend.
           const url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
           const myHeaders2 = new Headers();
           myHeaders2.set('Content-Type', 'application/json');
@@ -93,9 +94,17 @@ class PaymentPage extends Component {
               console.log(response2.status);
               return response2.status;
             });
+          // END flag shipment as 'CREATED' on the backend.
+        // END if
         } else {
           console.log(response.message);
         }
+
+        const location = {
+          pathname: `/${this.props.match.params.redirectkey}/final`,
+        };
+
+        this.props.history.push(location);
       })
       .catch((error) => {
         console.log('Tókst ekki að búa til sendingu.', error);
@@ -103,6 +112,17 @@ class PaymentPage extends Component {
   }
 
   render() {
+    // If shipment has already been created from this redirect key
+    if (this.props.created) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Sending hefur nú þegar verið búin til.</h2>
+          </main>
+        </div>
+      );
+    }
+
     const { number, name, expiry, cvc, focused } = this.props.ccDetails;
     const deliveryOptionsPageUrl = `/${this.props.match.params.redirectkey}/deliveryOptions`;
 
@@ -216,7 +236,7 @@ class PaymentPage extends Component {
           </div>
         </div>
         <div className="flex-container-row paymentPageButtons">
-          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton">Til baka</button></Link>
+          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton">Til baka í sendingarmáta</button></Link>
           <button className="btn primary" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
         </div>
       </div>
@@ -256,8 +276,8 @@ function mapStateToProps(state) {
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
     customer: state.transactionDetails.customerInfo,
-    created: state.transactionDetails.created,
-    selectedCountry: state.deliveryOptions.selectedCountry,
+    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
+    selectedCountry: state.transactionDetails.customerInfo.countryCode,
   };
 }
 

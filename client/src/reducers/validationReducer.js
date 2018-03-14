@@ -1,4 +1,4 @@
-export default function validationReducer(state = {
+const initState = {
   inputErrors: {
     fullName: false,
     address: false,
@@ -7,7 +7,9 @@ export default function validationReducer(state = {
     email: false,
     phone: false,
   },
-}, action) {
+};
+
+export default function validationReducer(state = initState, action) {
   // eslint-disable-next-line
   switch (action.type) {
     case 'ADD_VALIDATION_ERROR': {
@@ -17,6 +19,11 @@ export default function validationReducer(state = {
           ...state.inputErrors,
           [action.payload.fieldName]: action.payload.error,
         },
+      };
+    }
+    case 'RESET_VALIDATION': {
+      state = {
+        initState,
       };
     }
   }
