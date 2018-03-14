@@ -12,6 +12,8 @@ const initState = {
   },
   noData: false,
   shipmentCreatedAndPaidForSuccessfully: false,
+  isSenderRecipient: false,
+  senderEmailAddress: '',
 };
 
 export default function transactionReducer(state = initState, action) {
@@ -76,6 +78,20 @@ export default function transactionReducer(state = initState, action) {
       state = {
         ...initState,
         shipmentCreatedAndPaidForSuccessfully: action.payload,
+      };
+      break;
+    }
+    case 'CHANGE_IS_SENDER_RECIPIENT': {
+      state = {
+        ...state,
+        isSenderRecipient: !state.isSenderRecipient,
+      };
+      break;
+    }
+    case 'CHANGE_SENDER_EMAIL_ADDRESS': {
+      state = {
+        ...state,
+        senderEmailAddress: action.payload,
       };
     }
   }

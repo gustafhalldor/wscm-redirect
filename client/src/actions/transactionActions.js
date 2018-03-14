@@ -32,3 +32,16 @@ export function updateSelectedCountry(country) {
     payload: country,
   };
 }
+
+export function changeIsSenderRecipient() {
+  return {
+    type: 'CHANGE_IS_SENDER_RECIPIENT',
+  };
+}
+
+export function changeSenderEmailAddress(email) {
+  return {
+    type: 'CHANGE_SENDER_EMAIL_ADDRESS',
+    payload: email,
+  };
+}
