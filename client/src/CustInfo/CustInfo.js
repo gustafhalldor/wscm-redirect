@@ -3,7 +3,7 @@ import Validator from 'validator';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Field from './Field/Field';
-import { addValidationError } from '../actions/validationActions';
+import addValidationError from '../actions/validationActions';
 import { updateCustomerInfo, updateSelectedCountry } from '../actions/transactionActions';
 import './custInfo.css';
 

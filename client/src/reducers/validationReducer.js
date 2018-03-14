@@ -21,11 +21,6 @@ export default function validationReducer(state = initState, action) {
         },
       };
     }
-    case 'RESET_VALIDATION': {
-      state = {
-        initState,
-      };
-    }
   }
   return state;
 }
