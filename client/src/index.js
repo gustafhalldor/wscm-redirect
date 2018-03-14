@@ -7,6 +7,7 @@ import App from './App';
 import Header from './Header/Header';
 import DeliveryOptions from './DeliveryOptions/DeliveryOptions';
 import PaymentPage from './PaymentPage/PaymentPage';
+import FinalPage from './FinalPage/FinalPage';
 import registerServiceWorker from './registerServiceWorker';
 import reduxStore from './store'; // The Redux store
 import './index.css';
@@ -24,6 +25,7 @@ ReactDOM.render(
             <Route path="/:redirectkey" exact component={App} />
             <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions} />
             <Route path="/:redirectkey/payment" exact component={PaymentPage} />
+            <Route path="/:redirectkey/final" exact component={FinalPage} />
           </Switch>
         </main>
       </Router>
