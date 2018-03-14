@@ -154,7 +154,22 @@ class CustInfo extends Component {
             value={this.props.customer.phone}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.phone}
-            validate={val => ((Validator.isNumeric(val) && val.length < 8) ? false : 'Símanúmer eru 7 tölustafir')}
+            validate={(val) => {
+              // Check if input is empty. If so, all is good.
+              if (val.length === 0) {
+                return false;
+              }
+              // Check if input consists only of numbers and doesn't exceed 7 digits.
+              if (Validator.isNumeric(val) && val.length < 8) {
+                // Check if input is a legit mobile phone number.
+                if (val.substr(0, 1) !== '6' && val.substr(0, 1) !== '7' && val.substr(0, 1) !== '8') {
+                  return 'Farsímar byrja á 6, 7 eða 8';
+                }
+                return false;
+              }
+              return 'Símanúmer eru 7 tölustafir';
+            }
+          }
           />
           <span className="redAsterix">*</span><span>Nauðsynlegt að fylla út</span>
           <br />
