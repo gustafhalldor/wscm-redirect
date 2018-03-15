@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
 import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions';
-import { changeCreatedStatus } from '../actions/transactionActions';
+import { changeCreatedStatus, changeIsSenderRecipient, changeSenderEmailAddress } from '../actions/transactionActions';
 import './PaymentPage.css';
 
 class PaymentPage extends Component {
@@ -25,13 +25,21 @@ class PaymentPage extends Component {
     evt.preventDefault();
   }
 
-  handleInputFocus = ({ target }) => {
+  handleCcInputFocus = ({ target }) => {
     this.props.updateFocusedField(target.name);
   };
 
-  handleInputChange = ({ target }) => {
+  handleCcInputChange = ({ target }) => {
     this.props.updateCcDetails(target);
   };
+
+  handleCheckboxChange = () => {
+    this.props.changeIsSenderRecipient();
+  }
+
+  handleEmailChange = ({ target }) => {
+    this.props.changeSenderEmailAddress(target.value);
+  }
 
   handleConfirmClick = () => {
     if (this.props.created) {
@@ -132,49 +140,68 @@ class PaymentPage extends Component {
           <div className="paymentPageLeftSide">
             <div className="flex-container-column costReview">
               <h3>Kostnaður:</h3>
-          {/*    <div className="table-responsive">  */}
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <td>Vörur:</td>
-                      <td>{this.props.basketPrice} kr.</td>
-                    </tr>
-                    <tr>
-                      <td>Sendingarmáti:</td>
-                      <td>{this.props.selectedOption.price} kr.</td>
-                    </tr>
-                    <tr>
-                      <td>Samtals:</td>
-                      <td>{this.props.basketPrice + this.props.selectedOption.price} kr.</td>
-                    </tr>
-                  </tbody>
-                </table>
-          {/*    </div> */}
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Vörur:</td>
+                    <td>{this.props.basketPrice} kr.</td>
+                  </tr>
+                  <tr>
+                    <td>Sendingarmáti:</td>
+                    <td>{this.props.selectedOption.price} kr.</td>
+                  </tr>
+                  <tr>
+                    <td>Samtals:</td>
+                    <td>{this.props.basketPrice + this.props.selectedOption.price} kr.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div className="flex-container-column recipientReview">
               <h3>Berist til:</h3>
-          {/*     <div className="table-responsive">  */}
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <td>Nafn:</td>
-                      <td>{this.props.customer.fullName}</td>
-                    </tr>
-                    <tr>
-                      <td>Heimilisfang:</td>
-                      <td>{this.props.customer.address}</td>
-                    </tr>
-                    <tr>
-                      <td>Póstnúmer:</td>
-                      <td>{this.props.customer.postcode}</td>
-                    </tr>
-                    <tr>
-                      <td>Land:</td>
-                      <td>{this.props.selectedCountry}</td>
-                    </tr>
-                  </tbody>
-                </table>
-          {/*    </div>  */}
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Nafn:</td>
+                    <td>{this.props.customer.fullName}</td>
+                  </tr>
+                  <tr>
+                    <td>Heimilisfang:</td>
+                    <td>{this.props.customer.address}</td>
+                  </tr>
+                  <tr>
+                    <td>Póstnúmer:</td>
+                    <td>{this.props.customer.postcode}</td>
+                  </tr>
+                  <tr>
+                    <td>Land:</td>
+                    <td>{this.props.selectedCountry}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex-container-column">
+              <div>
+                <label className="senderNotRecipientLabel" htmlFor="senderNotRecipientCheckbox">Sendandi er EKKI viðtakandi</label>
+                <input
+                  type="checkbox"
+                  id="senderNotRecipientCheckbox"
+                  name="senderNotRecipientCheckbox"
+                  onChange={this.handleCheckboxChange}
+                  checked={this.props.senderCheckbox}
+                />
+              </div>
+              {this.props.senderCheckbox &&
+                <div className="flex-container-column">
+                  <input
+                    type="text"
+                    placeholder="joi@island.is"
+                    onChange={this.handleEmailChange}
+                    value={this.props.senderEmailAddress}
+                  />
+                  <span>Kvittun verður send á ofangreint tölvupóstfang.</span>
+                </div>
+              }
             </div>
           </div>
           <div className="paymentPageRightSide">
@@ -196,8 +223,8 @@ class PaymentPage extends Component {
                     type="tel"
                     name="number"
                     placeholder="Card Number"
-                    onKeyUp={this.handleInputChange}
-                    onFocus={this.handleInputFocus}
+                    onKeyUp={this.handleCcInputChange}
+                    onFocus={this.handleCcInputFocus}
                   />
                 </div>
                 <div>
@@ -206,8 +233,8 @@ class PaymentPage extends Component {
                     type="text"
                     name="name"
                     placeholder="Name"
-                    onKeyUp={this.handleInputChange}
-                    onFocus={this.handleInputFocus}
+                    onKeyUp={this.handleCcInputChange}
+                    onFocus={this.handleCcInputFocus}
                   />
                 </div>
                 <div>
@@ -216,8 +243,8 @@ class PaymentPage extends Component {
                     type="tel"
                     name="expiry"
                     placeholder="Valid Thru"
-                    onKeyUp={this.handleInputChange}
-                    onFocus={this.handleInputFocus}
+                    onKeyUp={this.handleCcInputChange}
+                    onFocus={this.handleCcInputFocus}
                   />
                 </div>
                 <div>
@@ -226,8 +253,8 @@ class PaymentPage extends Component {
                     type="tel"
                     name="cvc"
                     placeholder="CVC"
-                    onKeyUp={this.handleInputChange}
-                    onFocus={this.handleInputFocus}
+                    onKeyUp={this.handleCcInputChange}
+                    onFocus={this.handleCcInputFocus}
                   />
                 </div>
               </form>
@@ -278,6 +305,8 @@ function mapStateToProps(state) {
     customer: state.transactionDetails.customerInfo,
     created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
     selectedCountry: state.transactionDetails.customerInfo.countryCode,
+    senderCheckbox: state.transactionDetails.isSenderRecipient,
+    senderEmailAddress: state.transactionDetails.senderEmailAddress,
   };
 }
 
@@ -286,6 +315,8 @@ function matchDispatchToProps(dispatch) {
     updateCcDetails,
     updateFocusedField,
     changeCreatedStatus,
+    changeIsSenderRecipient,
+    changeSenderEmailAddress,
   }, dispatch);
 }
 
