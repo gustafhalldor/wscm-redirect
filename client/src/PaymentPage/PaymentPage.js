@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
-import { updateCcDetails, updateFocusedField } from '../actions/creditCardActions';
+import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changeIsSenderRecipient, changeSenderEmailAddress } from '../actions/transactionActions';
 import './PaymentPage.css';
 
@@ -25,11 +25,28 @@ class PaymentPage extends Component {
     evt.preventDefault();
   }
 
+  // helper function for checkCcExpiryDateValidation
+  getCurrentMonthAndYear = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    return { month, year };
+  }
+
   handleCcInputFocus = ({ target }) => {
     this.props.updateFocusedField(target.name);
   };
 
   handleCcInputChange = ({ target }) => {
+    if (target.name === 'name') {
+      this.checkCcNameValidation(target.value);
+    }
+    if (target.name === 'expiry') {
+      this.checkCcExpiryDateValidation(target.value);
+    }
+    if (target.name === 'cvc') {
+      this.checkCcCvcValidation(target.value);
+    }
     this.props.updateCcDetails(target);
   };
 
@@ -41,10 +58,83 @@ class PaymentPage extends Component {
     this.props.changeSenderEmailAddress(target.value);
   }
 
+  checkCcNumberValidation = (type, isValid) => {
+    let message = '';
+    if (!isValid) {
+      message = 'Kortanúmer er ekki gilt';
+    }
+
+    this.props.updateFieldError({ name: 'number', value: isValid, errorMessage: message });
+  }
+
+  checkCcNameValidation = (value) => {
+    // tjekka hvort það sé eitthvað skrifað inní name fieldið
+    let isValid = false;
+    if (value !== '') {
+      isValid = true;
+    }
+
+    let message = '';
+    if (isValid !== this.props.isCcFieldValid.name) {
+      if (!isValid) {
+        message = 'Skrifaðu nafn korthafa';
+      }
+
+      this.props.updateFieldError({ name: 'name', value: isValid, errorMessage: message })
+    }
+  }
+
+  checkCcExpiryDateValidation = (value) => {
+    let isValid = false;
+    let message = '';
+
+    // legal inputs are either 'mm / yy' or 'mm / yyyy'
+    if (value.length === 7 || value.length === 9) {
+      isValid = true;
+      const splitValue = value.split(' / ');
+      const inputMonth = parseInt(splitValue[0], 10);
+      let inputYearString = splitValue[1];
+      if (inputYearString.length === 2) inputYearString = `20${inputYearString}`;
+      const inputYearNumber = parseInt(inputYearString, 10);
+      const { month, year } = this.getCurrentMonthAndYear();
+
+      if (inputYearNumber < year || (year === inputYearNumber && inputMonth < month)) {
+        message = 'Kort virðist vera útrunnið...';
+        isValid = false;
+      }
+    } else {
+      isValid = false;
+      message = 'Athugaðu gildistíma kortsins';
+    }
+
+    this.props.updateFieldError({ name: 'expiry', value: isValid, errorMessage: message });
+  }
+
+  checkCcCvcValidation = (value) => {
+    let isValid = false;
+    let message = '';
+    if (value !== '') {
+      if (value.length > 0 && value.length < 3) {
+        message = 'Öryggisnúmer eru 3-4 tölustafir';
+        isValid = false;
+      } else isValid = true;
+    } else message = 'Vantar öryggisnúmer';
+
+    this.props.updateFieldError({ name: 'cvc', value: isValid, errorMessage: message });
+  }
+
   handleConfirmClick = () => {
+    // Ætti aldrei að gerast, eeeen allt í lagi að hafa þetta inni
     if (this.props.created) {
       toast('Sending hefur nú þegar verið búin til !', { type: 'warning' });
       return;
+    }
+    this.props.clickedSubmitButton(true);
+
+    // athuga breytur sem halda utan um hvort innsláttur sé gildur eða ekki
+    // hlaupa í gegnum error objectinn og ef einhver þeirra er false þá returna
+    for (const key of Object.keys(this.props.isCcFieldValid)) {
+      if(this.props.isCcFieldValid[key] === false) return;
     }
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
@@ -108,10 +198,11 @@ class PaymentPage extends Component {
           console.log(response.message);
         }
 
+//        this.props.clickedSubmitButton(false);
+
         const location = {
           pathname: `/${this.props.match.params.redirectkey}/final`,
         };
-
         this.props.history.push(location);
       })
       .catch((error) => {
@@ -129,6 +220,16 @@ class PaymentPage extends Component {
           </main>
         </div>
       );
+    }
+
+    // If there is a problem with the CC input we aggregate them into a bullet list
+    let errorMessages = [];
+    for (const key in this.props.errorMessages) {
+      if (this.props.isCcFieldValid[key] === false) {
+        errorMessages.push(
+          <li key={key}>{this.props.errorMessages[key]}</li>
+        )
+      }
     }
 
     const { number, name, expiry, cvc, focused } = this.props.ccDetails;
@@ -195,7 +296,7 @@ class PaymentPage extends Component {
                 <div className="flex-container-column">
                   <input
                     type="text"
-                    placeholder="joi@island.is"
+                    placeholder="gudni@island.is"
                     onChange={this.handleEmailChange}
                     value={this.props.senderEmailAddress}
                   />
@@ -213,9 +314,10 @@ class PaymentPage extends Component {
                 expiry={expiry}
                 cvc={cvc}
                 focused={focused}
+                callback={this.checkCcNumberValidation}
               />
             </div>
-            <div className="creditCardForm ">
+            <div className="creditCardForm">
               <form onSubmit={this.onFormSubmit}>
                 <div>
                   <input
@@ -263,8 +365,11 @@ class PaymentPage extends Component {
           </div>
         </div>
         <div className="flex-container-row paymentPageButtons">
-          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton">Til baka í sendingarmáta</button></Link>
-          <button className="btn primary" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
+          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton paymentPageButton">Til baka í sendingarmáta</button></Link>
+          <button className="btn primary paymentPageButton" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
+        </div>
+        <div className="flex-container-column paymentPageErrorMessages">
+          {this.props.wasSubmitButtonJustClicked ? errorMessages : ''}
         </div>
       </div>
     );
@@ -307,6 +412,9 @@ function mapStateToProps(state) {
     selectedCountry: state.transactionDetails.customerInfo.countryCode,
     senderCheckbox: state.transactionDetails.isSenderRecipient,
     senderEmailAddress: state.transactionDetails.senderEmailAddress,
+    isCcFieldValid: state.creditCard.inputIsValid,
+    errorMessages: state.creditCard.inputErrorMessages,
+    wasSubmitButtonJustClicked: state.creditCard.submitButtonClicked,
   };
 }
 
@@ -317,6 +425,8 @@ function matchDispatchToProps(dispatch) {
     changeCreatedStatus,
     changeIsSenderRecipient,
     changeSenderEmailAddress,
+    updateFieldError,
+    clickedSubmitButton,
   }, dispatch);
 }
 

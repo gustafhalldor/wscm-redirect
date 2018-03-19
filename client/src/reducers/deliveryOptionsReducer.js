@@ -66,9 +66,12 @@ export default function deliveryOptionsReducer(state = initState, action) {
     }
     // called by PaymentPage after a shipment has been successfully created
     case 'CHANGE_CREATED_STATUS': {
-      state = {
-        ...initState,
-      };
+      if (action.payload === true) {
+        state = {
+          ...initState,
+        };
+      }
+      break;
     }
   }
   return state;
