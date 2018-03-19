@@ -13,12 +13,15 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
-
 }
 
 .paymentPageButtons {
-  justify-content: space-evenly;
+  justify-content: center;
   margin-bottom: 1em;
+}
+
+.paymentPageButton {
+  margin: 0.25em;
 }
 
 .paymentPageOptionsBackButton {
@@ -82,4 +85,8 @@
 
 .senderNotRecipientLabel {
   margin-right: 0.5em;
+}
+
+.paymentPageErrorMessages {
+  margin: 0 auto 1em;
 }

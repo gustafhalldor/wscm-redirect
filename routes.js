@@ -73,7 +73,6 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
   })
     .then(response => {
       // response.data is the shipment that got created.
-      console.log(response.status);
       const obj = {
         status: response.status,
         body: response.data,
