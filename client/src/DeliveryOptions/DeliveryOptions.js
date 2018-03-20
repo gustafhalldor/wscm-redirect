@@ -66,7 +66,7 @@ class DeliveryOptions extends Component {
       return;
     }
 
-    const url = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}/updateShippingOption`;
+    const url = `http://localhost:8989/wscm/landing/v1/${this.props.match.params.redirectkey}/updateShippingOption`;
 
     const myHeaders = new Headers();
     myHeaders.set('Content-Type', 'application/json');

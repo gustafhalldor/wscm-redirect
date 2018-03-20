@@ -12,7 +12,7 @@ class App extends Component {
   componentDidMount = () => {
     const appObject = this;
 
-    fetch(`http://localhost:8989/wscm/landing/${appObject.props.match.params.redirectkey}`)
+    fetch(`http://localhost:8989/wscm/landing/v1/${appObject.props.match.params.redirectkey}`)
       .then((response) => {
         // if status is 404 then there is nothing behind the redirect key
         // and we shouldn't display anything
@@ -123,7 +123,7 @@ class App extends Component {
 
     return (
       <div className="container">
-        <main className="flex-container-row">
+        <main className="flex-container-row justify-center">
           <CustInfo
             customer={this.props.customer}
             redirectkey={this.props.match.params.redirectkey}
