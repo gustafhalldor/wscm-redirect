@@ -33,9 +33,9 @@ export function updateSelectedCountry(country) {
   };
 }
 
-export function changeIsSenderRecipient() {
+export function changeSenderIsNotRecipient() {
   return {
-    type: 'CHANGE_IS_SENDER_RECIPIENT',
+    type: 'CHANGE_SENDER_IS_NOT_RECIPIENT',
   };
 }
 
@@ -43,5 +43,12 @@ export function changeSenderEmailAddress(email) {
   return {
     type: 'CHANGE_SENDER_EMAIL_ADDRESS',
     payload: email,
+  };
+}
+
+export function updateSenderEmailAddressValidation(update) {
+  return {
+    type: 'UPDATE_SENDER_EMAIL_ADDRESS_VALIDATION',
+    payload: update,
   };
 }

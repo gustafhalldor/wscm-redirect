@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Cards from 'react-credit-cards';
 import Payment from 'payment';
+import Validator from 'validator';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import PropTypes from 'prop-types';
@@ -8,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
-import { changeCreatedStatus, changeIsSenderRecipient, changeSenderEmailAddress } from '../actions/transactionActions';
+import { changeCreatedStatus, changeSenderIsNotRecipient, changeSenderEmailAddress, updateSenderEmailAddressValidation } from '../actions/transactionActions';
 import './PaymentPage.css';
 
 class PaymentPage extends Component {
@@ -51,11 +52,24 @@ class PaymentPage extends Component {
   };
 
   handleCheckboxChange = () => {
-    this.props.changeIsSenderRecipient();
+    this.props.changeSenderIsNotRecipient();
   }
 
   handleEmailChange = ({ target }) => {
-    this.props.changeSenderEmailAddress(target.value);
+    const value = target.value;
+    console.log(value);
+    let errorMessage = '';
+    let isValid = false;
+    if (Validator.isEmail(value)) {
+      isValid = true;
+    } else {
+      if (value.length === 0) {
+        errorMessage = 'Vantar tölvupóstfang';
+      } else errorMessage = 'Ekki á réttu formi';
+    }
+
+    this.props.updateSenderEmailAddressValidation({ isValid, errorMessage })
+    this.props.changeSenderEmailAddress(value);
   }
 
   checkCcNumberValidation = (type, isValid) => {
@@ -135,6 +149,10 @@ class PaymentPage extends Component {
     // hlaupa í gegnum error objectinn og ef einhver þeirra er false þá returna
     for (const key of Object.keys(this.props.isCcFieldValid)) {
       if(this.props.isCcFieldValid[key] === false) return;
+    }
+    // sama á við um hvort email sendanda sé gilt...
+    if (this.props.senderCheckbox && !this.props.senderEmailAddressIsValid) {
+      return;
     }
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
@@ -228,8 +246,13 @@ class PaymentPage extends Component {
       if (this.props.isCcFieldValid[key] === false) {
         errorMessages.push(
           <li key={key}>{this.props.errorMessages[key]}</li>
-        )
+        );
       }
+    }
+    if (this.props.senderCheckbox && !this.props.senderEmailAddressIsValid) {
+      errorMessages.push(
+        <li key="email">{this.props.senderEmailAddressErrorMessage}</li>
+      );
     }
 
     const { number, name, expiry, cvc, focused } = this.props.ccDetails;
@@ -410,8 +433,10 @@ function mapStateToProps(state) {
     customer: state.transactionDetails.customerInfo,
     created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
     selectedCountry: state.transactionDetails.customerInfo.countryCode,
-    senderCheckbox: state.transactionDetails.isSenderRecipient,
+    senderCheckbox: state.transactionDetails.senderIsNotRecipient,
     senderEmailAddress: state.transactionDetails.senderEmailAddress,
+    senderEmailAddressIsValid: state.transactionDetails.senderEmailAddressIsValid,
+    senderEmailAddressErrorMessage: state.transactionDetails.senderEmailAddressErrorMessage,
     isCcFieldValid: state.creditCard.inputIsValid,
     errorMessages: state.creditCard.inputErrorMessages,
     wasSubmitButtonJustClicked: state.creditCard.submitButtonClicked,
@@ -423,10 +448,11 @@ function matchDispatchToProps(dispatch) {
     updateCcDetails,
     updateFocusedField,
     changeCreatedStatus,
-    changeIsSenderRecipient,
+    changeSenderIsNotRecipient,
     changeSenderEmailAddress,
     updateFieldError,
     clickedSubmitButton,
+    updateSenderEmailAddressValidation,
   }, dispatch);
 }
 

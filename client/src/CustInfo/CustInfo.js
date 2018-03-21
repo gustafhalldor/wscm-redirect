@@ -151,7 +151,7 @@ class CustInfo extends Component {
               if (Validator.isEmail(val)) {
                 return false;
               }
-              return 'Invalid Email';
+              return 'Ekki á réttu formi';
             }
           }
           />
@@ -182,7 +182,7 @@ class CustInfo extends Component {
           />
           <span className="redAsterix">*</span><span>Nauðsynlegt að fylla út</span>
           <br />
-          <input type="submit" value="Áfram á næsta skref" disabled={this.validate()} />
+          <input className="btn" type="submit" value="Áfram á næsta skref" disabled={this.validate()} />
         </form>
       </div>
     );

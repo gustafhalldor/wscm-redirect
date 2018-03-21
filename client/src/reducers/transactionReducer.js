@@ -12,8 +12,10 @@ const initState = {
   },
   noData: false,
   shipmentCreatedAndPaidForSuccessfully: false,
-  isSenderRecipient: false,
+  senderIsNotRecipient: false,
   senderEmailAddress: '',
+  senderEmailAddressIsValid: false,
+  senderEmailAddressErrorMessage: 'Tölvupóstfang er ekki á réttu formi',
 };
 
 export default function transactionReducer(state = initState, action) {
@@ -81,10 +83,10 @@ export default function transactionReducer(state = initState, action) {
       };
       break;
     }
-    case 'CHANGE_IS_SENDER_RECIPIENT': {
+    case 'CHANGE_SENDER_IS_NOT_RECIPIENT': {
       state = {
         ...state,
-        isSenderRecipient: !state.isSenderRecipient,
+        senderIsNotRecipient: !state.senderIsNotRecipient,
       };
       break;
     }
@@ -92,6 +94,14 @@ export default function transactionReducer(state = initState, action) {
       state = {
         ...state,
         senderEmailAddress: action.payload,
+      };
+      break;
+    }
+    case 'UPDATE_SENDER_EMAIL_ADDRESS_VALIDATION': {
+      state = {
+        ...state,
+        senderEmailAddressIsValid: action.payload.isValid,
+        senderEmailAddressErrorMessage: action.payload.errorMessage,
       };
     }
   }
