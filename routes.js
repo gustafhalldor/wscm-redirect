@@ -64,6 +64,27 @@ router.get('/getPostboxes/:redirectkey', (req, res, next) => {
     })
 });
 
+router.put('/updateEmail/:redirectkey', (req, res, next) => {
+  console.log("req.body er:");
+  console.log(req.body);
+  axios({
+    method: 'put',
+    url: `http://localhost:8989/wscm/landing/v1/${req.params.redirectkey}/updateSenderEmail`,
+    data: req.body,
+  })
+    .then(response => {
+      res.sendStatus(response.status);
+    })
+    .catch(error => {
+      // If no API key is found behind the redirect key, a "400" status is returned.
+      const obj = {
+        status: error.response.status,
+        message: error.response.data.message,
+      }
+      res.send(obj);
+    })
+});
+
 router.post('/createShipment/:redirectkey', (req, res, next) => {
   axios({
     method: 'post',

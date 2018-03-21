@@ -37,10 +37,8 @@ class App extends Component {
           appObject.props.changeCreatedStatus(false);
 
           if (response.recipient && response.products) {
-            let totalWeight = 0;
             let totalPrice = 0;
             for (let i = 0; i < response.products.length; i++) {
-              totalWeight += response.products[i].weight;
               totalPrice += response.products[i].price;
             }
 
@@ -56,7 +54,7 @@ class App extends Component {
 
             const transactionObject = {
               products: response.products,
-              productsWeight: totalWeight,
+              productsWeight: response.totalWeight,
               productsPrice: totalPrice,
               customerInfo: recipient,
             };

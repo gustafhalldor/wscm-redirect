@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
+import { saveCustomerEmailAddress } from './PaymentPageHelpers'
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changeSenderIsNotRecipient, changeSenderEmailAddress, updateSenderEmailAddressValidation } from '../actions/transactionActions';
 import './PaymentPage.css';
@@ -145,21 +146,24 @@ class PaymentPage extends Component {
     }
     this.props.clickedSubmitButton(true);
 
+
     // athuga breytur sem halda utan um hvort innsláttur sé gildur eða ekki
     // hlaupa í gegnum error objectinn og ef einhver þeirra er false þá returna
     for (const key of Object.keys(this.props.isCcFieldValid)) {
       if(this.props.isCcFieldValid[key] === false) return;
     }
-    // sama á við um hvort email sendanda sé gilt...
+    // sama á við um hvort email viðskiptavinar sé gilt...
     if (this.props.senderCheckbox && !this.props.senderEmailAddressIsValid) {
       return;
     }
 
-    // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
-    const url = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
+    saveCustomerEmailAddress(this.props.match.params.redirectkey, this.props.senderEmailAddress);
 
     const myHeaders = new Headers();
     myHeaders.set('Content-Type', 'application/json');
+
+    // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
+    const createShipmentUrl = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
 
     const shipment = {
       recipient: {
@@ -173,15 +177,15 @@ class PaymentPage extends Component {
       },
     };
 
-    const myInit = {
+    const myShipmentInit = {
       method: 'POST',
       body: JSON.stringify(shipment),
       headers: myHeaders,
     };
 
-    const request = new Request(url, myInit);
+    const shipmentRequest = new Request(createShipmentUrl, myShipmentInit);
 
-    fetch(request)
+    fetch(shipmentRequest)
       .then((response) => {
         return response.json();
       })
@@ -192,7 +196,7 @@ class PaymentPage extends Component {
           this.props.changeCreatedStatus(true);
 
           // START flag shipment as 'CREATED' on the backend.
-          const url2 = `http://localhost:8989/wscm/landing/${this.props.match.params.redirectkey}`;
+          const url2 = `http://localhost:8989/wscm/landing/v1/${this.props.match.params.redirectkey}`;
           const myHeaders2 = new Headers();
           myHeaders2.set('Content-Type', 'application/json');
           const status = true;
@@ -207,16 +211,15 @@ class PaymentPage extends Component {
 
           fetch(request2)
             .then((response2) => {
-              console.log(response2.status);
-              return response2.status;
-            });
+              if (response2.status !== 200) {
+                console.log('Ekki tókst að merkja sendingu sem "Created"');
+              }
+            })
           // END flag shipment as 'CREATED' on the backend.
         // END if
         } else {
           console.log(response.message);
         }
-
-//        this.props.clickedSubmitButton(false);
 
         const location = {
           pathname: `/${this.props.match.params.redirectkey}/final`,
