@@ -33,22 +33,22 @@ export function updateSelectedCountry(country) {
   };
 }
 
-export function changeSenderIsNotRecipient() {
+export function changepayerIsNotRecipient() {
   return {
-    type: 'CHANGE_SENDER_IS_NOT_RECIPIENT',
+    type: 'CHANGE_PAYER_IS_NOT_RECIPIENT',
   };
 }
 
-export function changeSenderEmailAddress(email) {
+export function changepayerEmailAddress(email) {
   return {
-    type: 'CHANGE_SENDER_EMAIL_ADDRESS',
+    type: 'CHANGE_PAYER_EMAIL_ADDRESS',
     payload: email,
   };
 }
 
-export function updateSenderEmailAddressValidation(update) {
+export function updatepayerEmailAddressValidation(update) {
   return {
-    type: 'UPDATE_SENDER_EMAIL_ADDRESS_VALIDATION',
+    type: 'UPDATE_PAYER_EMAIL_ADDRESS_VALIDATION',
     payload: update,
   };
 }

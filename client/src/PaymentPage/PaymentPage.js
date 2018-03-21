@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
 import { saveCustomerEmailAddress } from './PaymentPageHelpers'
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
-import { changeCreatedStatus, changeSenderIsNotRecipient, changeSenderEmailAddress, updateSenderEmailAddressValidation } from '../actions/transactionActions';
+import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './PaymentPage.css';
 
 class PaymentPage extends Component {
@@ -53,7 +53,7 @@ class PaymentPage extends Component {
   };
 
   handleCheckboxChange = () => {
-    this.props.changeSenderIsNotRecipient();
+    this.props.changepayerIsNotRecipient();
   }
 
   handleEmailChange = ({ target }) => {
@@ -69,8 +69,8 @@ class PaymentPage extends Component {
       } else errorMessage = 'Ekki á réttu formi';
     }
 
-    this.props.updateSenderEmailAddressValidation({ isValid, errorMessage })
-    this.props.changeSenderEmailAddress(value);
+    this.props.updatepayerEmailAddressValidation({ isValid, errorMessage })
+    this.props.changepayerEmailAddress(value);
   }
 
   checkCcNumberValidation = (type, isValid) => {
@@ -153,16 +153,17 @@ class PaymentPage extends Component {
       if(this.props.isCcFieldValid[key] === false) return;
     }
     // sama á við um hvort email viðskiptavinar sé gilt...
-    if (this.props.senderCheckbox && !this.props.senderEmailAddressIsValid) {
+    if (this.props.payerCheckbox && !this.props.payerEmailAddressIsValid) {
       return;
     }
 
-    saveCustomerEmailAddress(this.props.match.params.redirectkey, this.props.senderEmailAddress);
+    saveCustomerEmailAddress(this.props.match.params.redirectkey, this.props.payerEmailAddress);
 
     const myHeaders = new Headers();
     myHeaders.set('Content-Type', 'application/json');
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
+    // Láta kreditkorta processið skila Promise og kalla svo í create shipment?
     const createShipmentUrl = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
 
     const shipment = {
@@ -252,9 +253,9 @@ class PaymentPage extends Component {
         );
       }
     }
-    if (this.props.senderCheckbox && !this.props.senderEmailAddressIsValid) {
+    if (this.props.payerCheckbox && !this.props.payerEmailAddressIsValid) {
       errorMessages.push(
-        <li key="email">{this.props.senderEmailAddressErrorMessage}</li>
+        <li key="email">{this.props.payerEmailAddressErrorMessage}</li>
       );
     }
 
@@ -309,22 +310,22 @@ class PaymentPage extends Component {
             </div>
             <div className="flex-container-column">
               <div>
-                <label className="senderNotRecipientLabel" htmlFor="senderNotRecipientCheckbox">Sendandi er EKKI viðtakandi</label>
+                <label className="payerNotRecipientLabel" htmlFor="payerNotRecipientCheckbox">Greiðandi er EKKI viðtakandi</label>
                 <input
                   type="checkbox"
-                  id="senderNotRecipientCheckbox"
-                  name="senderNotRecipientCheckbox"
+                  id="payerNotRecipientCheckbox"
+                  name="payerNotRecipientCheckbox"
                   onChange={this.handleCheckboxChange}
-                  checked={this.props.senderCheckbox}
+                  checked={this.props.payerCheckbox}
                 />
               </div>
-              {this.props.senderCheckbox &&
+              {this.props.payerCheckbox &&
                 <div className="flex-container-column">
                   <input
                     type="text"
                     placeholder="gudni@island.is"
                     onChange={this.handleEmailChange}
-                    value={this.props.senderEmailAddress}
+                    value={this.props.payerEmailAddress}
                   />
                   <span>Kvittun verður send á ofangreint tölvupóstfang.</span>
                 </div>
@@ -436,10 +437,10 @@ function mapStateToProps(state) {
     customer: state.transactionDetails.customerInfo,
     created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
     selectedCountry: state.transactionDetails.customerInfo.countryCode,
-    senderCheckbox: state.transactionDetails.senderIsNotRecipient,
-    senderEmailAddress: state.transactionDetails.senderEmailAddress,
-    senderEmailAddressIsValid: state.transactionDetails.senderEmailAddressIsValid,
-    senderEmailAddressErrorMessage: state.transactionDetails.senderEmailAddressErrorMessage,
+    payerCheckbox: state.transactionDetails.payerIsNotRecipient,
+    payerEmailAddress: state.transactionDetails.payerEmailAddress,
+    payerEmailAddressIsValid: state.transactionDetails.payerEmailAddressIsValid,
+    payerEmailAddressErrorMessage: state.transactionDetails.payerEmailAddressErrorMessage,
     isCcFieldValid: state.creditCard.inputIsValid,
     errorMessages: state.creditCard.inputErrorMessages,
     wasSubmitButtonJustClicked: state.creditCard.submitButtonClicked,
@@ -451,11 +452,11 @@ function matchDispatchToProps(dispatch) {
     updateCcDetails,
     updateFocusedField,
     changeCreatedStatus,
-    changeSenderIsNotRecipient,
-    changeSenderEmailAddress,
+    changepayerIsNotRecipient,
+    changepayerEmailAddress,
     updateFieldError,
     clickedSubmitButton,
-    updateSenderEmailAddressValidation,
+    updatepayerEmailAddressValidation,
   }, dispatch);
 }
 
