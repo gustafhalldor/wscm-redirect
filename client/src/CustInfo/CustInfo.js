@@ -91,7 +91,7 @@ class CustInfo extends Component {
         <h1>Upplýsingar um viðtakanda</h1>
         <form className="customerForm" onSubmit={this.onFormSubmit}>
           <Field
-            placeholder="Jón Jónsson"
+            placeholder="t.d. Jón Jónsson"
             label='Fullt nafn'
             name="fullName"
             value={this.props.customer.fullName}
@@ -102,7 +102,7 @@ class CustInfo extends Component {
           />
           <br />
           <Field
-            placeholder="Dúfnahólar 10"
+            placeholder="t.d. Dúfnahólar 10"
             label="Heimilisfang"
             name="address"
             value={this.props.customer.address}
@@ -113,7 +113,7 @@ class CustInfo extends Component {
           />
           <br />
           <Field
-            placeholder="111"
+            placeholder="t.d. 111"
             label="Póstnúmer"
             name="postcode"
             value={this.props.customer.postcode}
@@ -138,7 +138,7 @@ class CustInfo extends Component {
           </div>
           <br />
           <Field
-            placeholder="jon@jonsson.is"
+            placeholder="t.d. jon@island.is"
             label="Tölvupóstfang"
             name="email"
             value={this.props.customer.email}
@@ -157,7 +157,7 @@ class CustInfo extends Component {
           />
           <br />
           <Field
-            placeholder="8671234"
+            placeholder="t.d. 8671234"
             label="Farsími"
             name="phone"
             value={this.props.customer.phone}
@@ -182,7 +182,7 @@ class CustInfo extends Component {
           />
           <span className="redAsterix">*</span><span>Nauðsynlegt að fylla út</span>
           <br />
-          <input className="btn" type="submit" value="Áfram á næsta skref" disabled={this.validate()} />
+          <input className="btn text-uppercase" type="submit" value="Áfram á næsta skref" disabled={this.validate()} />
         </form>
       </div>
     );

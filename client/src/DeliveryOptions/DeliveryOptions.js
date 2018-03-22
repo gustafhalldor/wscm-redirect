@@ -130,7 +130,7 @@ class DeliveryOptions extends Component {
               </h2>
             </div>
             <div>
-              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka á upphafssíðu</button></Link>
+              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton text-uppercase">Aftur á upphafssíðu</button></Link>
             </div>
           </div>
           <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
@@ -179,8 +179,8 @@ class DeliveryOptions extends Component {
                 <span></span>
             }
             <div className="flex-container-row deliveryOptionsButtons">
-              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka á upphafssíðu</button></Link>
-              <button type="submit" className="btn deliveryOptionsSubmitButton">Staðfesta og fara á greiðslusíðu</button>
+              <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton text-uppercase">Aftur á upphafssíðu</button></Link>
+              <button type="submit" className="btn deliveryOptionsSubmitButton text-uppercase">Staðfesta og fara á greiðslusíðu</button>
             </div>
           </form>
           <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />
@@ -198,7 +198,7 @@ class DeliveryOptions extends Component {
             </h2>
           </div>
           <div className="flex-container-row deliveryOptionsButtons">
-            <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton">Til baka á upphafssíðu</button></Link>
+            <Link to={"/"+this.props.match.params.redirectkey}><button className="btn deliveryOptionsBackButton text-uppercase">Aftur á upphafssíðu</button></Link>
           </div>
         </div>
         <BasketContents className="col-md-4" basket={this.props.basket} totalPrice={this.props.totalPrice} totalWeight={this.props.totalWeight} />

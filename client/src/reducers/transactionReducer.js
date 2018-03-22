@@ -15,7 +15,7 @@ const initState = {
   payerIsNotRecipient: false,
   payerEmailAddress: '',
   payerEmailAddressIsValid: false,
-  payerEmailAddressErrorMessage: 'Tölvupóstfang er ekki á réttu formi',
+  payerEmailAddressErrorMessage: 'Vantar tölvupóstfang',
 };
 
 export default function transactionReducer(state = initState, action) {

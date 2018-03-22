@@ -41,7 +41,7 @@
 }
 
 label {
-  font-size: 1em;
+  font-size: 1.05em;
 }
 
 .input-hidden {
@@ -149,6 +149,6 @@ input[type="radio"]:checked + .panel{
     }
 
     .deliveryOptionsLogoAndNameDiv{
-      justify-content: space-between;
+    //  justify-content: space-between;
     }
 }

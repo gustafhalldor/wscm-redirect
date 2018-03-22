@@ -37,11 +37,6 @@ class App extends Component {
           appObject.props.changeCreatedStatus(false);
 
           if (response.recipient && response.products) {
-            let totalPrice = 0;
-            for (let i = 0; i < response.products.length; i++) {
-              totalPrice += response.products[i].price;
-            }
-
             // If no customer info was passed from the store, then it got saved as
             // 'null' in the DB. So, we have to handle those nulls.
             const recipient = {};
@@ -55,7 +50,7 @@ class App extends Component {
             const transactionObject = {
               products: response.products,
               productsWeight: response.totalWeight,
-              productsPrice: totalPrice,
+              productsPrice: response.totalProductPrice,
               customerInfo: recipient,
             };
             // Only try to update with info from DB if required fields are empty.
