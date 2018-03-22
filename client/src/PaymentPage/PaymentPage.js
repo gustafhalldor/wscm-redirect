@@ -146,14 +146,13 @@ class PaymentPage extends Component {
     }
     this.props.clickedSubmitButton(true);
 
-
     // athuga breytur sem halda utan um hvort innsláttur sé gildur eða ekki
     // hlaupa í gegnum error objectinn og ef einhver þeirra er false þá returna
     for (const key of Object.keys(this.props.isCcFieldValid)) {
       if(this.props.isCcFieldValid[key] === false) return;
     }
     // sama á við um hvort email viðskiptavinar sé gilt...
-    if (this.props.payerCheckbox && !this.props.payerEmailAddressIsValid) {
+    if (/*this.props.payerCheckbox && */!this.props.payerEmailAddressIsValid) {
       return;
     }
 
@@ -253,7 +252,7 @@ class PaymentPage extends Component {
         );
       }
     }
-    if (this.props.payerCheckbox && !this.props.payerEmailAddressIsValid) {
+    if (/*this.props.payerCheckbox && */!this.props.payerEmailAddressIsValid) {
       errorMessages.push(
         <li key="email">{this.props.payerEmailAddressErrorMessage}</li>
       );
@@ -309,7 +308,7 @@ class PaymentPage extends Component {
               </table>
             </div>
             <div className="flex-container-column">
-              <div>
+          {/*    <div>
                 <label className="payerNotRecipientLabel" htmlFor="payerNotRecipientCheckbox">Greiðandi er EKKI viðtakandi</label>
                 <input
                   type="checkbox"
@@ -318,18 +317,20 @@ class PaymentPage extends Component {
                   onChange={this.handleCheckboxChange}
                   checked={this.props.payerCheckbox}
                 />
+              </div> */}
+          {/*    {this.props.payerCheckbox &&  */}
+              <div className="flex-container-column">
+                <label htmlFor="payerEmailAddress">Tölvupóstfang greiðanda</label>
+                <input
+                  type="text"
+                  name="payerEmailAddress"
+                  placeholder="t.d. gudni@island.is"
+                  onChange={this.handleEmailChange}
+                  value={this.props.payerEmailAddress}
+                />
+                <span>Kvittun verður send á ofangreint tölvupóstfang</span>
               </div>
-              {this.props.payerCheckbox &&
-                <div className="flex-container-column">
-                  <input
-                    type="text"
-                    placeholder="gudni@island.is"
-                    onChange={this.handleEmailChange}
-                    value={this.props.payerEmailAddress}
-                  />
-                  <span>Kvittun verður send á ofangreint tölvupóstfang.</span>
-                </div>
-              }
+      {/*        } */}
             </div>
           </div>
           <div className="paymentPageRightSide">
@@ -392,8 +393,8 @@ class PaymentPage extends Component {
           </div>
         </div>
         <div className="flex-container-row paymentPageButtons">
-          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton paymentPageButton">Til baka í sendingarmáta</button></Link>
-          <button className="btn primary paymentPageButton" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
+          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton paymentPageButton text-uppercase">Aftur í sendingarmáta</button></Link>
+          <button className="btn primary paymentPageButton text-uppercase" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
         </div>
         <div className="flex-container-column paymentPageErrorMessages">
           {this.props.wasSubmitButtonJustClicked ? errorMessages : ''}
