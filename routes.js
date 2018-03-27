@@ -69,7 +69,7 @@ router.put('/updateEmail/:redirectkey', (req, res, next) => {
   console.log(req.body);
   axios({
     method: 'put',
-    url: `http://localhost:8989/wscm/landing/v1/${req.params.redirectkey}/updateSenderEmail`,
+    url: `http://localhost:8989/wscm/landing/v1/${req.params.redirectkey}/updateCustomerEmail`,
     data: req.body,
   })
     .then(response => {

@@ -9,7 +9,6 @@ import './custInfo.css';
 
 class CustInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {
-    console.log(fieldName, value, error);
     this.props.addValidationError({ fieldName, error }); // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
     this.props.updateCustomerInfo({ fieldName, value });
   }

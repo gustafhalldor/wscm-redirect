@@ -393,7 +393,7 @@ class PaymentPage extends Component {
           </div>
         </div>
         <div className="flex-container-row paymentPageButtons">
-          <Link to={deliveryOptionsPageUrl}><button className="btn deliveryOptionsBackButton paymentPageButton text-uppercase">Aftur í sendingarmáta</button></Link>
+          <Link to={deliveryOptionsPageUrl}><button className="btn paymentPageOptionsBackButton paymentPageButton text-uppercase">Aftur í sendingarmáta</button></Link>
           <button className="btn primary paymentPageButton text-uppercase" onClick={this.handleConfirmClick}>Ganga frá greiðslu</button>
         </div>
         <div className="flex-container-column paymentPageErrorMessages">
