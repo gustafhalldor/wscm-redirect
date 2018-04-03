@@ -24,7 +24,7 @@ class CustInfo extends Component {
   onFormSubmit = (evt) => {
     evt.preventDefault();
 
-    const url = `http://localhost:8989/wscm/landing/v1/${this.props.redirectkey}/updateRecipient`;
+    const url = `http://localhost:8989/wscm/v1/landing/${this.props.redirectkey}/updateRecipient`;
 
     const myHeaders = new Headers();
     myHeaders.set('Content-Type', 'application/json');

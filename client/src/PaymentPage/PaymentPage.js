@@ -196,7 +196,7 @@ class PaymentPage extends Component {
           this.props.changeCreatedStatus(true);
 
           // START flag shipment as 'CREATED' on the backend.
-          const url2 = `http://localhost:8989/wscm/landing/v1/${this.props.match.params.redirectkey}`;
+          const url2 = `http://localhost:8989/wscm/v1/landing/${this.props.match.params.redirectkey}`;
           const myHeaders2 = new Headers();
           myHeaders2.set('Content-Type', 'application/json');
           const status = true;
