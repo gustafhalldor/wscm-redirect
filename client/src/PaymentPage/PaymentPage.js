@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress } from './PaymentPageHelpers'
+import { saveCustomerEmailAddress, createShipment } from './PaymentPageHelpers'
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './PaymentPage.css';
@@ -148,44 +148,20 @@ class PaymentPage extends Component {
 
     // athuga breytur sem halda utan um hvort innsláttur sé gildur eða ekki
     // hlaupa í gegnum error objectinn og ef einhver þeirra er false þá returna
-    for (const key of Object.keys(this.props.isCcFieldValid)) {
-      if(this.props.isCcFieldValid[key] === false) return;
-    }
+    // TODO uncommenta næstu 3 línur fyrir CC validation
+    // for (const key of Object.keys(this.props.isCcFieldValid)) {
+    //   if(this.props.isCcFieldValid[key] === false) return;
+    // }
     // sama á við um hvort email viðskiptavinar sé gilt...
     if (/*this.props.payerCheckbox && */!this.props.payerEmailAddressIsValid) {
       return;
     }
 
-    saveCustomerEmailAddress(this.props.match.params.redirectkey, this.props.payerEmailAddress);
-
-    const myHeaders = new Headers();
-    myHeaders.set('Content-Type', 'application/json');
+    const redirectKey = this.props.match.params.redirectkey;
+    saveCustomerEmailAddress(redirectKey, this.props.payerEmailAddress);
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
-    // Láta kreditkorta processið skila Promise og kalla svo í create shipment?
-    const createShipmentUrl = `http://localhost:3001/api/createShipment/${this.props.match.params.redirectkey}`;
-
-    const shipment = {
-      recipient: {
-        name: this.props.customer.fullName,
-        addressLine1: this.props.customer.address,
-        postcode: this.props.customer.postcode,
-        countryCode: this.props.selectedCountry,
-      },
-      options: {
-        deliveryServiceId: this.props.selectedOption.id,
-      },
-    };
-
-    const myShipmentInit = {
-      method: 'POST',
-      body: JSON.stringify(shipment),
-      headers: myHeaders,
-    };
-
-    const shipmentRequest = new Request(createShipmentUrl, myShipmentInit);
-
-    fetch(shipmentRequest)
+    createShipment(redirectKey, this.props.customer, this.props.selectedCountry, this.props.selectedOption.id)
       .then((response) => {
         return response.json();
       })
