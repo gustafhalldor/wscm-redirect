@@ -10,6 +10,7 @@ const BasketContents = (props) => {
         <thead>
           <tr>
             <th>Lýsing</th>
+            <th className="tableTextCenter">Fjöldi</th>
             <th>Þyngd</th>
             <th>Verð</th>
           </tr>
@@ -19,14 +20,16 @@ const BasketContents = (props) => {
             return (
               <tr key={i}>
                 <td>{item.description}</td>
-                <td>{item.weight} kg</td>
-                <td>{item.price} kr.</td>
+                <td className="tableTextCenter">{item.count}</td>
+                <td>{item.weight * item.count} kg ({item.weight}kg*{item.count})</td>
+                <td>{item.price * item.count} kr.</td>
               </tr>
             );
           })}
         </tbody>
         <tfoot>
           <tr>
+            <td></td>
             <td>Samtals:</td>
             <td>{props.totalWeight} kg</td>
             <td>{props.totalPrice} kr.</td>
