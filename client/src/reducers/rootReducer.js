@@ -8,5 +8,5 @@ export default combineReducers({
   transactionDetails: transactionReducer,
   deliveryOptions: deliveryOptionsReducer,
   creditCard: creditCardReducer,
-  customerInfoValidation: validationReducer,
+  recipientInfoValidation: validationReducer,
 });

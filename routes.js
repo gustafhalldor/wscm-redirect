@@ -110,4 +110,8 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
     })
 });
 
+router.post('/payment/:redirectkey', (req, res, next) => {
+  
+});
+
 export default router;

@@ -2,7 +2,7 @@ const initState = {
   products: [],
   productsWeight: 0,
   productsPrice: 0,
-  customerInfo: {
+  recipientInfo: {
     fullName: '',
     address: '',
     postcode: '',
@@ -27,15 +27,15 @@ export default function transactionReducer(state = initState, action) {
         products: action.payload.products,
         productsWeight: action.payload.productsWeight,
         productsPrice: action.payload.productsPrice,
-        customerInfo: action.payload.customerInfo,
+        recipientInfo: action.payload.recipientInfo,
       };
       break;
     }
-    case 'UPDATE_CUSTOMER_INFO': {
+    case 'UPDATE_RECIPIENT_INFO': {
       state = {
         ...state,
-        customerInfo: {
-          ...state.customerInfo,
+        recipientInfo: {
+          ...state.recipientInfo,
           [action.payload.fieldName]: action.payload.value,
         },
       };
@@ -51,8 +51,8 @@ export default function transactionReducer(state = initState, action) {
     case 'UPDATE_SELECTED_COUNTRY': {
       state = {
         ...state,
-        customerInfo: {
-          ...state.customerInfo,
+        recipientInfo: {
+          ...state.recipientInfo,
           countryCode: action.payload,
         },
       };
@@ -63,7 +63,7 @@ export default function transactionReducer(state = initState, action) {
         products: [],
         productsWeight: 0,
         productsPrice: 0,
-        customerInfo: {
+        recipientInfo: {
           fullName: '',
           address: '',
           postcode: '',

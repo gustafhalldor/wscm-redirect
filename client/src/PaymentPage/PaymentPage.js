@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipment } from './PaymentPageHelpers'
+import { saveCustomerEmailAddress, createShipment } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './PaymentPage.css';
@@ -161,7 +161,7 @@ class PaymentPage extends Component {
     saveCustomerEmailAddress(redirectKey, this.props.payerEmailAddress);
 
     // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
-    createShipment(redirectKey, this.props.customer, this.props.selectedCountry, this.props.selectedOption.id)
+    createShipment(redirectKey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id)
       .then((response) => {
         return response.json();
       })
@@ -266,15 +266,15 @@ class PaymentPage extends Component {
                 <tbody>
                   <tr>
                     <td>Nafn:</td>
-                    <td>{this.props.customer.fullName}</td>
+                    <td>{this.props.recipient.fullName}</td>
                   </tr>
                   <tr>
                     <td>Heimilisfang:</td>
-                    <td>{this.props.customer.address}</td>
+                    <td>{this.props.recipient.address}</td>
                   </tr>
                   <tr>
                     <td>Póstnúmer:</td>
-                    <td>{this.props.customer.postcode}</td>
+                    <td>{this.props.recipient.postcode}</td>
                   </tr>
                   <tr>
                     <td>Land:</td>
@@ -381,7 +381,7 @@ class PaymentPage extends Component {
 }
 
 PaymentPage.propTypes = {
-  customer: PropTypes.shape({
+  recipient: PropTypes.shape({
     fullName: PropTypes.string,
     address: PropTypes.string,
     postcode: PropTypes.string,
@@ -411,9 +411,9 @@ function mapStateToProps(state) {
     basketPrice: state.transactionDetails.productsPrice,
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
-    customer: state.transactionDetails.customerInfo,
+    recipient: state.transactionDetails.recipientInfo,
     created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
-    selectedCountry: state.transactionDetails.customerInfo.countryCode,
+    selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     payerCheckbox: state.transactionDetails.payerIsNotRecipient,
     payerEmailAddress: state.transactionDetails.payerEmailAddress,
     payerEmailAddressIsValid: state.transactionDetails.payerEmailAddressIsValid,

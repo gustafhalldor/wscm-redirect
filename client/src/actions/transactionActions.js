@@ -5,9 +5,9 @@ export function addTransactionDetails(object) {
   };
 }
 
-export function updateCustomerInfo(object) {
+export function updateRecipientInfo(object) {
   return {
-    type: 'UPDATE_CUSTOMER_INFO',
+    type: 'UPDATE_RECIPIENT_INFO',
     payload: object,
   };
 }

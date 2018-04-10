@@ -4,13 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Field from './Field/Field';
 import addValidationError from '../actions/validationActions';
-import { updateCustomerInfo, updateSelectedCountry } from '../actions/transactionActions';
-import './custInfo.css';
+import { updateRecipientInfo, updateSelectedCountry } from '../actions/transactionActions';
+import './recipientInfo.css';
 
-class CustInfo extends Component {
+class RecipientInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {
     this.props.addValidationError({ fieldName, error }); // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
-    this.props.updateCustomerInfo({ fieldName, value });
+    this.props.updateRecipientInfo({ fieldName, value });
   }
 
   onCountryChange = (evt) => {
@@ -31,7 +31,7 @@ class CustInfo extends Component {
 
     const myInit = {
       method: 'PUT',
-      body: JSON.stringify(this.props.customer),
+      body: JSON.stringify(this.props.recipient),
       headers: myHeaders,
     };
 
@@ -55,11 +55,11 @@ class CustInfo extends Component {
   };
 
   validate = () => {
-    const customer = this.props.customer;
-    if (!customer.fullName) return true;
-    if (!customer.address) return true;
-    if (!customer.postcode) return true;
-    if (this.props.selectedCountry === '' || this.props.selectedCountry === null) return true;
+    const recipient = this.props.recipient;
+    if (!recipient.fullName) return true;
+    if (!recipient.address) return true;
+    if (!recipient.postcode) return true;
+  //  if (this.props.selectedCountry === '' || this.props.selectedCountry === null) return true;
     if (!this.props.products.length) return true;
 
     const inputErrors = this.props.inputErrors;
@@ -88,12 +88,12 @@ class CustInfo extends Component {
     return (
       <div className="leftSide col-md-8">
         <h1>Upplýsingar um viðtakanda</h1>
-        <form className="customerForm" onSubmit={this.onFormSubmit}>
+        <form className="recipientForm" onSubmit={this.onFormSubmit}>
           <Field
             placeholder="t.d. Jón Jónsson"
             label='Fullt nafn'
             name="fullName"
-            value={this.props.customer.fullName}
+            value={this.props.recipient.fullName}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.fullName}
             required
@@ -104,7 +104,7 @@ class CustInfo extends Component {
             placeholder="t.d. Dúfnahólar 10"
             label="Heimilisfang"
             name="address"
-            value={this.props.customer.address}
+            value={this.props.recipient.address}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.address}
             required
@@ -115,32 +115,32 @@ class CustInfo extends Component {
             placeholder="t.d. 111"
             label="Póstnúmer"
             name="postcode"
-            value={this.props.customer.postcode}
+            value={this.props.recipient.postcode}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.postcode}
             required
             validate={val => ((Validator.isNumeric(val) && val.length === 3 ) ? false : 'Póstnúmer eru 3 tölustafir')}
           />
           <br />
-          <div>
+        { /*  <div>
             <label htmlFor="country">Land</label>
             <span className="redAsterix"> *</span>
             <br />
             <select name="countryCode" id="country" onChange={this.onCountryChange} value={this.props.selectedCountry}>
               <option value="">Veldu land</option>
               <option value="IS">Ísland</option>
-            { /*  TODO: uncommenta línuna fyrir neðan ef við bætum við sendingum til útlanda */ }
-            { /*  {countries} */ }
+              TODO: uncommenta línuna fyrir neðan ef við bætum við sendingum til útlanda
+              {countries}
             </select>
             <br />
             <span style={{ color: 'red' }}>{ this.props.inputErrors.countryCode }</span>
           </div>
-          <br />
+          <br /> */ }
           <Field
             placeholder="t.d. jon@island.is"
             label="Tölvupóstfang"
             name="email"
-            value={this.props.customer.email}
+            value={this.props.recipient.email}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.email}
             validate={(val) => {
@@ -159,7 +159,7 @@ class CustInfo extends Component {
             placeholder="t.d. 8671234"
             label="Farsími"
             name="phone"
-            value={this.props.customer.phone}
+            value={this.props.recipient.phone}
             onChange={this.onInputChange}
             errorState={this.props.inputErrors.phone}
             validate={(val) => {
@@ -190,18 +190,18 @@ class CustInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    inputErrors: state.customerInfoValidation.inputErrors,
+    inputErrors: state.recipientInfoValidation.inputErrors,
     products: state.transactionDetails.products,
-    selectedCountry: state.transactionDetails.customerInfo.countryCode,
+    selectedCountry: state.transactionDetails.recipientInfo.countryCode,
   };
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     addValidationError,
-    updateCustomerInfo,
+    updateRecipientInfo,
     updateSelectedCountry,
   }, dispatch);
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(CustInfo);
+export default connect(mapStateToProps, matchDispatchToProps)(RecipientInfo);

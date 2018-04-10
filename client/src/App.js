@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import CustInfo from './CustInfo/CustInfo';
+import RecipientInfo from './RecipientInfo/RecipientInfo';
 import BasketContents from './BasketContents/BasketContents';
 import { changeNoDataStatus, changeCreatedStatus, addTransactionDetails } from './actions/transactionActions';
 import { addCountries } from './actions/deliveryOptionsActions';
@@ -37,7 +37,7 @@ class App extends Component {
           appObject.props.changeCreatedStatus(false);
 
           if (response.recipient && response.products) {
-            // If no customer info was passed from the store, then it got saved as
+            // If no recipient info was passed from the store, then it got saved as
             // 'null' in the DB. So, we have to handle those nulls.
             const recipient = {};
             Object.keys(response.recipient).forEach((key) => {
@@ -47,16 +47,20 @@ class App extends Component {
               recipient[key] = response.recipient[key];
             });
 
+            // Erum að harðkóða countryCode því við erum bara að leyfa sendingar innanlands
+            // sem stendur
+            recipient.countryCode = 'IS';
+
             const transactionObject = {
               products: response.products,
               productsWeight: response.totalWeight,
               productsPrice: response.totalProductPrice,
-              customerInfo: recipient,
+              recipientInfo: recipient,
             };
             // Only try to update with info from DB if required fields are empty.
             // Otherwise use application state.
             // TODO decide if this is a good idea or not, or find another solution :)
-            if (appObject.props.customer.fullName === '' || appObject.props.customer.address === '' || appObject.props.customer.postcode === '') {
+            if (appObject.props.recipient.fullName === '' || appObject.props.recipient.address === '' || appObject.props.recipient.postcode === '') {
               appObject.props.addTransactionDetails(transactionObject);
             }
 
@@ -87,7 +91,7 @@ class App extends Component {
       });
   }
 
-  handleCustomerInfoSubmit = () => {
+  handleRecipientInfoSubmit = () => {
     const nextUrl = `${this.props.location.pathname}/deliveryOptions`;
 
     this.props.history.push(nextUrl);
@@ -117,12 +121,12 @@ class App extends Component {
     return (
       <div className="container">
         <main className="flex-container-row justify-center">
-          <CustInfo
-            customer={this.props.customer}
+          <RecipientInfo
+            recipient={this.props.recipient}
             redirectkey={this.props.match.params.redirectkey}
             countries={this.props.countries}
             selectedCountry={this.props.selectedCountry}
-            onSubmit={this.handleCustomerInfoSubmit}
+            onSubmit={this.handleRecipientInfoSubmit}
           />
           <BasketContents
             basket={this.props.basket}
@@ -138,11 +142,11 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     basket: state.transactionDetails.products,
-    customer: state.transactionDetails.customerInfo,
+    recipient: state.transactionDetails.recipientInfo,
     totalPrice: state.transactionDetails.productsPrice,
     totalWeight: state.transactionDetails.productsWeight,
     countries: state.deliveryOptions.countries,
-    selectedCountry: state.transactionDetails.customerInfo.countryCode,
+    selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     noDataStatus: state.transactionDetails.noData,
     created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
   };
