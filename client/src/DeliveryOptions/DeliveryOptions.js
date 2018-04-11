@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions';
-import './deliveryOptions.css';
+import './DeliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents';
 import DeliveryOption from './DeliveryOption/DeliveryOption';
 

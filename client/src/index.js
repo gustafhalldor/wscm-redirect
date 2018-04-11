@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
-import App from './App';
+import LandingPage from './LandingPage/LandingPage';
 import Header from './Header/Header';
 import DeliveryOptions from './DeliveryOptions/DeliveryOptions';
 import PaymentPage from './PaymentPage/PaymentPage';
@@ -22,7 +22,7 @@ ReactDOM.render(
         <main>
           <Route path="/" component={Header} /> {/* TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
           <Switch>
-            <Route path="/:redirectkey" exact component={App} />
+            <Route path="/:redirectkey" exact component={LandingPage} />
             <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions} />
             <Route path="/:redirectkey/payment" exact component={PaymentPage} />
             <Route path="/:redirectkey/final" exact component={FinalPage} />

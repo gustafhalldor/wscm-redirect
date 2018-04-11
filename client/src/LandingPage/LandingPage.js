@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import RecipientInfo from './RecipientInfo/RecipientInfo';
-import BasketContents from './BasketContents/BasketContents';
-import { changeNoDataStatus, changeCreatedStatus, addTransactionDetails } from './actions/transactionActions';
-import { addCountries } from './actions/deliveryOptionsActions';
-import './App.css';
+import RecipientInfo from '../RecipientInfo/RecipientInfo';
+import BasketContents from '../BasketContents/BasketContents';
+import { changeNoDataStatus, changeCreatedStatus, addTransactionDetails } from '../actions/transactionActions';
+import { addCountries } from '../actions/deliveryOptionsActions';
 
-class App extends Component {
+class LandingPage extends Component {
   // Getting transaction information from WSCM api.
   componentDidMount = () => {
     const appObject = this;
@@ -162,4 +161,4 @@ function matchDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(App);
+export default connect(mapStateToProps, matchDispatchToProps)(LandingPage);
