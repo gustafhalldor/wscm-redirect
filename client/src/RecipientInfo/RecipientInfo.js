@@ -136,6 +136,7 @@ class RecipientInfo extends Component {
             <span style={{ color: 'red' }}>{ this.props.inputErrors.countryCode }</span>
           </div>
           <br /> */ }
+          <div className="recipientContactDetails">Upplýsingar um stöðu sendingar verða sendar á tiltekið tölvupóstfang og/eða í farsíma</div>
           <Field
             placeholder="t.d. jon@island.is"
             label="Tölvupóstfang"
