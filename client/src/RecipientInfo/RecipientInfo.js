@@ -24,7 +24,7 @@ class RecipientInfo extends Component {
   onFormSubmit = (evt) => {
     evt.preventDefault();
 
-    const url = `http://localhost:8989/wscm/v1/landing/${this.props.redirectkey}/updateRecipient`;
+    const url = `http://localhost:3001/api/updateRecipient/${this.props.redirectkey}`;
 
     const myHeaders = new Headers();
     myHeaders.set('Content-Type', 'application/json');
