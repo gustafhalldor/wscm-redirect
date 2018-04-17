@@ -11,7 +11,7 @@ import fetch from 'isomorphic-fetch';
 import { saveCustomerEmailAddress, createShipment } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
-import './PaymentPage.css';
+import './paymentPage.css';
 
 class PaymentPage extends Component {
   componentDidMount() {
