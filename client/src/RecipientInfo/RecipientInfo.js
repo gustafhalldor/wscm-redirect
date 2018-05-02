@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Field from './Field/Field';
 import addValidationError from '../actions/validationActions';
 import { updateRecipientInfo, updateSelectedCountry } from '../actions/transactionActions';
-import './RecipientInfo.css';
+import './recipientInfo.css';
 
 class RecipientInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {

@@ -148,8 +148,30 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
     })
 });
 
-router.post('/payment/:redirectkey', (req, res, next) => {
-
-});
+// router.post('/payment/:redirectkey', (req, res, next) => {
+//   console.log(req.body);
+//   axios({
+//     method: 'post',
+//     url: ,
+//     headers: {'x-redirect-key': req.params.redirectkey},
+//     data: req.body,
+//   })
+//     .then(response => {
+//       // response.data is the shipment that got created.
+//       const obj = {
+//         status: response.status,
+//         body: response.data,
+//       }
+//       res.send(obj);
+//     })
+//     .catch(error => {
+//       // If no API key is found behind the redirect key, a "400" status is returned.
+//       const obj = {
+//         status: error.response.status,
+//         message: error.response.data.message,
+//       }
+//       res.send(obj);
+//     })
+// });
 
 export default router;

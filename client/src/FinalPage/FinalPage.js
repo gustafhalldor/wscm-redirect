@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import './FinalPage.css';
+import './finalPage.css';
 
 const PaymentPage = (props) => {
   return (

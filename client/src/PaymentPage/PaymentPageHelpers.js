@@ -51,3 +51,7 @@ export function createShipment(redirectkey, customer, selectedCountry, selectedD
 
   return fetch(shipmentRequest);
 }
+
+export function processPayment(redirectkey, ccDetails, ) {
+
+}

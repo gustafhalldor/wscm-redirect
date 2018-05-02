@@ -7,11 +7,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipment } from './PaymentPageHelpers';
+// import fetch from 'isomorphic-fetch';
+import { saveCustomerEmailAddress, createShipment, processPayment } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
-import './PaymentPage.css';
+import './paymentPage.css';
 
 class PaymentPage extends Component {
   componentDidMount() {
@@ -157,52 +157,44 @@ class PaymentPage extends Component {
       return;
     }
 
-    const redirectKey = this.props.match.params.redirectkey;
-    saveCustomerEmailAddress(redirectKey, this.props.payerEmailAddress);
+    const redirectkey = this.props.match.params.redirectkey;
+    saveCustomerEmailAddress(redirectkey, this.props.payerEmailAddress);
 
-    // TODO Processa kredit kort og SVO búa til sendingu (eins og hér fyrir neðan).
-    createShipment(redirectKey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id)
+    const finalPage = {
+      pathname: `/${this.props.match.params.redirectkey}/final`,
+    };
+    // Bý til sendingu og svo er kreditkort processað.
+    createShipment(redirectkey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id)
       .then((response) => {
         return response.json();
       })
       .then((response) => {
         if (response.status === 201) {
         //  toast('Sending hefur verið búin til !', { type: 'success' });
-
           this.props.changeCreatedStatus(true);
 
-          // START flag shipment as 'CREATED' on the backend.
-          const url2 = `http://localhost:8989/wscm/v1/landing/${this.props.match.params.redirectkey}`;
-          const myHeaders2 = new Headers();
-          myHeaders2.set('Content-Type', 'application/json');
-          const status = true;
-
-          const myInit2 = {
-            method: 'PUT',
-            body: JSON.stringify(status),
-            headers: myHeaders2,
-          };
-
-          const request2 = new Request(url2, myInit2);
-
-          fetch(request2)
-            .then((response2) => {
-              if (response2.status !== 200) {
-                console.log('Ekki tókst að merkja sendingu sem "Created"');
-              }
+          // payer email address is already saved in DB. Use it in the service itself.
+          processPayment(redirectkey, this.props.ccDetails)
+            .then((response) => {
+              console.log(response);
+              return response.json();
             })
-          // END flag shipment as 'CREATED' on the backend.
-        // END if
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+
+            });
+
+        // END if response.status === 201
         } else {
           console.log(response.message);
         }
 
-        const location = {
-          pathname: `/${this.props.match.params.redirectkey}/final`,
-        };
-        this.props.history.push(location);
+        this.props.history.push(finalPage);
       })
       .catch((error) => {
+        // TODO: Senda tölvupóst á okkur ef þetta gerist?
         console.log('Tókst ekki að búa til sendingu.', error);
       });
   }
