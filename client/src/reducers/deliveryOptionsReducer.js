@@ -5,7 +5,10 @@ const initState = {
     id: '',
     price: 0,
   },
-  selectedPostbox: '',
+  selectedPostbox: {
+    name: '',
+    postcode: '',
+  },
   countries: [],
   deliveryOptionsError: '',
   fetchingDeliveryOptions: false,
@@ -39,7 +42,10 @@ export default function deliveryOptionsReducer(state = initState, action) {
     case 'UPDATE_SELECTED_POSTBOX': {
       state = {
         ...state,
-        selectedPostbox: action.payload,
+        selectedPostbox: {
+          name: action.payload.name,
+          postcode: action.payload.postcode,
+        },
       };
       break;
     }

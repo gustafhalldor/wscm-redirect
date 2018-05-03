@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { addDeliveryOptions, addDeliveryOptionsError, updateSelectedOption, addPostboxes, updateSelectedPostbox, changeFetchingDeliveryOptionsStatus } from '../actions/deliveryOptionsActions';
+import { updateRecipientInfo } from '../actions/transactionActions';
 import './deliveryOptions.css';
 import BasketContents from '../BasketContents/BasketContents';
 import DeliveryOption from './DeliveryOption/DeliveryOption';
@@ -66,6 +67,12 @@ class DeliveryOptions extends Component {
       return;
     }
 
+    // Change recipient's address if Póstbox is the chosen delivery option.
+    if (this.props.selectedOption.id === 'DPO') {
+      this.props.updateRecipientInfo({ fieldName: 'address', value: this.props.selectedPostbox.name });
+      this.props.updateRecipientInfo({ fieldName: 'postcode', value: this.props.selectedPostbox.postcode });
+    }
+
     const url = `http://localhost:8989/wscm/v1/landing/${this.props.match.params.redirectkey}/updateShippingOption`;
 
     const myHeaders = new Headers();
@@ -93,7 +100,10 @@ class DeliveryOptions extends Component {
   }
 
   handleUpdateOfSelectedPostbox = (evt) => {
-    this.props.updateSelectedPostbox(evt.target.value);
+    const value = evt.target.value;
+    const name = value.substring(0, value.length - 3);
+    const postcode = value.substring(value.length - 3, value.length);
+    this.props.updateSelectedPostbox({ name, postcode });
     this.props.addDeliveryOptionsError('');
   }
 
@@ -233,6 +243,7 @@ function matchDispatchToProps(dispatch) {
     updateSelectedPostbox,
     addDeliveryOptionsError,
     changeFetchingDeliveryOptionsStatus,
+    updateRecipientInfo,
   }, dispatch);
 }
 

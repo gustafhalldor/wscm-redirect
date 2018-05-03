@@ -15,7 +15,7 @@ const DeliveryOption = (props) => {
           name = name.substring(0, 18);
         }
       }
-      return <option key={i} value={postbox.name}>{name}</option>;
+      return <option key={i} value={postbox.name + '' + postbox.postcode}>{name}</option>;
     });
   }
 
@@ -38,7 +38,7 @@ const DeliveryOption = (props) => {
               props.deliveryOption.deliveryServiceId === 'DPO' &&
               <div className="postboxDiv">
                 <span>Veldu póstbox: </span>
-                <select name="selectPostbox" id="selectPostbox" onChange={props.updateSelectedPostbox} value={props.selectedPostbox}>
+                <select name="selectPostbox" id="selectPostbox" onChange={props.updateSelectedPostbox} value={props.selectedPostbox.name + '' + props.selectedPostbox.postcode}>
                   <option value="">.....</option>
                   {postboxes}
                 </select>

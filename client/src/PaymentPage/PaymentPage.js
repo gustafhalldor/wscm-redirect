@@ -261,7 +261,7 @@ class PaymentPage extends Component {
                     <td>{this.props.recipient.fullName}</td>
                   </tr>
                   <tr>
-                    <td>Heimilisfang:</td>
+                    <td>Staður:</td>
                     <td>{this.props.recipient.address}</td>
                   </tr>
                   <tr>
