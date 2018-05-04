@@ -1,3 +1,10 @@
+export function getCurrentMonthAndYear() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  return { month, year };
+}
+
 export function saveCustomerEmailAddress(redirectkey, customerEmail) {
   const saveCustomerEmailUrl = `http://localhost:3001/api/updateEmail/${redirectkey}`;
 
@@ -52,6 +59,23 @@ export function createShipment(redirectkey, customer, selectedCountry, selectedD
   return fetch(shipmentRequest);
 }
 
-export function processPayment(redirectkey, ccDetails, ) {
+export function processPayment(redirectkey, ccDetails) {
+  const myHeaders = new Headers();
+  myHeaders.set('Content-Type', 'application/json');
 
+  const processPaymentUrl = `http://localhost:3001/api/payment/${redirectkey}`;
+
+  const card = {
+
+  };
+
+  const myPaymentInit = {
+    method: 'POST',
+    body: JSON.stringify(card),
+    headers: myHeaders,
+  };
+
+  const processPaymentRequest = new Request(processPaymentUrl, myPaymentInit);
+
+  return fetch(processPaymentRequest);
 }

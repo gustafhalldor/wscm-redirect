@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipment, processPayment } from './PaymentPageHelpers';
+import { saveCustomerEmailAddress, createShipment, processPayment, getCurrentMonthAndYear } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
@@ -25,14 +25,6 @@ class PaymentPage extends Component {
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
-  }
-
-  // helper function for checkCcExpiryDateValidation
-  getCurrentMonthAndYear = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    return { month, year };
   }
 
   handleCcInputFocus = ({ target }) => {
@@ -111,7 +103,12 @@ class PaymentPage extends Component {
       let inputYearString = splitValue[1];
       if (inputYearString.length === 2) inputYearString = `20${inputYearString}`;
       const inputYearNumber = parseInt(inputYearString, 10);
-      const { month, year } = this.getCurrentMonthAndYear();
+      const { month, year } = getCurrentMonthAndYear();
+
+      if (inputMonth < 1 || inputMonth > 12) {
+        message = 'Mánuður er ekki til.';
+        isValid = false;
+      }
 
       if (inputYearNumber < year || (year === inputYearNumber && inputMonth < month)) {
         message = 'Kort virðist vera útrunnið...';
