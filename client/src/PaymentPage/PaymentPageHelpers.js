@@ -59,19 +59,27 @@ export function createShipment(redirectkey, customer, selectedCountry, selectedD
   return fetch(shipmentRequest);
 }
 
-export function processPayment(redirectkey, ccDetails) {
+export function processPayment(redirectkey, ccDetails, totalAmount) {
   const myHeaders = new Headers();
   myHeaders.set('Content-Type', 'application/json');
 
   const processPaymentUrl = `http://localhost:3001/api/payment/${redirectkey}`;
 
-  const card = {
-
+  const details = {
+    amount: totalAmount,
+    card: {
+      creditCard: {
+        ccNumber: ccDetails.number,
+        expiryMonth: ccDetails.expiryMonth,
+        expiryYear: ccDetails.expiryYear,
+        cvv: ccDetails.cvc,
+      },
+    },
   };
 
   const myPaymentInit = {
     method: 'POST',
-    body: JSON.stringify(card),
+    body: JSON.stringify(details),
     headers: myHeaders,
   };
 

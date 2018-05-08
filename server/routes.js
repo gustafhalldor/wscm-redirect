@@ -148,30 +148,48 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
     })
 });
 
-// router.post('/payment/:redirectkey', (req, res, next) => {
-//   console.log(req.body);
-//   axios({
-//     method: 'post',
-//     url: ,
-//     headers: {'x-redirect-key': req.params.redirectkey},
-//     data: req.body,
-//   })
-//     .then(response => {
-//       // response.data is the shipment that got created.
-//       const obj = {
-//         status: response.status,
-//         body: response.data,
-//       }
-//       res.send(obj);
-//     })
-//     .catch(error => {
-//       // If no API key is found behind the redirect key, a "400" status is returned.
-//       const obj = {
-//         status: error.response.status,
-//         message: error.response.data.message,
-//       }
-//       res.send(obj);
-//     })
-// });
+router.post('/payment/:redirectkey', (req, res, next) => {
+  // first axios call is to get the token
+  axios({
+    method: 'post',
+    url: `http://localhost:8282/paymentgw/accounts/epostur/token`,
+    data: req.body.card,
+  })
+    .then(response => {
+      // axios call succeeded and we have ourselves a token
+      const chargeObject = {
+        token: response.data.token,
+        amount: req.body.amount,
+      };
+
+      // second axios call is to process the charge itself
+      axios({
+        method: 'post',
+        url: `http://localhost:8282/paymentgw/accounts/epostur/charge`,
+        data: chargeObject,
+      })
+        .then(response => {
+          const obj = {
+            status: response.status,
+            body: response.data,
+          }
+          res.send(obj);
+        })
+        .catch(error => {
+          const obj = {
+            status: error.response.status,
+            message: error.response.data.message,
+          }
+          res.send(obj);
+        })
+    })
+    .catch(error => {
+      const obj = {
+        status: error.response.status,
+        message: error.response.data.message,
+      }
+      res.send(obj);
+    })
+});
 
 export default router;
