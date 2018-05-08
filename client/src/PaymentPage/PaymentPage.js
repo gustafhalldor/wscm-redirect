@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
 import { saveCustomerEmailAddress, createShipment, processPayment, getCurrentMonthAndYear } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
-import { changeCreatedStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
+import { addChargeResponse, changeCreatedStatus, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
 
 class PaymentPage extends Component {
@@ -137,7 +137,7 @@ class PaymentPage extends Component {
 
   handleConfirmClick = () => {
     // Ætti aldrei að gerast, eeeen allt í lagi að hafa þetta inni
-    if (this.props.created) {
+    if (this.props.created && this.props.isPaid) {
       toast('Sending hefur nú þegar verið búin til !', { type: 'warning' });
       return;
     }
@@ -169,15 +169,20 @@ class PaymentPage extends Component {
         if (response.status === 201) {
         //  toast('Sending hefur verið búin til !', { type: 'success' });
           this.props.changeCreatedStatus(true);
-
+          this.props.changeProcessingPaymentStatus(true);
           // payer email address is already saved in DB. Use it in the service itself.
-          processPayment(redirectkey, this.props.ccDetails)
+          const totalAmount = this.props.basketPrice + this.props.selectedOption.price;
+          processPayment(redirectkey, this.props.ccDetails, totalAmount)
             .then((response) => {
               console.log(response);
               return response.json();
             })
             .then((response) => {
               console.log(response);
+              this.props.addChargeResponse(response.body);
+              this.props.changePaidStatus(true);
+              this.props.changeProcessingPaymentStatus(false);
+              this.props.history.push(finalPage);
             })
             .catch((error) => {
 
@@ -187,8 +192,6 @@ class PaymentPage extends Component {
         } else {
           console.log(response.message);
         }
-
-        this.props.history.push(finalPage);
       })
       .catch((error) => {
         // TODO: Senda tölvupóst á okkur ef þetta gerist?
@@ -197,12 +200,22 @@ class PaymentPage extends Component {
   }
 
   render() {
-    // If shipment has already been created from this redirect key
-    if (this.props.created) {
+    if (this.props.isProcessingPayment) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
-            <h2>Sending hefur nú þegar verið búin til.</h2>
+            <h2>... er að framkvæma greiðslu ...</h2>
+          </main>
+        </div>
+      );
+    }
+
+    // If shipment has already been created from this redirect key
+    if (this.props.created && !this.props.isPaid) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Sending hefur nú þegar verið búin til en ekki búið að borga.</h2>
           </main>
         </div>
       );
@@ -401,7 +414,9 @@ function mapStateToProps(state) {
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
     recipient: state.transactionDetails.recipientInfo,
-    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
+    created: state.transactionDetails.shipmentCreated,
+    isPaid: state.transactionDetails.shipmentPaid,
+    isProcessingPayment: state.transactionDetails.isProcessingPayment,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     payerCheckbox: state.transactionDetails.payerIsNotRecipient,
     payerEmailAddress: state.transactionDetails.payerEmailAddress,
@@ -418,11 +433,14 @@ function matchDispatchToProps(dispatch) {
     updateCcDetails,
     updateFocusedField,
     changeCreatedStatus,
+    changePaidStatus,
+    changeProcessingPaymentStatus,
     changepayerIsNotRecipient,
     changepayerEmailAddress,
     updateFieldError,
     clickedSubmitButton,
     updatepayerEmailAddressValidation,
+    addChargeResponse,
   }, dispatch);
 }
 

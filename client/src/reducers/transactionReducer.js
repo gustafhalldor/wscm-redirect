@@ -11,11 +11,14 @@ const initState = {
     phone: '',
   },
   noData: false,
-  shipmentCreatedAndPaidForSuccessfully: false,
+  shipmentCreated: false,
+  isProcessingPayment: false,
+  shipmentPaid: false,
   payerIsNotRecipient: false,
   payerEmailAddress: '',
   payerEmailAddressIsValid: false,
   payerEmailAddressErrorMessage: 'Vantar tölvupóstfang',
+  chargeResponse: {},
 };
 
 export default function transactionReducer(state = initState, action) {
@@ -76,10 +79,24 @@ export default function transactionReducer(state = initState, action) {
       break;
     }
     // Reset everything to initial state and flagging shipment created status to true
-    case 'CHANGE_CREATED_STATUS': {
+    case 'CHANGE_SHIPMENT_CREATED_STATUS': {
       state = {
         ...initState,
-        shipmentCreatedAndPaidForSuccessfully: action.payload,
+        shipmentCreated: action.payload,
+      };
+      break;
+    }
+    case 'CHANGE_SHIPMENT_PAID_STATUS': {
+      state = {
+        ...state,
+        shipmentPaid: action.payload,
+      };
+      break;
+    }
+    case 'CHANGE_PROCESSING_PAYMENT_STATUS': {
+      state = {
+        ...state,
+        isProcessingPayment: action.payload,
       };
       break;
     }
@@ -102,6 +119,13 @@ export default function transactionReducer(state = initState, action) {
         ...state,
         payerEmailAddressIsValid: action.payload.isValid,
         payerEmailAddressErrorMessage: action.payload.errorMessage,
+      };
+      break;
+    }
+    case 'ADD_CHARGE_RESPONSE': {
+      state = {
+        ...state,
+        chargeResponse: action.payload,
       };
     }
   }

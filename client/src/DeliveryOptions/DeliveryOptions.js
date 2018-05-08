@@ -231,7 +231,7 @@ function mapStateToProps(state) {
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
     fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
-    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
+    created: state.transactionDetails.shipmentCreated,
   };
 }
 

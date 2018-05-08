@@ -21,7 +21,21 @@ export function changeNoDataStatus(status) {
 
 export function changeCreatedStatus(status) {
   return {
-    type: 'CHANGE_CREATED_STATUS',
+    type: 'CHANGE_SHIPMENT_CREATED_STATUS',
+    payload: status,
+  };
+}
+
+export function changePaidStatus(status) {
+  return {
+    type: 'CHANGE_SHIPMENT_PAID_STATUS',
+    payload: status,
+  };
+}
+
+export function changeProcessingPaymentStatus(status) {
+  return {
+    type: 'CHANGE_PROCESSING_PAYMENT_STATUS',
     payload: status,
   };
 }
@@ -50,5 +64,12 @@ export function updatepayerEmailAddressValidation(update) {
   return {
     type: 'UPDATE_PAYER_EMAIL_ADDRESS_VALIDATION',
     payload: update,
+  };
+}
+
+export function addChargeResponse(response) {
+  return {
+    type: 'ADD_CHARGE_RESPONSE',
+    payload: response,
   };
 }

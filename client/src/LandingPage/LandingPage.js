@@ -147,7 +147,7 @@ function mapStateToProps(state) {
     countries: state.deliveryOptions.countries,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     noDataStatus: state.transactionDetails.noData,
-    created: state.transactionDetails.shipmentCreatedAndPaidForSuccessfully,
+    created: state.transactionDetails.shipmentCreated,
   };
 }
 
