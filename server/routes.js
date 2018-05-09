@@ -16,7 +16,7 @@ const REDIRECT_ENV = LOCAL_REDIRECT;
 router.get('/getTransactionDetails/:redirectkey', (req, res, next) => {
   axios({
     method: 'get',
-    url: `${LOCAL_REDIRECT}/${req.params.redirectkey}`,
+    url: `${REDIRECT_ENV}/${req.params.redirectkey}`,
   })
     .then(response => {
       res.send(response.data);
@@ -33,7 +33,7 @@ router.get('/getTransactionDetails/:redirectkey', (req, res, next) => {
 router.put('/updateRecipient/:redirectkey', (req, res, next) => {
   axios({
     method: 'put',
-    url: `${LOCAL_REDIRECT}/${req.params.redirectkey}/updateRecipient`,
+    url: `${REDIRECT_ENV}/${req.params.redirectkey}/updateRecipient`,
     data: req.body,
   })
     .then(response => {
@@ -108,7 +108,7 @@ router.get('/getPostboxes/:redirectkey', (req, res, next) => {
 router.put('/updateEmail/:redirectkey', (req, res, next) => {
   axios({
     method: 'put',
-    url: `${LOCAL_REDIRECT}/${req.params.redirectkey}/updateCustomerEmail`,
+    url: `${REDIRECT_ENV}/${req.params.redirectkey}/updateCustomerEmail`,
     data: req.body,
   })
     .then(response => {
@@ -149,7 +149,7 @@ router.post('/createShipment/:redirectkey', (req, res, next) => {
 });
 
 router.post('/payment/:redirectkey', (req, res, next) => {
-  // first axios call is to get the token
+  // first axios call is to get the token from Valitor
   axios({
     method: 'post',
     url: `http://localhost:8282/paymentgw/accounts/epostur/token`,
@@ -184,6 +184,30 @@ router.post('/payment/:redirectkey', (req, res, next) => {
         })
     })
     .catch(error => {
+      const obj = {
+        status: error.response.status,
+        message: error.response.data.message,
+      }
+      res.send(obj);
+    })
+});
+
+router.put('/updateCreatedStatus/:redirectkey', (req, res, next) => {
+  axios({
+    method: 'put',
+    url: `${LOCAL_REDIRECT}/${req.params.redirectkey}`,
+    headers: {'x-redirect-key': req.params.redirectkey, 'Content-Type': 'application/json'},
+    data: req.body,
+  })
+    .then(response => {
+      const obj = {
+        status: response.status,
+        body: response.data,
+      }
+      res.send(obj);
+    })
+    .catch(error => {
+      console.log(error);
       const obj = {
         status: error.response.status,
         message: error.response.data.message,

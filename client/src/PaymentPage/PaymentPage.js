@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipment, processPayment, getCurrentMonthAndYear } from './PaymentPageHelpers';
+import { saveCustomerEmailAddress, createShipment, processPayment, getCurrentMonthAndYear, updateCreatedStatusinDb } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { addChargeResponse, changeCreatedStatus, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
@@ -174,11 +174,11 @@ class PaymentPage extends Component {
           const totalAmount = this.props.basketPrice + this.props.selectedOption.price;
           processPayment(redirectkey, this.props.ccDetails, totalAmount)
             .then((response) => {
-              console.log(response);
               return response.json();
             })
             .then((response) => {
               console.log(response);
+              updateCreatedStatusinDb(redirectkey, true);
               this.props.addChargeResponse(response.body);
               this.props.changePaidStatus(true);
               this.props.changeProcessingPaymentStatus(false);
@@ -210,12 +210,23 @@ class PaymentPage extends Component {
       );
     }
 
-    // If shipment has already been created from this redirect key
+    // If shipment has already been created from this redirect key, but not paid for.
     if (this.props.created && !this.props.isPaid) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
             <h2>Sending hefur nú þegar verið búin til en ekki búið að borga.</h2>
+          </main>
+        </div>
+      );
+    }
+
+    // If shipment has already been created from this redirect key and paid for.
+    if (this.props.created) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Búið er að ganga frá sendingu.</h2>
           </main>
         </div>
       );

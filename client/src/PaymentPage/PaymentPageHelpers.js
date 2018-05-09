@@ -87,3 +87,35 @@ export function processPayment(redirectkey, ccDetails, totalAmount) {
 
   return fetch(processPaymentRequest);
 }
+
+export function updateCreatedStatusinDb(redirectkey, status) {
+  const updateCreatedStatus = `http://localhost:3001/api/updateCreatedStatus/${redirectkey}`;
+
+  const myHeaders = new Headers();
+  myHeaders.set('Content-Type', 'application/json');
+
+  const data = {
+    status,
+  };
+
+  const myInit = {
+    method: 'put',
+    body: JSON.stringify(data),
+    headers: myHeaders,
+  };
+
+  const updateCreatedStatusRequest = new Request(updateCreatedStatus, myInit);
+
+  fetch(updateCreatedStatusRequest)
+    .then((response) => {
+      console.log(response);
+      // það þarf ekkert að vera hérna frekar en ég vill
+      return response.json();
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log('Tókst ekki að breyta created stöðu sendingar í db.', error);
+    });
+}
