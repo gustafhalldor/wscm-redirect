@@ -11,7 +11,7 @@ const initState = {
     phone: '',
   },
   noData: false,
-  shipmentCreated: false,
+  priceMismatch: false,
   isProcessingPayment: false,
   shipmentPaid: false,
   payerIsNotRecipient: false,
@@ -78,18 +78,18 @@ export default function transactionReducer(state = initState, action) {
       };
       break;
     }
-    // Reset everything to initial state and flagging shipment created status to true
-    case 'CHANGE_SHIPMENT_CREATED_STATUS': {
+    // Reset everything to initial state and flagging shipment paid status to true
+    case 'CHANGE_SHIPMENT_PAID_STATUS': {
       state = {
         ...initState,
-        shipmentCreated: action.payload,
+        shipmentPaid: action.payload,
       };
       break;
     }
-    case 'CHANGE_SHIPMENT_PAID_STATUS': {
+    case 'CHANGE_PRICE_MISMATCH': {
       state = {
         ...state,
-        shipmentPaid: action.payload,
+        priceMismatch: action.payload,
       };
       break;
     }

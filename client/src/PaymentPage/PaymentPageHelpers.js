@@ -30,11 +30,11 @@ export function saveCustomerEmailAddress(redirectkey, customerEmail) {
     });
 }
 
-export function createShipment(redirectkey, customer, selectedCountry, selectedDeliveryOption) {
+export function createShipmentAndProcessPayment(redirectkey, customer, selectedCountry, selectedDeliveryOption, ccDetails, totalAmount) {
   const myHeaders = new Headers();
   myHeaders.set('Content-Type', 'application/json');
 
-  const createShipmentUrl = `http://localhost:3001/api/createShipment/${redirectkey}`;
+  const createShipmentUrl = `http://localhost:3001/api/createShipmentAndProcessPayment/${redirectkey}`;
 
   const shipment = {
     recipient: {
@@ -45,6 +45,15 @@ export function createShipment(redirectkey, customer, selectedCountry, selectedD
     },
     options: {
       deliveryServiceId: selectedDeliveryOption,
+    },
+    amount: totalAmount,
+    card: {
+      creditCard: {
+        ccNumber: ccDetails.number,
+        expiryMonth: ccDetails.expiryMonth,
+        expiryYear: ccDetails.expiryYear,
+        cvv: ccDetails.cvc,
+      },
     },
   };
 
@@ -108,7 +117,6 @@ export function updateCreatedStatusinDb(redirectkey, status) {
 
   fetch(updateCreatedStatusRequest)
     .then((response) => {
-      console.log(response);
       // það þarf ekkert að vera hérna frekar en ég vill
       return response.json();
     })

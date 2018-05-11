@@ -19,9 +19,9 @@ export function changeNoDataStatus(status) {
   };
 }
 
-export function changeCreatedStatus(status) {
+export function changePriceMismatch(status) {
   return {
-    type: 'CHANGE_SHIPMENT_CREATED_STATUS',
+    type: 'CHANGE_PRICE_MISMATCH',
     payload: status,
   };
 }

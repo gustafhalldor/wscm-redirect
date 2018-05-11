@@ -123,7 +123,7 @@ class DeliveryOptions extends Component {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
-            <h2>Sending hefur nú þegar verið búin til.</h2>
+            <h2>Sending hefur nú þegar verið greidd.</h2>
           </main>
         </div>
       );
@@ -231,7 +231,7 @@ function mapStateToProps(state) {
     deliveryOptionsError: state.deliveryOptions.deliveryOptionsError,
     fetchingDeliveryOptions: state.deliveryOptions.fetchingDeliveryOptions,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
-    created: state.transactionDetails.shipmentCreated,
+    created: state.transactionDetails.shipmentPaid,
   };
 }
 

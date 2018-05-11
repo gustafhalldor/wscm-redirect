@@ -123,59 +123,95 @@ router.put('/updateEmail/:redirectkey', (req, res, next) => {
     })
 });
 
-router.post('/createShipment/:redirectkey', (req, res, next) => {
+router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) => {
+  // First we get the total price from DB.
+  // If it differs from the one in application state we return an error message
+
   axios({
-    method: 'post',
-    url: `${LOCAL_SERVICE}/shipments/create`,
-    headers: {'x-redirect-key': req.params.redirectkey},
-    data: req.body,
+    method: 'get',
+    url: `${REDIRECT_ENV}/${req.params.redirectkey}/totalPrice`,
   })
     .then(response => {
-      // response.data is the shipment that got created.
-      const obj = {
-        status: response.status,
-        body: response.data,
+      console.log(response.data);
+      console.log(req.body.amount);
+      if (req.body.amount !== response.data) {
+        const obj = {
+          status: 400,
+          message: 'Ekki er verðsamræmi milli vafra og netþjóns. Vinsamlegast reyndu aftur.',
+        }
+        return res.send(obj);
       }
-      res.send(obj);
-    })
-    .catch(error => {
-      // If no API key is found behind the redirect key, a "400" status is returned.
-      const obj = {
-        status: error.response.status,
-        message: error.response.data.message,
-      }
-      res.send(obj);
-    })
-});
 
-router.post('/payment/:redirectkey', (req, res, next) => {
-  // first axios call is to get the token from Valitor
-  axios({
-    method: 'post',
-    url: `http://localhost:8282/paymentgw/accounts/epostur/token`,
-    data: req.body.card,
-  })
-    .then(response => {
-      // axios call succeeded and we have ourselves a token
-      const chargeObject = {
-        token: response.data.token,
-        amount: req.body.amount,
-      };
-
-      // second axios call is to process the charge itself
+      // Then we create the shipment
       axios({
         method: 'post',
-        url: `http://localhost:8282/paymentgw/accounts/epostur/charge`,
-        data: chargeObject,
+        url: `${LOCAL_SERVICE}/shipments/create`,
+        headers: {'x-redirect-key': req.params.redirectkey},
+        data: req.body,
       })
-        .then(response => {
-          const obj = {
-            status: response.status,
-            body: response.data,
-          }
-          res.send(obj);
+        .then(shipmentResponse => {
+          // shipmentResponse.data is the shipment that got created.
+          // const obj = {
+          //   status: shipmentResponse.status,
+          //   body: shipmentResponse.data,
+          // }
+          // res.send(obj);
+
+          /* --- PAYMENT PROCESSING STARTS --- */
+
+          // step 1 of 2: First we get a token from Valitor
+          axios({
+            method: 'post',
+            url: `http://localhost:8282/paymentgw/accounts/epostur/token`,
+            data: req.body.card,
+          })
+            .then(tokenResponse => {
+              console.log("inní tokenResponse");
+              console.log(tokenResponse.data.token);
+              // axios call succeeded and we have ourselves a token
+              const tokenObject = {
+                token: tokenResponse.data.token,
+                amount: req.body.amount,
+              };
+
+              // step 2 of 2: Then we make the actual charge
+              axios({
+                method: 'post',
+                url: `http://localhost:8282/paymentgw/accounts/epostur/charge`,
+                data: tokenObject,
+              })
+                .then(chargeResponse => {
+                  console.log("inní chargeResponse");
+                  console.log(chargeResponse.data);
+                  const obj = {
+                    status: 201,
+                    body: chargeResponse.data,
+                  }
+                  // TODO: Send email to customer with information on shipment
+                  // TODO: Send email to customer with payment receipt
+                  res.send(obj);
+                })
+                .catch(error => {
+                  const obj = {
+                    status: error.response.status,
+                    message: error.response.data.message,
+                  }
+                  res.send(obj);
+                })
+            })
+            .catch(error => { // "get token" catch
+              const obj = {
+                status: error.response.status,
+                message: error.response.data.message,
+              }
+              res.send(obj);
+            })
+
+          /* --- PAYMENT PROCESSING FINISHED --- */
+
         })
-        .catch(error => {
+        .catch(error => { // "create shipment" catch
+          // If no API key is found behind the redirect key, a "401" status is returned.
           const obj = {
             status: error.response.status,
             message: error.response.data.message,
@@ -183,14 +219,15 @@ router.post('/payment/:redirectkey', (req, res, next) => {
           res.send(obj);
         })
     })
-    .catch(error => {
+    .catch(error => { // "get total price" catch
+      console.log(error);
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
       }
       res.send(obj);
     })
-});
+})
 
 router.put('/updateCreatedStatus/:redirectkey', (req, res, next) => {
   axios({
@@ -207,7 +244,6 @@ router.put('/updateCreatedStatus/:redirectkey', (req, res, next) => {
       res.send(obj);
     })
     .catch(error => {
-      console.log(error);
       const obj = {
         status: error.response.status,
         message: error.response.data.message,

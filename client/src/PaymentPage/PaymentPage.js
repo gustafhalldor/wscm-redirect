@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipment, processPayment, getCurrentMonthAndYear, updateCreatedStatusinDb } from './PaymentPageHelpers';
+import { saveCustomerEmailAddress, createShipmentAndProcessPayment, getCurrentMonthAndYear, updateCreatedStatusinDb } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
-import { addChargeResponse, changeCreatedStatus, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
+import { addChargeResponse, changePriceMismatch, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
 
 class PaymentPage extends Component {
   componentDidMount() {
-    if (this.props.created) {
+    if (this.props.isPaid) {
       return;
     }
     Payment.formatCardNumber(document.querySelector('[name="number"]'));
@@ -137,8 +137,8 @@ class PaymentPage extends Component {
 
   handleConfirmClick = () => {
     // Ætti aldrei að gerast, eeeen allt í lagi að hafa þetta inni
-    if (this.props.created && this.props.isPaid) {
-      toast('Sending hefur nú þegar verið búin til !', { type: 'warning' });
+    if (this.props.isPaid) {
+      toast('Búið er að greiða fyrir sendingu !', { type: 'warning' });
       return;
     }
     this.props.clickedSubmitButton(true);
@@ -161,41 +161,30 @@ class PaymentPage extends Component {
       pathname: `/${this.props.match.params.redirectkey}/final`,
     };
     // Bý til sendingu og svo er kreditkort processað.
-    createShipment(redirectkey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id)
+    const totalAmount = this.props.basketPrice + this.props.selectedOption.price;
+    this.props.changeProcessingPaymentStatus(true);
+    createShipmentAndProcessPayment(redirectkey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id, this.props.ccDetails, totalAmount)
       .then((response) => {
         return response.json();
       })
       .then((response) => {
+        console.log(response);
         if (response.status === 201) {
-        //  toast('Sending hefur verið búin til !', { type: 'success' });
-          this.props.changeCreatedStatus(true);
-          this.props.changeProcessingPaymentStatus(true);
-          // payer email address is already saved in DB. Use it in the service itself.
-          const totalAmount = this.props.basketPrice + this.props.selectedOption.price;
-          processPayment(redirectkey, this.props.ccDetails, totalAmount)
-            .then((response) => {
-              return response.json();
-            })
-            .then((response) => {
-              console.log(response);
-              updateCreatedStatusinDb(redirectkey, true);
-              this.props.addChargeResponse(response.body);
-              this.props.changePaidStatus(true);
-              this.props.changeProcessingPaymentStatus(false);
-              this.props.history.push(finalPage);
-            })
-            .catch((error) => {
-
-            });
-
-        // END if response.status === 201
-        } else {
-          console.log(response.message);
+          this.props.changePaidStatus(true);
+          updateCreatedStatusinDb(redirectkey, true);
+          this.props.addChargeResponse(response.body);
+          this.props.history.push(finalPage);
         }
+        if (response.status === 400) {
+          this.props.changeProcessingPaymentStatus(false);
+          this.props.changePriceMismatch(true);
+          this.props.history.push(`/${this.props.match.params.redirectkey}/payment`);
+        }
+        // TODO handle more http statuses, like 401
       })
       .catch((error) => {
         // TODO: Senda tölvupóst á okkur ef þetta gerist?
-        console.log('Tókst ekki að búa til sendingu.', error);
+        console.log('Tókst ekki að búa til og greiða sendingu.', error);
       });
   }
 
@@ -210,23 +199,12 @@ class PaymentPage extends Component {
       );
     }
 
-    // If shipment has already been created from this redirect key, but not paid for.
-    if (this.props.created && !this.props.isPaid) {
-      return (
-        <div className="container">
-          <main className="flex-container-row justify-center">
-            <h2>Sending hefur nú þegar verið búin til en ekki búið að borga.</h2>
-          </main>
-        </div>
-      );
-    }
-
     // If shipment has already been created from this redirect key and paid for.
-    if (this.props.created) {
+    if (this.props.isPaid) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
-            <h2>Búið er að ganga frá sendingu.</h2>
+            <h2>Sending hefur nú þegar verið greidd.</h2>
           </main>
         </div>
       );
@@ -252,6 +230,11 @@ class PaymentPage extends Component {
 
     return (
       <div className="paymentPageContainer">
+        {
+          this.props.priceMismatch === true ?
+            <span>Ekki samræmi milli verðs á server og í client. Vinsamlegast reyndu aftur.</span> :
+            <span></span>
+        }
         <div className="paymentPageContent">
           <div className="paymentPageLeftSide">
             <div className="flex-container-column costReview">
@@ -425,7 +408,7 @@ function mapStateToProps(state) {
     ccDetails: state.creditCard,
     apiKey: state.transactionDetails.apiKey,
     recipient: state.transactionDetails.recipientInfo,
-    created: state.transactionDetails.shipmentCreated,
+    priceMismatch: state.transactionDetails.priceMismatch,
     isPaid: state.transactionDetails.shipmentPaid,
     isProcessingPayment: state.transactionDetails.isProcessingPayment,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
@@ -443,7 +426,6 @@ function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     updateCcDetails,
     updateFocusedField,
-    changeCreatedStatus,
     changePaidStatus,
     changeProcessingPaymentStatus,
     changepayerIsNotRecipient,
@@ -452,6 +434,7 @@ function matchDispatchToProps(dispatch) {
     clickedSubmitButton,
     updatepayerEmailAddressValidation,
     addChargeResponse,
+    changePriceMismatch,
   }, dispatch);
 }
 

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import RecipientInfo from '../RecipientInfo/RecipientInfo';
 import BasketContents from '../BasketContents/BasketContents';
-import { changeNoDataStatus, changeCreatedStatus, addTransactionDetails } from '../actions/transactionActions';
+import { changeNoDataStatus, changePaidStatus, addTransactionDetails } from '../actions/transactionActions';
 import { addCountries } from '../actions/deliveryOptionsActions';
 
 class LandingPage extends Component {
@@ -31,9 +31,9 @@ class LandingPage extends Component {
         if (response.created) {
           localStorage.removeItem('persist:root');
           appObject.props.dispatch({ type: 'RESET_STATE' });
-          appObject.props.changeCreatedStatus(true);
+          appObject.props.changePaidStatus(true);
         } else {
-          appObject.props.changeCreatedStatus(false);
+          appObject.props.changePaidStatus(false);
 
           if (response.recipient && response.products) {
             // If no recipient info was passed from the store, then it got saved as
@@ -107,11 +107,11 @@ class LandingPage extends Component {
       );
     }
 
-    if (this.props.created) {
+    if (this.props.isPaid) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
-            <h2>Sending hefur nú þegar verið búin til.</h2>
+            <h2>Sending hefur nú þegar verið greidd.</h2>
           </main>
         </div>
       );
@@ -147,7 +147,7 @@ function mapStateToProps(state) {
     countries: state.deliveryOptions.countries,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     noDataStatus: state.transactionDetails.noData,
-    created: state.transactionDetails.shipmentCreated,
+    isPaid: state.transactionDetails.shipmentPaid,
   };
 }
 
@@ -157,7 +157,7 @@ function matchDispatchToProps(dispatch) {
     addTransactionDetails,
     addCountries,
     changeNoDataStatus,
-    changeCreatedStatus,
+    changePaidStatus,
   }, dispatch);
 }
 
