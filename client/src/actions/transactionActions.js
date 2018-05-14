@@ -26,6 +26,13 @@ export function changePriceMismatch(status) {
   };
 }
 
+export function changeUnauthorizedStatus(status) {
+  return {
+    type: 'CHANGE_UNAUTHORIZED',
+    payload: status,
+  };
+}
+
 export function changePaidStatus(status) {
   return {
     type: 'CHANGE_SHIPMENT_PAID_STATUS',

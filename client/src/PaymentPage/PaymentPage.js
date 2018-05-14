@@ -10,12 +10,12 @@ import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
 import { saveCustomerEmailAddress, createShipmentAndProcessPayment, getCurrentMonthAndYear, updateCreatedStatusinDb } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
-import { addChargeResponse, changePriceMismatch, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
+import { addChargeResponse, changePriceMismatch, changeUnauthorizedStatus, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
 
 class PaymentPage extends Component {
   componentDidMount() {
-    if (this.props.isPaid) {
+    if (this.props.isPaid || this.props.unauthorized) {
       return;
     }
     Payment.formatCardNumber(document.querySelector('[name="number"]'));
@@ -181,6 +181,11 @@ class PaymentPage extends Component {
           this.props.history.push(`/${this.props.match.params.redirectkey}/payment`);
         }
         // TODO handle more http statuses, like 401
+        if (response.status === 401) {
+          this.props.changeProcessingPaymentStatus(false);
+          this.props.changeUnauthorizedStatus(true);
+          this.props.history.push(`/${this.props.match.params.redirectkey}/payment`);
+        }
       })
       .catch((error) => {
         // TODO: Senda tölvupóst á okkur ef þetta gerist?
@@ -205,6 +210,16 @@ class PaymentPage extends Component {
         <div className="container">
           <main className="flex-container-row justify-center">
             <h2>Sending hefur nú þegar verið greidd.</h2>
+          </main>
+        </div>
+      );
+    }
+
+    if (this.props.unauthorized) {
+      return (
+        <div className="container">
+          <main className="flex-container-row justify-center">
+            <h2>Ekki tókst að framkvæma aðgerð.</h2>
           </main>
         </div>
       );
@@ -409,6 +424,7 @@ function mapStateToProps(state) {
     apiKey: state.transactionDetails.apiKey,
     recipient: state.transactionDetails.recipientInfo,
     priceMismatch: state.transactionDetails.priceMismatch,
+    unauthorized: state.transactionDetails.unauthorized,
     isPaid: state.transactionDetails.shipmentPaid,
     isProcessingPayment: state.transactionDetails.isProcessingPayment,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
@@ -435,6 +451,7 @@ function matchDispatchToProps(dispatch) {
     updatepayerEmailAddressValidation,
     addChargeResponse,
     changePriceMismatch,
+    changeUnauthorizedStatus,
   }, dispatch);
 }
 

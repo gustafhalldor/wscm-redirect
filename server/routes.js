@@ -134,7 +134,8 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
     .then(response => {
       console.log(response.data);
       console.log(req.body.amount);
-      if (req.body.amount !== response.data) {
+      // Allow for inconsistency of +- 1 króna because of possible, but unlikely, int parsing discrepancy.
+      if (req.body.amount < response.data-1 || req.body.amount > response.data+1) {
         const obj = {
           status: 400,
           message: 'Ekki er verðsamræmi milli vafra og netþjóns. Vinsamlegast reyndu aftur.',
@@ -191,7 +192,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
                   // TODO: Send email to customer with payment receipt
                   res.send(obj);
                 })
-                .catch(error => {
+                .catch(error => { //"charge creditcard" catch
                   const obj = {
                     status: error.response.status,
                     message: error.response.data.message,

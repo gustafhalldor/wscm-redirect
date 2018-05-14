@@ -12,6 +12,7 @@ const initState = {
   },
   noData: false,
   priceMismatch: false,
+  unauthorized: false,
   isProcessingPayment: false,
   shipmentPaid: false,
   payerIsNotRecipient: false,
@@ -90,6 +91,13 @@ export default function transactionReducer(state = initState, action) {
       state = {
         ...state,
         priceMismatch: action.payload,
+      };
+      break;
+    }
+    case 'CHANGE_UNAUTHORIZED': {
+      state = {
+        ...state,
+        unauthorized: action.payload,
       };
       break;
     }
