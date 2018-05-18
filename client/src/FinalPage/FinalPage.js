@@ -21,7 +21,7 @@ const PaymentPage = (props) => {
               <span>Upphæð: {props.paymentResponse.amount} kr.</span>
             </p>
           </div> :
-          <h2>Eitthvað meijor fokkaðist upp</h2>
+          <h2>Eitthvað skrítið gerðist :(</h2>
         }
       </div>
     </div>

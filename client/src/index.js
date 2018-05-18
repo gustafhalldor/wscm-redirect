@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import LandingPage from './LandingPage/LandingPage';
 import Header from './Header/Header';
+import NotFound from './NotFound/NotFound';
 import DeliveryOptions from './DeliveryOptions/DeliveryOptions';
 import PaymentPage from './PaymentPage/PaymentPage';
 import FinalPage from './FinalPage/FinalPage';
@@ -20,12 +21,14 @@ ReactDOM.render(
     <PersistGate loading={null} persistor={persistor}>
       <Router>
         <main>
-          <Route path="/" component={Header} /> {/* TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
+          {/*<Route path="/" component={Header} />  TODO: Get alveg poppað þetta upp seinna, með því að hafa eitt "layout" */}
+          <Header />
           <Switch>
-            <Route path="/:redirectkey" exact component={LandingPage} />
-            <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions} />
-            <Route path="/:redirectkey/payment" exact component={PaymentPage} />
-            <Route path="/:redirectkey/final" exact component={FinalPage} />
+            <Route path="/:redirectkey" component={LandingPage} exact />
+            <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions} exact />
+            <Route path="/:redirectkey/payment" component={PaymentPage} exact />
+            <Route path="/:redirectkey/final" component={FinalPage} exact />
+            <Route component={NotFound}/>
           </Switch>
         </main>
       </Router>

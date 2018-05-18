@@ -88,16 +88,18 @@ class LandingPage extends Component {
       .catch((error) => {
         console.log('Tókst ekki að ná í transaction details.', error);
       });
-  }
+  };
 
   handleRecipientInfoSubmit = () => {
     const nextUrl = `${this.props.location.pathname}/deliveryOptions`;
 
     this.props.history.push(nextUrl);
-  }
+  };
 
   render() {
-    if (this.props.noDataStatus) {
+    const {noDataStatus, isPaid} = this.props;
+
+    if (noDataStatus) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
@@ -107,7 +109,7 @@ class LandingPage extends Component {
       );
     }
 
-    if (this.props.isPaid) {
+    if (isPaid) {
       return (
         <div className="container">
           <main className="flex-container-row justify-center">
