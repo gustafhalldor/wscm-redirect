@@ -25,7 +25,7 @@ router.get('/getTransactionDetails/:redirectkey', (req, res, next) => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });
@@ -43,7 +43,7 @@ router.put('/updateRecipient/:redirectkey', (req, res, next) => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });
@@ -62,9 +62,28 @@ router.get('/getCountries/:redirectkey', (req, res, next) => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
+});
+
+router.get('/getPostcodes/:redirectkey', (req, res, next) => {
+    axios({
+        method: 'get',
+        url: `${LOCAL_SERVICE}/postcodes/`,
+        headers: {'x-redirect-key': req.params.redirectkey},
+    })
+        .then(response => {
+            res.send(response.data);
+        })
+        .catch(error => {
+            // If no API key is found behind the redirect key, a "400" status is returned.
+            const obj = {
+                status: error.response.status,
+                message: error.response.data.message,
+            };
+            res.send(obj);
+        })
 });
 
 router.get('/getDeliveryPrices/:redirectkey/:countryCode/:postcode/:weight', (req, res, next) => {
@@ -81,7 +100,7 @@ router.get('/getDeliveryPrices/:redirectkey/:countryCode/:postcode/:weight', (re
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });
@@ -100,7 +119,7 @@ router.get('/getPostboxes/:redirectkey', (req, res, next) => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });
@@ -118,7 +137,7 @@ router.put('/updateEmail/:redirectkey', (req, res, next) => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });
@@ -139,7 +158,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
         const obj = {
           status: 400,
           message: 'Ekki er verðsamræmi milli vafra og netþjóns. Vinsamlegast reyndu aftur.',
-        }
+        };
         return res.send(obj);
       }
 
@@ -187,7 +206,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
                   const obj = {
                     status: 201,
                     body: chargeResponse.data,
-                  }
+                  };
                   // TODO: Send email to customer with information on shipment
                   // TODO: Send email to customer with payment receipt
                   res.send(obj);
@@ -196,7 +215,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
                   const obj = {
                     status: error.response.status,
                     message: error.response.data.message,
-                  }
+                  };
                   res.send(obj);
                 })
             })
@@ -204,7 +223,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
               const obj = {
                 status: error.response.status,
                 message: error.response.data.message,
-              }
+              };
               res.send(obj);
             })
 
@@ -216,7 +235,7 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
           const obj = {
             status: error.response.status,
             message: error.response.data.message,
-          }
+          };
           res.send(obj);
         })
     })
@@ -225,10 +244,10 @@ router.post('/createShipmentAndProcessPayment/:redirectkey', (req, res, next) =>
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
-})
+});
 
 router.put('/updateCreatedStatus/:redirectkey', (req, res, next) => {
   axios({
@@ -241,14 +260,14 @@ router.put('/updateCreatedStatus/:redirectkey', (req, res, next) => {
       const obj = {
         status: response.status,
         body: response.data,
-      }
+      };
       res.send(obj);
     })
     .catch(error => {
       const obj = {
         status: error.response.status,
         message: error.response.data.message,
-      }
+      };
       res.send(obj);
     })
 });

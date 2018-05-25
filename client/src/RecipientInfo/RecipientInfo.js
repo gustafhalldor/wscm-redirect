@@ -11,7 +11,7 @@ class RecipientInfo extends Component {
   onInputChange = ({ fieldName, value, error }) => {
     this.props.addValidationError({ fieldName, error }); // Not the best name for this function.. It simply either updates with 'false' or the error message itself, regardless of what it was before.
     this.props.updateRecipientInfo({ fieldName, value });
-  }
+  };
 
   onCountryChange = (evt) => {
     const [fieldName, value] = [evt.target.name, evt.target.value];
@@ -19,7 +19,7 @@ class RecipientInfo extends Component {
 
     this.onInputChange({ fieldName, value, error });
     this.props.updateSelectedCountry(evt.target.value);
-  }
+  };
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
@@ -43,7 +43,7 @@ class RecipientInfo extends Component {
       })
       .then((response) => {
         // If recipient details were updated successfully, then we continue and move on to the next step
-        // TODO do some more stuff here, maybe add another param ('successful') to the onSubmit function, which App.js then handles.
+        // TODO do some more stuff here, maybe add another param ('successful') to the onSubmit function, which LandingPage.js then handles.
         if ((response) === 200) {
           this.props.onSubmit();
         }
@@ -84,6 +84,15 @@ class RecipientInfo extends Component {
     //     );
     //   });
     // }
+
+    /*let postcodes = [];
+    if (this.props.postcodes) {
+      postcodes = this.props.postcodes.map((postcode) => {
+        return (
+          <option key={postcode.postcode} value={postcode.postcode}>{postcode.postcode} {postcode.town}</option>
+        )
+      })
+    }*/
 
     return (
       <div className="leftSide col-md-8">
@@ -194,6 +203,7 @@ function mapStateToProps(state) {
     inputErrors: state.recipientInfoValidation.inputErrors,
     products: state.transactionDetails.products,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
+  //  selectedPostcode: state.transactionDetails.recipientInfo.postcode,
   };
 }
 

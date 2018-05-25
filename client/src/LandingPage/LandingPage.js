@@ -4,23 +4,21 @@ import { connect } from 'react-redux';
 import RecipientInfo from '../RecipientInfo/RecipientInfo';
 import BasketContents from '../BasketContents/BasketContents';
 import { changeNoDataStatus, changePaidStatus, addTransactionDetails } from '../actions/transactionActions';
-import { addCountries } from '../actions/deliveryOptionsActions';
+import { addCountries, addPostcodes } from '../actions/deliveryOptionsActions';
 
 class LandingPage extends Component {
   // Getting transaction information from WSCM api.
   componentDidMount = () => {
-    const appObject = this;
-
-    fetch(`http://localhost:3001/api/getTransactionDetails/${appObject.props.match.params.redirectkey}`)
+    fetch(`http://localhost:3001/api/getTransactionDetails/${this.props.match.params.redirectkey}`)
       .then((response) => {
         // if status is 404 then there is nothing behind the redirect key
         // and we shouldn't display anything
         if (response.status === 404) {
           localStorage.removeItem('persist:root');
-          appObject.props.dispatch({ type: 'RESET_STATE' });
-          appObject.props.changeNoDataStatus(true);
+          this.props.dispatch({ type: 'RESET_STATE' });
+          this.props.changeNoDataStatus(true);
         } else {
-          appObject.props.changeNoDataStatus(false);
+          this.props.changeNoDataStatus(false);
           return response.json();
         }
       })
@@ -30,12 +28,13 @@ class LandingPage extends Component {
 
         if (response.created) {
           localStorage.removeItem('persist:root');
-          appObject.props.dispatch({ type: 'RESET_STATE' });
-          appObject.props.changePaidStatus(true);
+          this.props.dispatch({ type: 'RESET_STATE' });
+          this.props.changePaidStatus(true);
         } else {
-          appObject.props.changePaidStatus(false);
+          this.props.changePaidStatus(false);
 
-          if (response.recipient && response.products) {
+          // TODO: Höndla else skilyrðið? Taka if-ið bara út? APInn er með tjekk svo hann ætti alltaf að skila streng.
+          if (response.products) {
             // If no recipient info was passed from the store, then it got saved as
             // 'null' in the DB. So, we have to handle those nulls.
             const recipient = {};
@@ -59,15 +58,15 @@ class LandingPage extends Component {
             // Only try to update with info from DB if required fields are empty.
             // Otherwise use application state.
             // TODO decide if this is a good idea or not, or find another solution :)
-            if (appObject.props.recipient.fullName === '' || appObject.props.recipient.address === '' || appObject.props.recipient.postcode === '') {
-              appObject.props.addTransactionDetails(transactionObject);
+            if (this.props.recipient.fullName === '' || this.props.recipient.address === '' || this.props.recipient.postcode === '') {
+              this.props.addTransactionDetails(transactionObject);
             }
 
             // Populate the countries list, but ONLY if it hasn't already been loaded into state.
             // TODO the line below doesn't work in firefox for some reason... wtf.
-            // if (!appObject.props.countries.length && response.apiKey !== '') {
+            // if (!this.props.countries.length && response.apiKey !== '') {
             // TODO uncomment fetch below when we include international shipments
-            // fetch(`http://localhost:3001/api/getCountries/${appObject.props.match.params.redirectkey}`)
+            // fetch(`http://localhost:3001/api/getCountries/${this.props.match.params.redirectkey}`)
             //   .then((response2) => {
             //     return response2.json();
             //   })
@@ -76,13 +75,26 @@ class LandingPage extends Component {
             //     if (response3.status === 400) {
             //       console.log(response3.message);
             //     }
-            //     appObject.props.addCountries(response3.countries);
+            //     this.props.addCountries(response3.countries);
             //   })
             //   .catch((error) => {
             //     console.log('Ekki tókst að ná í landalista.', error);
             //   });
-          // } // end if (!appObject.props.countries.length && response.apiKey !== '')
-          } // end if (response.recipient && response.products)
+          // } // end if (!this.props.countries.length && response.apiKey !== '')
+            if (!this.props.postcodes.length) {
+              fetch(`http://localhost:3001/api/getPostcodes/${this.props.match.params.redirectkey}`)
+                .then((response) => {
+                  return response.json();
+                })
+                .then((response) => {
+                  console.log(response);
+                  this.props.addPostcodes(response.postcodes);
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+            }
+          } // end if (response.products)
         } // end else
       })
       .catch((error) => {
@@ -127,6 +139,7 @@ class LandingPage extends Component {
             redirectkey={this.props.match.params.redirectkey}
             countries={this.props.countries}
             selectedCountry={this.props.selectedCountry}
+            postcodes={this.props.postcodes}
             onSubmit={this.handleRecipientInfoSubmit}
           />
           <BasketContents
@@ -147,6 +160,7 @@ function mapStateToProps(state) {
     totalPrice: state.transactionDetails.productsPrice,
     totalWeight: state.transactionDetails.productsWeight,
     countries: state.deliveryOptions.countries,
+    postcodes: state.deliveryOptions.postcodes,
     selectedCountry: state.transactionDetails.recipientInfo.countryCode,
     noDataStatus: state.transactionDetails.noData,
     isPaid: state.transactionDetails.shipmentPaid,
@@ -160,6 +174,7 @@ function matchDispatchToProps(dispatch) {
     addCountries,
     changeNoDataStatus,
     changePaidStatus,
+    addPostcodes,
   }, dispatch);
 }
 

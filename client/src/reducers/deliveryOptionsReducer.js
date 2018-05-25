@@ -1,17 +1,18 @@
 const initState = {
-  options: [],
-  postboxes: [],
-  selectedOption: {
-    id: '',
-    price: 0,
-  },
-  selectedPostbox: {
-    name: '',
-    postcode: '',
-  },
-  countries: [],
-  deliveryOptionsError: '',
-  fetchingDeliveryOptions: false,
+    options: [],
+    postboxes: [],
+    selectedOption: {
+      id: '',
+      price: 0,
+    },
+    selectedPostbox: {
+      name: '',
+      postcode: '',
+    },
+    countries: [],
+    postcodes: [],
+    deliveryOptionsError: '',
+    fetchingDeliveryOptions: false,
 };
 
 export default function deliveryOptionsReducer(state = initState, action) {
@@ -53,6 +54,13 @@ export default function deliveryOptionsReducer(state = initState, action) {
       state = {
         ...state,
         countries: action.payload,
+      };
+      break;
+    }
+    case 'ADD_POSTCODES': {
+      state = {
+          ...state,
+          postcodes: action.payload,
       };
       break;
     }

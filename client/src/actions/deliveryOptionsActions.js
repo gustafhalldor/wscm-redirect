@@ -33,6 +33,13 @@ export function addCountries(countries) {
   };
 }
 
+export function addPostcodes(postcodes) {
+  return {
+      type: 'ADD_POSTCODES',
+      payload: postcodes,
+  };
+}
+
 export function addDeliveryOptionsError(error) {
   return {
     type: 'ADD_DELIVERY_OPTIONS_ERROR',

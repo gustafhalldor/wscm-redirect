@@ -51,7 +51,7 @@ class DeliveryOptions extends Component {
       .catch((error) => {
         console.log('Tókst ekki að ná í afhendingarleiðir og verð', error);
       });
-  }
+  };
 
   onFormSubmit = (evt) => {
     evt.preventDefault();
@@ -97,7 +97,7 @@ class DeliveryOptions extends Component {
           this.props.history.push(location);
         }
       });
-  }
+  };
 
   handleUpdateOfSelectedPostbox = (evt) => {
     const value = evt.target.value;
@@ -105,7 +105,7 @@ class DeliveryOptions extends Component {
     const postcode = value.substring(value.length - 3, value.length);
     this.props.updateSelectedPostbox({ name, postcode });
     this.props.addDeliveryOptionsError('');
-  }
+  };
 
   handleRadioButtons = (evt) => {
     const selectedOption = evt.target.value;
@@ -116,7 +116,8 @@ class DeliveryOptions extends Component {
         this.props.addDeliveryOptionsError('');
       }
     }
-  }
+  };
+
   render() {
     // If shipment has already been created from this redirect key
     if (this.props.created) {
