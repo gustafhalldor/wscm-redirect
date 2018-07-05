@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // import fetch from 'isomorphic-fetch';
-import { saveCustomerEmailAddress, createShipmentAndProcessPayment, getCurrentMonthAndYear, updateCreatedStatusinDb } from './PaymentPageHelpers';
+import { saveCustomerEmailAddress, createShipmentAndProcessPayment, getCurrentMonthAndYear } from './PaymentPageHelpers';
 import { updateCcDetails, updateFocusedField, updateFieldError, clickedSubmitButton } from '../actions/creditCardActions';
 import { addChargeResponse, changePriceMismatch, changeUnauthorizedStatus, changeProcessingPaymentStatus, changePaidStatus, changepayerIsNotRecipient, changepayerEmailAddress, updatepayerEmailAddressValidation } from '../actions/transactionActions';
 import './paymentPage.css';
@@ -163,15 +163,14 @@ class PaymentPage extends Component {
     // Bý til sendingu og svo er kreditkort processað.
     const totalAmount = this.props.basketPrice + this.props.selectedOption.price;
     this.props.changeProcessingPaymentStatus(true);
-    createShipmentAndProcessPayment(redirectkey, this.props.recipient, this.props.selectedCountry, this.props.selectedOption.id, this.props.ccDetails, totalAmount)
+    createShipmentAndProcessPayment(redirectkey, this.props.recipient, this.props.payerEmailAddress, this.props.selectedCountry, this.props.selectedOption.id, this.props.ccDetails, totalAmount)
       .then((response) => {
         return response.json();
       })
       .then((response) => {
         console.log(response);
-        if (response.status === 201) {
+        if (response.status === 200) {
           this.props.changePaidStatus(true);
-          updateCreatedStatusinDb(redirectkey, true);
           this.props.addChargeResponse(response.body);
           this.props.history.push(finalPage);
         }
@@ -180,7 +179,6 @@ class PaymentPage extends Component {
           this.props.changePriceMismatch(true);
           this.props.history.push(`/${this.props.match.params.redirectkey}/payment`);
         }
-        // TODO handle more http statuses, like 401
         if (response.status === 401) {
           this.props.changeProcessingPaymentStatus(false);
           this.props.changeUnauthorizedStatus(true);

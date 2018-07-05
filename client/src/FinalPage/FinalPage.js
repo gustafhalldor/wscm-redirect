@@ -10,7 +10,9 @@ const PaymentPage = (props) => {
           <div>
             <h2>Vei! Greiðsla fór í gegn og sending hefur verið búin til!</h2>
             <p>
-              <span>Heimildarnúmer: {props.paymentResponse.transactionNumber}</span>
+              <span>Heimildarnúmer: {props.paymentResponse.authNumber}</span>
+              <br />
+              <span>Færslunúmer: {props.paymentResponse.transactionNumber}</span>
               <br />
               <span>Dagsetning: {props.paymentResponse.payDate}</span>
               <br />

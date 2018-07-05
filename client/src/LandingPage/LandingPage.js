@@ -17,6 +17,7 @@ class LandingPage extends Component {
           localStorage.removeItem('persist:root');
           this.props.dispatch({ type: 'RESET_STATE' });
           this.props.changeNoDataStatus(true);
+          return;
         } else {
           this.props.changeNoDataStatus(false);
           return response.json();
@@ -26,7 +27,7 @@ class LandingPage extends Component {
         console.log('Transaction info response:');
         console.log(response);
 
-        if (response.created) {
+        if (response.paid) {
           localStorage.removeItem('persist:root');
           this.props.dispatch({ type: 'RESET_STATE' });
           this.props.changePaidStatus(true);
@@ -81,19 +82,19 @@ class LandingPage extends Component {
             //     console.log('Ekki tókst að ná í landalista.', error);
             //   });
           // } // end if (!this.props.countries.length && response.apiKey !== '')
-            if (!this.props.postcodes.length) {
-              fetch(`http://localhost:3001/api/getPostcodes/${this.props.match.params.redirectkey}`)
-                .then((response) => {
-                  return response.json();
-                })
-                .then((response) => {
-                  console.log(response);
-                  this.props.addPostcodes(response.postcodes);
-                })
-                .catch((error) => {
-                  console.log(error);
-                })
-            }
+            // if (!this.props.postcodes.length) {
+            //   fetch(`http://localhost:3001/api/getPostcodes/${this.props.match.params.redirectkey}`)
+            //     .then((response) => {
+            //       return response.json();
+            //     })
+            //     .then((response) => {
+            //       console.log(response);
+            //       this.props.addPostcodes(response.postcodes);
+            //     })
+            //     .catch((error) => {
+            //       console.log(error);
+            //     })
+            // }
           } // end if (response.products)
         } // end else
       })

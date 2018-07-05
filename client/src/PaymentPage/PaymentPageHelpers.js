@@ -30,7 +30,7 @@ export function saveCustomerEmailAddress(redirectkey, customerEmail) {
     });
 }
 
-export function createShipmentAndProcessPayment(redirectkey, customer, selectedCountry, selectedDeliveryOption, ccDetails, totalAmount) {
+export function createShipmentAndProcessPayment(redirectkey, recipient, customerEmail, selectedCountry, selectedDeliveryOption, ccDetails, totalAmount) {
   const myHeaders = new Headers();
   myHeaders.set('Content-Type', 'application/json');
 
@@ -38,9 +38,9 @@ export function createShipmentAndProcessPayment(redirectkey, customer, selectedC
 
   const shipment = {
     recipient: {
-      name: customer.fullName,
-      addressLine1: customer.address,
-      postcode: customer.postcode,
+      name: recipient.fullName,
+      addressLine1: recipient.address,
+      postcode: recipient.postcode,
       countryCode: selectedCountry,
     },
     options: {
@@ -48,6 +48,8 @@ export function createShipmentAndProcessPayment(redirectkey, customer, selectedC
     },
     amount: totalAmount,
     card: {
+      customerName: ccDetails.name,
+      customerEmail,
       creditCard: {
         ccNumber: ccDetails.number,
         expiryMonth: ccDetails.expiryMonth,
@@ -95,35 +97,4 @@ export function processPayment(redirectkey, ccDetails, totalAmount) {
   const processPaymentRequest = new Request(processPaymentUrl, myPaymentInit);
 
   return fetch(processPaymentRequest);
-}
-
-export function updateCreatedStatusinDb(redirectkey, status) {
-  const updateCreatedStatus = `http://localhost:3001/api/updateCreatedStatus/${redirectkey}`;
-
-  const myHeaders = new Headers();
-  myHeaders.set('Content-Type', 'application/json');
-
-  const data = {
-    status,
-  };
-
-  const myInit = {
-    method: 'put',
-    body: JSON.stringify(data),
-    headers: myHeaders,
-  };
-
-  const updateCreatedStatusRequest = new Request(updateCreatedStatus, myInit);
-
-  fetch(updateCreatedStatusRequest)
-    .then((response) => {
-      // það þarf ekkert að vera hérna frekar en ég vill
-      return response.json();
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log('Tókst ekki að breyta created stöðu sendingar í db.', error);
-    });
 }
