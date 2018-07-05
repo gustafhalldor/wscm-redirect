@@ -17,7 +17,6 @@ class LandingPage extends Component {
           localStorage.removeItem('persist:root');
           this.props.dispatch({ type: 'RESET_STATE' });
           this.props.changeNoDataStatus(true);
-          return;
         } else {
           this.props.changeNoDataStatus(false);
           return response.json();
