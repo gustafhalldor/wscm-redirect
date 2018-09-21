@@ -22,7 +22,7 @@ const BasketContents = (props) => {
                 <td>{item.description}</td>
                 <td className="tableTextCenter">{item.count}</td>
                 <td>{item.weight * item.count} kg ({item.count}*{item.weight}kg)</td>
-                <td>{item.price * item.count} kr.</td>
+                <td>{item.pricePerItem * item.count} kr.</td>
               </tr>
             );
           })}

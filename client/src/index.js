@@ -28,7 +28,7 @@ ReactDOM.render(
             <Route path="/:redirectkey/deliveryOptions" component={DeliveryOptions} exact />
             <Route path="/:redirectkey/payment" component={PaymentPage} exact />
             <Route path="/:redirectkey/final" component={FinalPage} exact />
-            <Route component={NotFound}/>
+            <Route component={NotFound} />
           </Switch>
         </main>
       </Router>
